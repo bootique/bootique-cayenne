@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.nhl.launcher</groupId>
+		<artifactId>launcher-parent</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<groupId>com.nhl.launcher.cayenne</groupId>
+	<artifactId>launcher-cayenne</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>Cayenne/Launcher Integration</name>
+	<description>Provides Apache Cayenne integration with Launcher</description>
+
+	<properties>
+		<cayenne-version>4.0.M3.b9a79b7</cayenne-version>
+		<launcher-core-version>1.0-SNAPSHOT</launcher-core-version>
+	</properties>
+
+	<scm>
+		<developerConnection>scm:git:ssh://git.nhl.com/repos/launcher/launcher-cayenne</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+
+	<repositories>
+		<repository>
+			<id>nhl2upstream</id>
+			<name>NHL Artifacts</name>
+			<url>http://maven.nhl.com/content/groups/nhl2upstream</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>nhl2upstream</id>
+			<name>NHL Artifacts</name>
+			<url>http://maven.nhl.com/content/groups/nhl2upstream/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.nhl.launcher.core</groupId>
+				<artifactId>launcher-core</artifactId>
+				<version>${launcher-core-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cayenne</groupId>
+				<artifactId>cayenne-server</artifactId>
+				<version>${cayenne-version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>commons-logging</artifactId>
+						<groupId>commons-logging</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<!-- Should match the SLF version coming from Logback -->
+				<version>1.7.7</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cayenne</groupId>
+				<artifactId>cayenne-java8</artifactId>
+				<version>${cayenne-version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<!-- Unit test dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Compile dependencies -->
+		<dependency>
+			<groupId>com.nhl.launcher.core</groupId>
+			<artifactId>launcher-core</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cayenne</groupId>
+			<artifactId>cayenne-server</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cayenne</groupId>
+			<artifactId>cayenne-java8</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+</project>
