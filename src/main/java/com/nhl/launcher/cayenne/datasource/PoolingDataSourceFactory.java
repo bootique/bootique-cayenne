@@ -2,7 +2,7 @@ package com.nhl.launcher.cayenne.datasource;
 
 import javax.sql.DataSource;
 
-public class PoolingDataSourceConfig extends SimpleDataSourceConfig {
+public class PoolingDataSourceFactory extends SimpleDataSourceFactory {
 
 	private int minConnections;
 	private int maxConnections;
@@ -12,16 +12,8 @@ public class PoolingDataSourceConfig extends SimpleDataSourceConfig {
 		return toDataSourceBuilder().pool(minConnections, maxConnections).build();
 	}
 
-	public int getMinConnections() {
-		return minConnections;
-	}
-
 	public void setMinConnections(int minConnections) {
 		this.minConnections = minConnections;
-	}
-
-	public int getMaxConnections() {
-		return maxConnections;
 	}
 
 	public void setMaxConnections(int maxConnections) {

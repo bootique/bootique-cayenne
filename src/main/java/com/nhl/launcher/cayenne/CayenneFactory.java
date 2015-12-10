@@ -6,12 +6,12 @@ import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
 import org.apache.cayenne.java8.CayenneJava8Module;
 
-import com.nhl.launcher.cayenne.datasource.PoolingDataSourceConfig;
+import com.nhl.launcher.cayenne.datasource.PoolingDataSourceFactory;
 
-public class CayenneConfig {
+public class CayenneFactory {
 
 	private String project;
-	private PoolingDataSourceConfig datasource;
+	private PoolingDataSourceFactory datasource;
 
 	/**
 	 * Creates and returns a preconfigured {@link ServerRuntimeBuilder} with
@@ -34,19 +34,11 @@ public class CayenneConfig {
 		return cayenneBuilder(ds).build();
 	}
 
-	public String getProject() {
-		return project;
-	}
-
 	public void setProject(String project) {
 		this.project = project;
 	}
 
-	public PoolingDataSourceConfig getDatasource() {
-		return datasource;
-	}
-
-	public void setDatasource(PoolingDataSourceConfig datasource) {
+	public void setDatasource(PoolingDataSourceFactory datasource) {
 		this.datasource = datasource;
 	}
 }

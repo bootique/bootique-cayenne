@@ -5,7 +5,7 @@ import org.apache.cayenne.configuration.server.ServerRuntime;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Provides;
-import com.nhl.launcher.config.ConfigurationFactory;
+import com.nhl.launcher.config.FactoryConfigurationService;
 
 public class CayenneBundle {
 
@@ -37,8 +37,8 @@ public class CayenneBundle {
 		}
 
 		@Provides
-		public ServerRuntime createCayenneRuntime(ConfigurationFactory configSource) {
-			return configSource.subconfig(configPrefix, CayenneConfig.class).createCayenneRuntime();
+		public ServerRuntime createCayenneRuntime(FactoryConfigurationService configService) {
+			return configService.factory(CayenneFactory.class, configPrefix).createCayenneRuntime();
 		}
 	}
 }
