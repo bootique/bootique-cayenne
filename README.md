@@ -1,2 +1,1 @@
-# bootique-cayenne
-Cayenne Integration Bundle for Bootique
+Cayenne Integration Bundle for [Bootique](https://github.com/nhl/bootique)
