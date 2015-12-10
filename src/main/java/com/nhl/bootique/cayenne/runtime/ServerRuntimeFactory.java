@@ -1,4 +1,4 @@
-package com.nhl.launcher.cayenne;
+package com.nhl.bootique.cayenne.runtime;
 
 import javax.sql.DataSource;
 
@@ -6,9 +6,9 @@ import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
 import org.apache.cayenne.java8.CayenneJava8Module;
 
-import com.nhl.launcher.cayenne.datasource.PoolingDataSourceFactory;
+import com.nhl.bootique.cayenne.datasource.PoolingDataSourceFactory;
 
-public class CayenneFactory {
+public class ServerRuntimeFactory {
 
 	private String project;
 	private PoolingDataSourceFactory datasource;

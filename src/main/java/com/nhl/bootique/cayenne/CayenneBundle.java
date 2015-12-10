@@ -1,11 +1,12 @@
-package com.nhl.launcher.cayenne;
+package com.nhl.bootique.cayenne;
 
 import org.apache.cayenne.configuration.server.ServerRuntime;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Provides;
-import com.nhl.launcher.config.FactoryConfigurationService;
+import com.nhl.bootique.cayenne.runtime.ServerRuntimeFactory;
+import com.nhl.bootique.factory.FactoryConfigurationService;
 
 public class CayenneBundle {
 
@@ -38,7 +39,7 @@ public class CayenneBundle {
 
 		@Provides
 		public ServerRuntime createCayenneRuntime(FactoryConfigurationService configService) {
-			return configService.factory(CayenneFactory.class, configPrefix).createCayenneRuntime();
+			return configService.factory(ServerRuntimeFactory.class, configPrefix).createCayenneRuntime();
 		}
 	}
 }

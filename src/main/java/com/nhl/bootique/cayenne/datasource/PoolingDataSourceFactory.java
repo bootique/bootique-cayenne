@@ -1,4 +1,4 @@
-package com.nhl.launcher.cayenne.datasource;
+package com.nhl.bootique.cayenne.datasource;
 
 import javax.sql.DataSource;
 
