@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.nhl.bootique.parent</groupId>
 		<artifactId>bootique-parent</artifactId>
-		<version>0.5-SNAPSHOT</version>
+		<version>0.5</version>
 	</parent>
 
 	<groupId>com.nhl.bootique.cayenne</groupId>
@@ -19,7 +19,7 @@
 
 	<properties>
 		<cayenne-version>4.0.M3.b9a79b7</cayenne-version>
-		<bootique-version>0.5-SNAPSHOT</bootique-version>
+		<bootique-version>0.5</bootique-version>
 	</properties>
 
 	<scm>
@@ -31,7 +31,7 @@
 		<repository>
 			<id>bootique-dependencies</id>
 			<name>Bootique Dependencies Repo</name>
-			<url>http://maven.objectstyle.org/nexus/content/groups/linkrest</url>
+			<url>http://maven.objectstyle.org/nexus/content/groups/bootique-upstream</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -41,7 +41,7 @@
 		<pluginRepository>
 			<id>bootique-dependencies</id>
 			<name>Bootique Dependencies Repo</name>
-			<url>http://maven.objectstyle.org/nexus/content/groups/linkrest</url>
+			<url>http://maven.objectstyle.org/nexus/content/groups/bootique-upstream</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
