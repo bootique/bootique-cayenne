@@ -18,7 +18,7 @@
 
 	<properties>
 		<cayenne-version>4.0.M3.b9a79b7</cayenne-version>
-		<bootique-version>0.5</bootique-version>
+		<bootique-version>0.8-SNAPSHOT</bootique-version>
 	</properties>
 
 	<scm>
