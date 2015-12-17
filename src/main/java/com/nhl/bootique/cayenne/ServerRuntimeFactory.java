@@ -1,19 +1,21 @@
 package com.nhl.bootique.cayenne;
 
+import java.util.Objects;
+
 import javax.sql.DataSource;
 
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
 import org.apache.cayenne.java8.CayenneJava8Module;
 
-import com.nhl.bootique.cayenne.datasource.PoolingDataSourceFactory;
+import com.nhl.bootique.jdbc.DataSourceFactory;
 
 public class ServerRuntimeFactory {
 
 	static final String DEFAULT_PROJECT_NAME = "cayenne-project.xml";
 
 	private String project;
-	private PoolingDataSourceFactory datasource;
+	private String datasource;
 
 	/**
 	 * Creates and returns a preconfigured {@link ServerRuntimeBuilder} with
@@ -40,20 +42,17 @@ public class ServerRuntimeFactory {
 		return this;
 	}
 
-	public ServerRuntime createCayenneRuntime() {
-		DataSource ds = datasource.toDataSource();
+	public ServerRuntime createCayenneRuntime(DataSourceFactory dataSourceFactory) {
+		Objects.requireNonNull(datasource, "'datasource' property is null");
+		DataSource ds = dataSourceFactory.forName(datasource);
 		return cayenneBuilder(ds).build();
-	}
-
-	public String getProject() {
-		return project;
 	}
 
 	public void setProject(String project) {
 		this.project = project;
 	}
 
-	public void setDatasource(PoolingDataSourceFactory datasource) {
+	public void setDatasource(String datasource) {
 		this.datasource = datasource;
 	}
 }
