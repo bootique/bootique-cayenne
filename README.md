@@ -4,7 +4,7 @@ Cayenne Integration Bundle for [Bootique](https://github.com/nhl/bootique)
 
 ## Note on Cayenne dependency:
 
-_Until official Cayenne 4.0.M3 release is out, you will need Declare Bootique Maven repository 
+_Until official Cayenne 4.0.M3 release is out, you will need to declare an extra repository 
 in your pom.xml (unless you have your own repo proxy, in which case add this repo to the proxy) to grab an unofficial build used in this Bootique integration:_
 
 ```XML
