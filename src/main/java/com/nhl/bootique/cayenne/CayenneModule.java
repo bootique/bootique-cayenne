@@ -4,7 +4,7 @@ import org.apache.cayenne.configuration.server.ServerRuntime;
 
 import com.google.inject.Provides;
 import com.nhl.bootique.ConfigModule;
-import com.nhl.bootique.factory.FactoryConfigurationService;
+import com.nhl.bootique.config.ConfigurationFactory;
 import com.nhl.bootique.jdbc.DataSourceFactory;
 
 public class CayenneModule extends ConfigModule {
@@ -24,9 +24,8 @@ public class CayenneModule extends ConfigModule {
 	}
 
 	@Provides
-	public ServerRuntime createCayenneRuntime(FactoryConfigurationService configService,
-			DataSourceFactory dataSourceFactory) {
-		return configService.factory(ServerRuntimeFactory.class, configPrefix).initProjectIfNotSet(projectName)
+	public ServerRuntime createCayenneRuntime(ConfigurationFactory configFactory, DataSourceFactory dataSourceFactory) {
+		return configFactory.config(ServerRuntimeFactory.class, configPrefix).initProjectIfNotSet(projectName)
 				.createCayenneRuntime(dataSourceFactory);
 	}
 
