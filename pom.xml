@@ -17,7 +17,7 @@
 	<description>Provides Apache Cayenne integration with Bootique</description>
 
 	<properties>
-		<cayenne-version>4.0.M3.b9a79b7</cayenne-version>
+		<cayenne-version>4.0.M3.fb19854</cayenne-version>
 		<bootique-version>0.10</bootique-version>
 		<bootique-jdbc-version>0.7</bootique-jdbc-version>
 	</properties>
