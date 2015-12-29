@@ -1,3 +1,7 @@
+0.10:
+
+#3 Adding Shutdown hook
+
 0.9:
 
 #1 Support for named Cayenne stacks

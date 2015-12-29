@@ -5,9 +5,12 @@ import java.util.Objects;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.nhl.bootique.ConfigModule;
 import com.nhl.bootique.config.ConfigurationFactory;
 import com.nhl.bootique.jdbc.DataSourceFactory;
+import com.nhl.bootique.log.BootLogger;
+import com.nhl.bootique.shutdown.ShutdownManager;
 
 public class CayenneModule extends ConfigModule {
 
@@ -57,9 +60,19 @@ public class CayenneModule extends ConfigModule {
 	}
 
 	@Provides
-	public ServerRuntime createCayenneRuntime(ConfigurationFactory configFactory, DataSourceFactory dataSourceFactory) {
-		return configFactory.config(ServerRuntimeFactory.class, configPrefix).initConfigIfNotSet(config)
-				.createCayenneRuntime(dataSourceFactory);
+	@Singleton
+	public ServerRuntime createCayenneRuntime(ConfigurationFactory configFactory, DataSourceFactory dataSourceFactory,
+			BootLogger bootLogger, ShutdownManager shutdownManager) {
+		
+		ServerRuntime runtime = configFactory.config(ServerRuntimeFactory.class, configPrefix)
+				.initConfigIfNotSet(config).createCayenneRuntime(dataSourceFactory);
+
+		shutdownManager.addShutdownHook(() -> {
+			bootLogger.trace(() -> "shutting down Cayenne...");
+			runtime.shutdown();
+		});
+
+		return runtime;
 	}
 
 }
