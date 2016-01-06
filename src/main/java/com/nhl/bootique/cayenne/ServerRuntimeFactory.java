@@ -4,6 +4,8 @@ import java.util.Objects;
 
 import javax.sql.DataSource;
 
+import org.apache.cayenne.access.dbsync.CreateIfNoSchemaStrategy;
+import org.apache.cayenne.access.dbsync.SchemaUpdateStrategy;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
 import org.apache.cayenne.java8.CayenneJava8Module;
@@ -15,6 +17,13 @@ public class ServerRuntimeFactory {
 	private String name;
 	private String config;
 	private String datasource;
+	private boolean createSchema;
+
+	public ServerRuntime createCayenneRuntime(DataSourceFactory dataSourceFactory) {
+		Objects.requireNonNull(datasource, "'datasource' property is null");
+		DataSource ds = dataSourceFactory.forName(datasource);
+		return cayenneBuilder(ds).build();
+	}
 
 	/**
 	 * Creates and returns a preconfigured {@link ServerRuntimeBuilder} with
@@ -32,6 +41,10 @@ public class ServerRuntimeFactory {
 		// allow no-config stacks.. very useful sometimes
 		if (config != null) {
 			builder.addConfig(config);
+		}
+
+		if (createSchema) {
+			builder.addModule(binder -> binder.bind(SchemaUpdateStrategy.class).to(CreateIfNoSchemaStrategy.class));
 		}
 
 		return builder.dataSource(dataSource);
@@ -64,12 +77,6 @@ public class ServerRuntimeFactory {
 		}
 
 		return this;
-	}
-
-	public ServerRuntime createCayenneRuntime(DataSourceFactory dataSourceFactory) {
-		Objects.requireNonNull(datasource, "'datasource' property is null");
-		DataSource ds = dataSourceFactory.forName(datasource);
-		return cayenneBuilder(ds).build();
 	}
 
 	/**
@@ -105,5 +112,15 @@ public class ServerRuntimeFactory {
 
 	public void setDatasource(String datasource) {
 		this.datasource = datasource;
+	}
+
+	/**
+	 * @param createSchema
+	 *            if true, Cayenne will attempt to create database schema if it
+	 *            is missing.
+	 * @since 0.11
+	 */
+	public void setCreateSchema(boolean createSchema) {
+		this.createSchema = createSchema;
 	}
 }
