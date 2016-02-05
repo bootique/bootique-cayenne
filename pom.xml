@@ -18,8 +18,8 @@
 
 	<properties>
 		<cayenne-version>4.0.M3.fb19854</cayenne-version>
-		<bootique-version>0.11</bootique-version>
-		<bootique-jdbc-version>0.8</bootique-jdbc-version>
+		<bootique-version>0.12-SNAPSHOT</bootique-version>
+		<bootique-jdbc-version>0.9-SNAPSHOT</bootique-jdbc-version>
 	</properties>
 
 	<scm>
