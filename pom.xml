@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.nhl.bootique.parent</groupId>
 		<artifactId>bootique-parent</artifactId>
-		<version>0.9</version>
+		<version>0.10</version>
 	</parent>
 
 	<groupId>com.nhl.bootique.cayenne</groupId>
@@ -29,26 +29,7 @@
 		<tag>HEAD</tag>
 	</scm>
 
-	<distributionManagement>
-		<!-- TODO: move this to parent? -->
-		<snapshotRepository>
-			<id>bootique-snapshots</id>
-			<url>http://maven.objectstyle.org/nexus/content/repositories/bootique-snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<repositories>
-		<!-- TODO: move this to parent? -->
-		<repository>
-			<id>bootique-snapshots</id>
-			<url>http://maven.objectstyle.org/nexus/content/repositories/bootique-snapshots</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
 		<!-- TODO: remove this once 4.0.M3 Cayenne release is out... -->
 		<repository>
 			<id>cayenne-unofficial-repo</id>
