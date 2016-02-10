@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -28,13 +29,38 @@
 		<tag>HEAD</tag>
 	</scm>
 
+	<distributionManagement>
+		<!-- TODO: move this to parent? -->
+		<snapshotRepository>
+			<id>bootique-snapshots</id>
+			<url>http://maven.objectstyle.org/nexus/content/repositories/bootique-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<repositories>
+		<!-- TODO: move this to parent? -->
+		<repository>
+			<id>bootique-snapshots</id>
+			<url>http://maven.objectstyle.org/nexus/content/repositories/bootique-snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
 		<!-- TODO: remove this once 4.0.M3 Cayenne release is out... -->
 		<repository>
-	        <id>cayenne-unofficial-repo</id>
-	        <name>Cayenne Unofficial Repo</name>
-	        <url>http://maven.objectstyle.org/nexus/content/repositories/cayenne-unofficial/</url>
-	    </repository>
+			<id>cayenne-unofficial-repo</id>
+			<name>Cayenne Unofficial Repo</name>
+			<url>http://maven.objectstyle.org/nexus/content/repositories/cayenne-unofficial/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 
 	<dependencyManagement>
