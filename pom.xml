@@ -18,7 +18,7 @@
 	<description>Provides Apache Cayenne integration with Bootique</description>
 
 	<properties>
-		<cayenne-version>4.0.M3.fb19854</cayenne-version>
+		<cayenne-version>4.0.M3</cayenne-version>
 		<bootique-version>0.12-SNAPSHOT</bootique-version>
 		<bootique-jdbc-version>0.9-SNAPSHOT</bootique-jdbc-version>
 	</properties>
@@ -28,21 +28,6 @@
 		<url>https://github.com/nhl/bootique-cayenne</url>
 		<tag>HEAD</tag>
 	</scm>
-
-	<repositories>
-		<!-- TODO: remove this once 4.0.M3 Cayenne release is out... -->
-		<repository>
-			<id>cayenne-unofficial-repo</id>
-			<name>Cayenne Unofficial Repo</name>
-			<url>http://maven.objectstyle.org/nexus/content/repositories/cayenne-unofficial/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 
 	<dependencyManagement>
 		<dependencies>

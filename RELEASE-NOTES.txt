@@ -1,5 +1,8 @@
-#5 Upgrade Bootique to 0.12 and bootique-jdbc - to 0.9
+0.12:
 
+#5 Upgrade Bootique to 0.12 and bootique-jdbc - to 0.9
+#6 Upgrade Cayenne to official 4.0.M3
+ 
 0.11:
 
 #4 ServerRuntimeFactory: 'createSchema' - a config flag to enable schema auto-creation
