@@ -11,7 +11,7 @@
 
 	<groupId>com.nhl.bootique.cayenne</groupId>
 	<artifactId>bootique-cayenne</artifactId>
-	<version>0.12-SNAPSHOT</version>
+	<version>0.12</version>
 	<packaging>jar</packaging>
 
 	<name>Cayenne Integration Bundle for Bootique</name>
@@ -19,7 +19,7 @@
 
 	<properties>
 		<cayenne-version>4.0.M3</cayenne-version>
-		<bootique-version>0.12-SNAPSHOT</bootique-version>
+		<bootique-version>0.12</bootique-version>
 		<bootique-jdbc-version>0.9-SNAPSHOT</bootique-jdbc-version>
 	</properties>
 
