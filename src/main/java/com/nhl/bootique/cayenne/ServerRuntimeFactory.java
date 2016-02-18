@@ -9,7 +9,6 @@ import org.apache.cayenne.access.dbsync.SchemaUpdateStrategy;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
 import org.apache.cayenne.di.Module;
-import org.apache.cayenne.java8.CayenneJava8Module;
 
 import com.nhl.bootique.jdbc.DataSourceFactory;
 
@@ -52,7 +51,7 @@ public class ServerRuntimeFactory {
 	 *         subclasses.
 	 */
 	protected ServerRuntimeBuilder cayenneBuilder(DataSource dataSource) {
-		ServerRuntimeBuilder builder = ServerRuntimeBuilder.builder(name).addModule(new CayenneJava8Module());
+		ServerRuntimeBuilder builder = ServerRuntimeBuilder.builder(name);
 
 		// allow no-config stacks.. very useful sometimes
 		if (config != null) {

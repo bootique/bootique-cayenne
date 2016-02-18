@@ -1,11 +1,15 @@
 package com.nhl.bootique.cayenne;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
 import org.apache.cayenne.DataChannelFilter;
+import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.ServerRuntime;
+import org.apache.cayenne.di.Module;
+import org.apache.cayenne.java8.CayenneJava8Module;
 
 import com.google.inject.Binder;
 import com.google.inject.Provides;
@@ -99,17 +103,31 @@ public class CayenneModule extends ConfigModule {
 	@Provides
 	@Singleton
 	public ServerRuntime createCayenneRuntime(ConfigurationFactory configFactory, DataSourceFactory dataSourceFactory,
-			BootLogger bootLogger, ShutdownManager shutdownManager, Set<Object> listeners) {
+			BootLogger bootLogger, ShutdownManager shutdownManager, @CayenneListener Set<Object> listeners) {
 
+		Collection<Module> extras = cayenneExtrasModule();
 		ServerRuntime runtime = configFactory.config(ServerRuntimeFactory.class, configPrefix)
-				.initConfigIfNotSet(config).createCayenneRuntime(dataSourceFactory, Collections.emptyList());
+				.initConfigIfNotSet(config).createCayenneRuntime(dataSourceFactory, extras);
 
 		shutdownManager.addShutdownHook(() -> {
 			bootLogger.trace(() -> "shutting down Cayenne...");
 			runtime.shutdown();
 		});
 
+		// TODO: listeners should be really contributable to Cayenne via DI,
+		// just like filters...
+		if (!listeners.isEmpty()) {
+			DataDomain domain = runtime.getDataDomain();
+			listeners.forEach(l -> domain.addListener(l));
+		}
+
 		return runtime;
+	}
+
+	protected Collection<Module> cayenneExtrasModule() {
+		Collection<Module> extras = new ArrayList<>();
+		extras.add(new CayenneJava8Module());
+		return extras;
 	}
 
 }
