@@ -1,5 +1,6 @@
 package com.nhl.bootique.cayenne;
 
+import java.util.Collection;
 import java.util.Objects;
 
 import javax.sql.DataSource;
@@ -8,6 +9,7 @@ import org.apache.cayenne.access.dbsync.CreateIfNoSchemaStrategy;
 import org.apache.cayenne.access.dbsync.SchemaUpdateStrategy;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
+import org.apache.cayenne.di.Module;
 import org.apache.cayenne.java8.CayenneJava8Module;
 
 import com.nhl.bootique.jdbc.DataSourceFactory;
@@ -19,10 +21,10 @@ public class ServerRuntimeFactory {
 	private String datasource;
 	private boolean createSchema;
 
-	public ServerRuntime createCayenneRuntime(DataSourceFactory dataSourceFactory) {
+	public ServerRuntime createCayenneRuntime(DataSourceFactory dataSourceFactory, Collection<Module> extraModules) {
 		Objects.requireNonNull(datasource, "'datasource' property is null");
 		DataSource ds = dataSourceFactory.forName(datasource);
-		return cayenneBuilder(ds).build();
+		return cayenneBuilder(ds).addModules(extraModules).build();
 	}
 
 	/**

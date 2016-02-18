@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
+import java.util.Collections;
+
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.junit.Before;
@@ -26,7 +28,7 @@ public class ServerRuntimeFactoryTest {
 		ServerRuntimeFactory factory = new ServerRuntimeFactory();
 		factory.setDatasource("ds1");
 
-		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory);
+		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory, Collections.emptyList());
 		try {
 			DataDomain domain = runtime.getDataDomain();
 			assertEquals("cayenne", domain.getName());
@@ -46,7 +48,7 @@ public class ServerRuntimeFactoryTest {
 		factory.setDatasource("ds1");
 		factory.setName("me");
 
-		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory);
+		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory, Collections.emptyList());
 		try {
 
 			DataDomain domain = runtime.getDataDomain();
@@ -67,7 +69,7 @@ public class ServerRuntimeFactoryTest {
 		factory.setDatasource("ds1");
 		factory.setConfig("cayenne-project.xml");
 
-		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory);
+		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory, Collections.emptyList());
 		try {
 
 			DataDomain domain = runtime.getDataDomain();
@@ -86,7 +88,7 @@ public class ServerRuntimeFactoryTest {
 		// explicitly set config to null...
 		factory.setConfig(null);
 
-		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory);
+		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory, Collections.emptyList());
 		try {
 
 			DataDomain domain = runtime.getDataDomain();
