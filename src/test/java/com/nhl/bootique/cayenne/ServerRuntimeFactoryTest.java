@@ -3,9 +3,13 @@ package com.nhl.bootique.cayenne;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Collections;
+
+import javax.sql.DataSource;
 
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.ServerRuntime;
@@ -21,6 +25,7 @@ public class ServerRuntimeFactoryTest {
 	@Before
 	public void before() {
 		this.mockDSFactory = mock(DataSourceFactory.class);
+		when(mockDSFactory.forName(anyString())).thenReturn(mock(DataSource.class));
 	}
 
 	@Test

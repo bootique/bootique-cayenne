@@ -1,3 +1,7 @@
+0.13
+
+#8 Make Cayenne config "datasource" property optional - let Cayenne config its own DataSource
+
 0.12:
 
 #5 Upgrade Bootique to 0.12 and bootique-jdbc - to 0.9

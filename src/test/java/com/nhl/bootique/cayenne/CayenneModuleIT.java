@@ -2,8 +2,11 @@ package com.nhl.bootique.cayenne;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import javax.sql.DataSource;
 
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.ServerRuntime;
@@ -20,21 +23,18 @@ import com.nhl.bootique.shutdown.ShutdownManager;
 
 public class CayenneModuleIT {
 
-	private ConfigurationFactory mockConfigFactory;
-	private DataSourceFactory mockDataSourceFactory;
-	private BootLogger mockBootLogger;
-	private ShutdownManager mockShutdownManager;
-	private ServerRuntimeFactory serverRuntimeFactory;
 	private Module bqMocksModule;
 
 	@Before
 	public void before() {
-		this.mockConfigFactory = mock(ConfigurationFactory.class);
-		this.mockDataSourceFactory = mock(DataSourceFactory.class);
-		this.mockBootLogger = mock(BootLogger.class);
-		this.mockShutdownManager = mock(ShutdownManager.class);
+		ConfigurationFactory mockConfigFactory = mock(ConfigurationFactory.class);
+		BootLogger mockBootLogger = mock(BootLogger.class);
+		ShutdownManager mockShutdownManager = mock(ShutdownManager.class);
 
-		this.serverRuntimeFactory = new ServerRuntimeFactory();
+		DataSourceFactory mockDataSourceFactory = mock(DataSourceFactory.class);
+		when(mockDataSourceFactory.forName(anyString())).thenReturn(mock(DataSource.class));
+
+		ServerRuntimeFactory serverRuntimeFactory = new ServerRuntimeFactory();
 		serverRuntimeFactory.setDatasource("ds1");
 
 		when(mockConfigFactory.config(ServerRuntimeFactory.class, "cayenne")).thenReturn(serverRuntimeFactory);

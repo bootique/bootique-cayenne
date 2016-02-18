@@ -1,7 +1,6 @@
 package com.nhl.bootique.cayenne;
 
 import java.util.Collection;
-import java.util.Objects;
 
 import javax.sql.DataSource;
 
@@ -22,9 +21,24 @@ public class ServerRuntimeFactory {
 	private boolean createSchema;
 
 	public ServerRuntime createCayenneRuntime(DataSourceFactory dataSourceFactory, Collection<Module> extraModules) {
-		Objects.requireNonNull(datasource, "'datasource' property is null");
-		DataSource ds = dataSourceFactory.forName(datasource);
+		DataSource ds = locateDataSource(dataSourceFactory);
 		return cayenneBuilder(ds).addModules(extraModules).build();
+	}
+
+	protected DataSource locateDataSource(DataSourceFactory dataSourceFactory) {
+
+		// if no property is set, presumably Cayenne configures its own
+		// DataSource without Bootique involvement
+		if (datasource == null) {
+			return null;
+		}
+
+		DataSource ds = dataSourceFactory.forName(datasource);
+		if (ds == null) {
+			throw new IllegalStateException("Unknown 'datasource': " + datasource);
+		}
+
+		return ds;
 	}
 
 	/**
@@ -49,7 +63,11 @@ public class ServerRuntimeFactory {
 			builder.addModule(binder -> binder.bind(SchemaUpdateStrategy.class).to(CreateIfNoSchemaStrategy.class));
 		}
 
-		return builder.dataSource(dataSource);
+		if (dataSource != null) {
+			builder.dataSource(dataSource);
+		}
+
+		return builder;
 	}
 
 	/**
