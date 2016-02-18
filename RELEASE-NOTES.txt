@@ -1,5 +1,6 @@
 0.13
 
+#7 Support for listeners/filters contribution
 #8 Make Cayenne config "datasource" property optional - let Cayenne config its own DataSource
 
 0.12:

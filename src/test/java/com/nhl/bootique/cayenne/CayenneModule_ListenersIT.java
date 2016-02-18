@@ -2,8 +2,11 @@ package com.nhl.bootique.cayenne;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -13,11 +16,13 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.apache.cayenne.CayenneDataObject;
+import org.apache.cayenne.DataChannelFilter;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.ObjectId;
 import org.apache.cayenne.annotation.PostPersist;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.datasource.DataSourceBuilder;
+import org.apache.cayenne.graph.GraphDiff;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -63,7 +68,7 @@ public class CayenneModule_ListenersIT {
 				.driver("org.apache.derby.jdbc.EmbeddedDriver").build();
 	}
 
-	private ServerRuntime createRuntime(Object... listeners) {
+	private ServerRuntime runtimeWithListeners(Object... listeners) {
 		CayenneModule cayenneModule = new CayenneModule().configName("com/nhl/bootique/cayenne/cayenne-generic.xml");
 
 		Module listenersModule = (binder) -> {
@@ -73,6 +78,20 @@ public class CayenneModule_ListenersIT {
 		};
 
 		Injector i = Guice.createInjector(cayenneModule, listenersModule, bqMocksModule);
+
+		return i.getInstance(ServerRuntime.class);
+	}
+
+	private ServerRuntime runtimeWithFilters(DataChannelFilter... filters) {
+		CayenneModule cayenneModule = new CayenneModule().configName("com/nhl/bootique/cayenne/cayenne-generic.xml");
+
+		Module filtersModule = (binder) -> {
+
+			Multibinder<DataChannelFilter> filterBinder = CayenneModule.contributeFilters(binder);
+			Arrays.asList(filters).forEach(f -> filterBinder.addBinding().toInstance(f));
+		};
+
+		Injector i = Guice.createInjector(cayenneModule, filtersModule, bqMocksModule);
 
 		return i.getInstance(ServerRuntime.class);
 	}
@@ -90,7 +109,7 @@ public class CayenneModule_ListenersIT {
 		o2.setObjectId(new ObjectId("T1"));
 		o2.writeProperty("name", "n" + 2);
 
-		ServerRuntime runtime = createRuntime(l1);
+		ServerRuntime runtime = runtimeWithListeners(l1);
 		try {
 			ObjectContext c = runtime.newContext();
 			c.registerNewObject(o1);
@@ -104,6 +123,34 @@ public class CayenneModule_ListenersIT {
 		assertEquals(2, l1.postPersisted.size());
 		assertTrue(l1.postPersisted.contains(o1));
 		assertTrue(l1.postPersisted.contains(o2));
+	}
+
+	@Test
+	public void testFilters() {
+
+		DataChannelFilter f = mock(DataChannelFilter.class);
+		when(f.onSync(any(), any(), anyInt(), any())).thenReturn(mock(GraphDiff.class));
+
+		CayenneDataObject o1 = new CayenneDataObject();
+		o1.setObjectId(new ObjectId("T1"));
+		o1.writeProperty("name", "n" + 1);
+
+		CayenneDataObject o2 = new CayenneDataObject();
+		o2.setObjectId(new ObjectId("T1"));
+		o2.writeProperty("name", "n" + 2);
+
+		ServerRuntime runtime = runtimeWithFilters(f);
+		try {
+			ObjectContext c = runtime.newContext();
+			c.registerNewObject(o1);
+			c.registerNewObject(o2);
+			c.commitChanges();
+
+		} finally {
+			runtime.shutdown();
+		}
+
+		verify(f).onSync(any(), any(), anyInt(), any());
 	}
 }
 

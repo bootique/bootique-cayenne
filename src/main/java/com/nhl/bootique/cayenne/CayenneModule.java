@@ -7,7 +7,9 @@ import java.util.Set;
 
 import org.apache.cayenne.DataChannelFilter;
 import org.apache.cayenne.access.DataDomain;
+import org.apache.cayenne.configuration.Constants;
 import org.apache.cayenne.configuration.server.ServerRuntime;
+import org.apache.cayenne.di.ListBuilder;
 import org.apache.cayenne.di.Module;
 import org.apache.cayenne.java8.CayenneJava8Module;
 
@@ -103,9 +105,10 @@ public class CayenneModule extends ConfigModule {
 	@Provides
 	@Singleton
 	public ServerRuntime createCayenneRuntime(ConfigurationFactory configFactory, DataSourceFactory dataSourceFactory,
-			BootLogger bootLogger, ShutdownManager shutdownManager, @CayenneListener Set<Object> listeners) {
+			BootLogger bootLogger, ShutdownManager shutdownManager, @CayenneListener Set<Object> listeners,
+			Set<DataChannelFilter> filters) {
 
-		Collection<Module> extras = cayenneExtrasModule();
+		Collection<Module> extras = cayenneExtrasModule(filters);
 		ServerRuntime runtime = configFactory.config(ServerRuntimeFactory.class, configPrefix)
 				.initConfigIfNotSet(config).createCayenneRuntime(dataSourceFactory, extras);
 
@@ -124,9 +127,18 @@ public class CayenneModule extends ConfigModule {
 		return runtime;
 	}
 
-	protected Collection<Module> cayenneExtrasModule() {
+	protected Collection<Module> cayenneExtrasModule(Set<DataChannelFilter> filters) {
 		Collection<Module> extras = new ArrayList<>();
 		extras.add(new CayenneJava8Module());
+
+		if (!filters.isEmpty()) {
+			extras.add(cayenneBinder -> {
+				ListBuilder<DataChannelFilter> listBinder = cayenneBinder
+						.bindList(Constants.SERVER_DOMAIN_FILTERS_LIST);
+				filters.forEach(f -> listBinder.add(f));
+			});
+		}
+
 		return extras;
 	}
 
