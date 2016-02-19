@@ -65,7 +65,7 @@ public class CayenneModuleIT {
 
 	@Test
 	public void testNoConfig() {
-		CayenneModule module = new CayenneModule().noConfig();
+		Module module = CayenneModule.builder().noConfig().build();
 
 		Injector i = Guice.createInjector(module, bqMocksModule);
 

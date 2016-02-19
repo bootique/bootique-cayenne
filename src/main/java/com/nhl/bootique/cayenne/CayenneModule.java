@@ -2,7 +2,6 @@ package com.nhl.bootique.cayenne;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Set;
 
 import org.apache.cayenne.DataChannelFilter;
@@ -52,47 +51,31 @@ public class CayenneModule extends ConfigModule {
 		return Multibinder.newSetBinder(binder, Object.class, CayenneListener.class);
 	}
 
-	public CayenneModule() {
+	/**
+	 * @since 0.12
+	 * @return a Builder instance to configure the module before using it to
+	 *         initialize DI container.
+	 */
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	/**
+	 * @param configPrefix
+	 *            YAML config prefix for CayenneModule.
+	 * @since 0.12
+	 * @return a Builder instance to configure the module before using it to
+	 *         initialize DI container.
+	 */
+	public static Builder builder(String configPrefix) {
+		return new Builder(configPrefix);
+	}
+
+	CayenneModule() {
 	}
 
 	public CayenneModule(String configPrefix) {
 		super(configPrefix);
-	}
-
-	/**
-	 * @deprecated since 0.9 use {@link #configName(String)}.
-	 * @param projectName
-	 *            a name of Cayenne XML config file to use if it is not
-	 *            initialized from YAML.
-	 */
-	@Deprecated
-	public CayenneModule projectName(String projectName) {
-		return configName(projectName);
-	}
-
-	/**
-	 * @param config
-	 *            a name of Cayenne XML config file to use if it is not
-	 *            initialized from YAML.
-	 * @since 0.9
-	 * @return this instance
-	 */
-	public CayenneModule configName(String config) {
-		Objects.requireNonNull(config);
-		this.config = config;
-		return this;
-	}
-
-	/**
-	 * Ensures that Cayenne runtime is created without any ORM configuration. It
-	 * is useful occasionally to have such a bare stack.
-	 * 
-	 * @since 0.9
-	 * @return this instance.
-	 */
-	public CayenneModule noConfig() {
-		this.config = null;
-		return this;
 	}
 
 	@Override
@@ -104,11 +87,11 @@ public class CayenneModule extends ConfigModule {
 
 	@Provides
 	@Singleton
-	public ServerRuntime createCayenneRuntime(ConfigurationFactory configFactory, DataSourceFactory dataSourceFactory,
-			BootLogger bootLogger, ShutdownManager shutdownManager, @CayenneListener Set<Object> listeners,
-			Set<DataChannelFilter> filters) {
+	protected ServerRuntime createCayenneRuntime(ConfigurationFactory configFactory,
+			DataSourceFactory dataSourceFactory, BootLogger bootLogger, ShutdownManager shutdownManager,
+			@CayenneListener Set<Object> listeners, Set<DataChannelFilter> filters) {
 
-		Collection<Module> extras = cayenneExtrasModule(filters);
+		Collection<Module> extras = extraCayenneModules(filters);
 		ServerRuntime runtime = configFactory.config(ServerRuntimeFactory.class, configPrefix)
 				.initConfigIfNotSet(config).createCayenneRuntime(dataSourceFactory, extras);
 
@@ -127,7 +110,7 @@ public class CayenneModule extends ConfigModule {
 		return runtime;
 	}
 
-	protected Collection<Module> cayenneExtrasModule(Set<DataChannelFilter> filters) {
+	protected Collection<Module> extraCayenneModules(Set<DataChannelFilter> filters) {
 		Collection<Module> extras = new ArrayList<>();
 		extras.add(new CayenneJava8Module());
 
@@ -140,6 +123,49 @@ public class CayenneModule extends ConfigModule {
 		}
 
 		return extras;
+	}
+
+	public static class Builder {
+		private CayenneModule module;
+
+		private Builder() {
+			this.module = new CayenneModule();
+		}
+
+		private Builder(String configPrefix) {
+			this.module = new CayenneModule(configPrefix);
+		}
+
+		public CayenneModule build() {
+			return module;
+		}
+
+		/**
+		 * Sets the name of Cayenne XML config file to use. Note that config
+		 * name coming from YAML takes precedence over the setting passed via
+		 * this method.
+		 * 
+		 * @param config
+		 *            a name of Cayenne XML config file to use if it is not
+		 *            initialized from YAML.
+		 * @return this builder instance
+		 */
+		public Builder configName(String config) {
+			module.config = config;
+			return this;
+		}
+
+		/**
+		 * Ensures that Cayenne runtime is created without any ORM
+		 * configuration. It is useful occasionally to have such a bare stack.
+		 * 
+		 * @since 0.9
+		 * @return this instance.
+		 */
+		public Builder noConfig() {
+			module.config = null;
+			return this;
+		}
 	}
 
 }

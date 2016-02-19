@@ -2,6 +2,7 @@
 
 #7 Support for listeners/filters contribution
 #8 Make Cayenne config "datasource" property optional - let Cayenne config its own DataSource
+#9 CayenneModule should be immutable ; configuration should happen via a builder
 
 0.12:
 

@@ -69,7 +69,8 @@ public class CayenneModule_ListenersIT {
 	}
 
 	private ServerRuntime runtimeWithListeners(Object... listeners) {
-		CayenneModule cayenneModule = new CayenneModule().configName("com/nhl/bootique/cayenne/cayenne-generic.xml");
+		CayenneModule cayenneModule = CayenneModule.builder().configName("com/nhl/bootique/cayenne/cayenne-generic.xml")
+				.build();
 
 		Module listenersModule = (binder) -> {
 
@@ -83,7 +84,8 @@ public class CayenneModule_ListenersIT {
 	}
 
 	private ServerRuntime runtimeWithFilters(DataChannelFilter... filters) {
-		CayenneModule cayenneModule = new CayenneModule().configName("com/nhl/bootique/cayenne/cayenne-generic.xml");
+		CayenneModule cayenneModule = CayenneModule.builder().configName("com/nhl/bootique/cayenne/cayenne-generic.xml")
+				.build();
 
 		Module filtersModule = (binder) -> {
 
