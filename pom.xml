@@ -20,7 +20,7 @@
 	<properties>
 		<cayenne-version>4.0.M3</cayenne-version>
 		<bootique-version>0.12</bootique-version>
-		<bootique-jdbc-version>0.9</bootique-jdbc-version>
+		<bootique-jdbc-version>0.10.1</bootique-jdbc-version>
 	</properties>
 
 	<scm>
