@@ -10,7 +10,7 @@
 
 	<groupId>com.nhl.bootique.cayenne</groupId>
 	<artifactId>bootique-cayenne</artifactId>
-	<version>0.13</version>
+	<version>0.14-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Cayenne Integration Bundle for Bootique</name>
@@ -25,7 +25,7 @@
 	<scm>
 		<developerConnection>scm:git:ssh://git@github.com/nhl/bootique-cayenne</developerConnection>
 		<url>https://github.com/nhl/bootique-cayenne</url>
-		<tag>bootique-cayenne-0.13</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<dependencyManagement>
