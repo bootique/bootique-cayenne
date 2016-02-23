@@ -1,4 +1,4 @@
 [![Build Status](https://travis-ci.org/nhl/bootique-cayenne.svg)](https://travis-ci.org/nhl/bootique-cayenne)
 
-Apache Cayenne Integration Bundle for [Bootique](https://github.com/nhl/bootique)
+[Apache Cayenne](http://cayenne.apache.org/) Integration Module for [Bootique](https://github.com/nhl/bootique)
 
