@@ -71,7 +71,7 @@ public class CayenneModule extends ConfigModule {
 		return new Builder(configPrefix);
 	}
 
-	CayenneModule() {
+	public CayenneModule() {
 	}
 
 	public CayenneModule(String configPrefix) {

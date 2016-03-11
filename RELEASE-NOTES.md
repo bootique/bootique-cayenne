@@ -1,3 +1,7 @@
+## 0.14
+
+* #11 Exception when referencing CayenneModule by class
+
 ## 0.13
 
 * #7 Support for listeners/filters contribution
