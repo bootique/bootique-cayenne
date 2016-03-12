@@ -1,6 +1,8 @@
 package com.nhl.bootique.cayenne;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 
 import javax.sql.DataSource;
 
@@ -9,13 +11,18 @@ import org.apache.cayenne.access.dbsync.SchemaUpdateStrategy;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
 import org.apache.cayenne.di.Module;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.nhl.bootique.jdbc.DataSourceFactory;
 
 public class ServerRuntimeFactory {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ServerRuntimeFactory.class);
+
 	private String name;
 	private String config;
+	private Collection<String> configs;
 	private String datasource;
 	private boolean createSchema;
 
@@ -53,10 +60,7 @@ public class ServerRuntimeFactory {
 	protected ServerRuntimeBuilder cayenneBuilder(DataSource dataSource) {
 		ServerRuntimeBuilder builder = ServerRuntimeBuilder.builder(name);
 
-		// allow no-config stacks.. very useful sometimes
-		if (config != null) {
-			builder.addConfig(config);
-		}
+		configs().forEach(config -> builder.addConfig(config));
 
 		if (createSchema) {
 			builder.addModule(binder -> binder.bind(SchemaUpdateStrategy.class).to(CreateIfNoSchemaStrategy.class));
@@ -69,15 +73,21 @@ public class ServerRuntimeFactory {
 		return builder;
 	}
 
-	/**
-	 * @deprecated since 0.9 use {@link #initConfigIfNotSet(String)}.
-	 * @param project
-	 *            a name of Cayenne XML config file to use if config was not
-	 *            already initialized.
-	 */
-	@Deprecated
-	public ServerRuntimeFactory initProjectIfNotSet(String project) {
-		return initConfigIfNotSet(project);
+	Collection<String> configs() {
+
+		// order is important, so using ordered set...
+		Collection<String> configs = new LinkedHashSet<>();
+
+		if (this.configs != null) {
+			configs.addAll(this.configs);
+		}
+
+		if (this.config != null) {
+			LOGGER.warn("'config' key is deprecated. Use 'configs' instead");
+			configs.add(config);
+		}
+
+		return configs;
 	}
 
 	/**
@@ -91,30 +101,33 @@ public class ServerRuntimeFactory {
 	 */
 	public ServerRuntimeFactory initConfigIfNotSet(String config) {
 
-		if (this.config == null) {
-			this.config = config;
+		if (config != null) {
+			if (this.config == null && (configs == null || configs.isEmpty())) {
+				this.configs = Collections.singletonList(config);
+			}
 		}
 
 		return this;
 	}
 
 	/**
-	 * @deprecated since 0.9 use {@link #setConfig(String)}.
-	 * @param project
-	 *            a name of the Cayenne config XML file.
-	 */
-	@Deprecated
-	public void setProject(String project) {
-		setConfig(project);
-	}
-
-	/**
 	 * @since 0.9
 	 * @param config
 	 *            a name of the Cayenne config XML file.
+	 * 
+	 * @deprecated since 0.14 in favor of {@link #setConfigs(Collection)}.
 	 */
 	public void setConfig(String config) {
 		this.config = config;
+	}
+
+	/**
+	 * @since 0.14
+	 * @param configs
+	 *            a collection of Cayenne config XML files.
+	 */
+	public void setConfigs(Collection<String> configs) {
+		this.configs = configs;
 	}
 
 	/**

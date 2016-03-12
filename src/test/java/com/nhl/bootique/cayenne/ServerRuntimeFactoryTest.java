@@ -1,5 +1,6 @@
 package com.nhl.bootique.cayenne;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -69,6 +70,25 @@ public class ServerRuntimeFactoryTest {
 	}
 
 	@Test
+	public void testCreateCayenneRuntime_Configs() {
+		ServerRuntimeFactory factory = new ServerRuntimeFactory();
+		factory.setDatasource("ds1");
+		factory.setConfigs(asList("cayenne-project2.xml", "cayenne-project.xml"));
+
+		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory, Collections.emptyList());
+		try {
+
+			DataDomain domain = runtime.getDataDomain();
+			assertNotNull(domain.getEntityResolver().getDbEntity("db_entity"));
+			assertNotNull(domain.getEntityResolver().getDbEntity("db_entity2"));
+
+		} finally {
+			runtime.shutdown();
+		}
+	}
+
+	@Deprecated
+	@Test
 	public void testCreateCayenneRuntime_Config() {
 		ServerRuntimeFactory factory = new ServerRuntimeFactory();
 		factory.setDatasource("ds1");
@@ -85,13 +105,32 @@ public class ServerRuntimeFactoryTest {
 		}
 	}
 
+	@Deprecated
+	@Test
+	public void testCreateCayenneRuntime_Config_Configs() {
+		ServerRuntimeFactory factory = new ServerRuntimeFactory();
+		factory.setDatasource("ds1");
+		
+		// should merge the old and the new style of config
+		factory.setConfig("cayenne-project.xml");
+		factory.setConfigs(asList("cayenne-project2.xml"));
+
+		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory, Collections.emptyList());
+		try {
+
+			DataDomain domain = runtime.getDataDomain();
+			assertNotNull(domain.getEntityResolver().getDbEntity("db_entity"));
+			assertNotNull(domain.getEntityResolver().getDbEntity("db_entity2"));
+
+		} finally {
+			runtime.shutdown();
+		}
+	}
+
 	@Test
 	public void testCreateCayenneRuntime_NoConfig() {
 		ServerRuntimeFactory factory = new ServerRuntimeFactory();
 		factory.setDatasource("ds1");
-
-		// explicitly set config to null...
-		factory.setConfig(null);
 
 		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory, Collections.emptyList());
 		try {
