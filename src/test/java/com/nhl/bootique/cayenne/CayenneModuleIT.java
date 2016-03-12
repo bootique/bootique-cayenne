@@ -88,8 +88,10 @@ public class CayenneModuleIT {
 	@Test
 	public void testNoBuilder() {
 
-		// per #11, making sure CayenneModule can be created via class reference.
-		BQRuntime runtime = Bootique.app(new String[0]).module(CayenneModule.class).module(cayenneDepsModule).runtime();
+		// per #11, making sure CayenneModule can be created via class
+		// reference.
+		BQRuntime runtime = Bootique.app(new String[0]).module(CayenneModule.class).module(cayenneDepsModule)
+				.createRuntime();
 		try {
 			ServerRuntime cayenneRuntime = runtime.getInstance(ServerRuntime.class);
 			DataDomain domain = cayenneRuntime.getDataDomain();
