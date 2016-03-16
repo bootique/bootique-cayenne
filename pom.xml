@@ -19,7 +19,7 @@
 
 	<properties>
 		<cayenne-version>4.0.M3</cayenne-version>
-		<bootique-version>0.14</bootique-version>
+		<bootique-version>0.15-SNAPSHOT</bootique-version>
 		<bootique-jdbc-version>0.10.1</bootique-jdbc-version>
 	</properties>
 
@@ -34,6 +34,11 @@
 			<dependency>
 				<groupId>com.nhl.bootique</groupId>
 				<artifactId>bootique</artifactId>
+				<version>${bootique-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.nhl.bootique</groupId>
+				<artifactId>bootique-test</artifactId>
 				<version>${bootique-version}</version>
 			</dependency>
 			<dependency>
@@ -96,6 +101,11 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.nhl.bootique</groupId>
+			<artifactId>bootique-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 
