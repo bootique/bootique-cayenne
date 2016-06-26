@@ -1,5 +1,6 @@
 ## 0.15
 
+* #13 Use single bootique-jdbc datasource as the default for Cayenne
 * #14 Upgrade to Bootique 0.18 
 
 ## 0.14
@@ -9,7 +10,7 @@
 ## 0.13
 
 * #7 Support for listeners/filters contribution
-* #8 Make Cayenne config "datasource" property optional - let Cayenne config its own DataSource
+* #8 Make Cayenne config "dataSourceName" property optional - let Cayenne config its own DataSource
 * #9 CayenneModule should be immutable ; configuration should happen via a builder
 
 ## 0.12:
