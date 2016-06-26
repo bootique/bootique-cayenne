@@ -1,3 +1,7 @@
+## 0.15
+
+* #14 Upgrade to Bootique 0.18 
+
 ## 0.14
 
 * #11 Exception when referencing CayenneModule by class
