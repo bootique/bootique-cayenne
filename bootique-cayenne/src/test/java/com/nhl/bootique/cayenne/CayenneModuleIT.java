@@ -9,6 +9,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class CayenneModuleIT {
 
@@ -29,5 +30,18 @@ public class CayenneModuleIT {
 
         // trigger a DB op
         SQLSelect.dataRowQuery("SELECT * FROM db_entity2").select(runtime.newContext());
+    }
+
+    @Test
+    public void testNoConfig() {
+
+        ServerRuntime runtime = testFactory.newRuntime()
+                .configurator(bootique -> bootique.modules(JdbcModule.class, CayenneModule.class))
+                .build("--config=classpath:noconfig.yml")
+                .getRuntime()
+                .getInstance(ServerRuntime.class);
+
+        DataDomain domain = runtime.getDataDomain();
+        assertTrue(domain.getEntityResolver().getDbEntities().isEmpty());
     }
 }
