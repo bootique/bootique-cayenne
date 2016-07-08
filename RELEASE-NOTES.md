@@ -1,5 +1,6 @@
 ## 0.15
 
+* #12 Make project-less ServerRuntime possible
 * #13 Use single bootique-jdbc datasource as the default for Cayenne
 * #14 Upgrade to Bootique 0.18 
 
