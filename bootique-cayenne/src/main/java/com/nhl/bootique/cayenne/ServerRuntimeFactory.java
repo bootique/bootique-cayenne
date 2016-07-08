@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 public class ServerRuntimeFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerRuntimeFactory.class);
+    private static final String DEFAULT_CONFIG = "cayenne-project.xml";
 
     private String name;
 
@@ -81,25 +82,13 @@ public class ServerRuntimeFactory {
             configs.add(config);
         }
 
-        return configs;
+        return configs.isEmpty() ? defaultConfigs() : configs;
     }
 
-    /**
-     * Conditionally initializes Cayenne config name if it is null.
-     *
-     * @param config a name of Cayenne XML config file to use if config was not
-     *               already initialized.
-     * @since 0.9
-     */
-    public ServerRuntimeFactory initConfigIfNotSet(String config) {
-
-        if (config != null) {
-            if (this.config == null && (configs == null || configs.isEmpty())) {
-                this.configs = Collections.singletonList(config);
-            }
-        }
-
-        return this;
+    Collection<String> defaultConfigs() {
+        return getClass().getClassLoader().getResource(DEFAULT_CONFIG) != null
+                ? Collections.singleton(DEFAULT_CONFIG)
+                : Collections.emptySet();
     }
 
     /**

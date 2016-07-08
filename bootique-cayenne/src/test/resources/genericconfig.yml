@@ -1,0 +1,11 @@
+jdbc:
+  ds:
+    url: jdbc:derby:target/derby/bqjdbc_fullconfig;create=true
+    driver: org.apache.derby.jdbc.EmbeddedDriver
+    initialSize: 1
+
+cayenne:
+  datasource: ds
+  createSchema: true
+  configs:
+    - com/nhl/bootique/cayenne/cayenne-generic.xml

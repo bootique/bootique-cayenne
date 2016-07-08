@@ -1,167 +1,130 @@
 package com.nhl.bootique.cayenne;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.sql.DataSource;
-
+import com.google.inject.Module;
+import com.google.inject.multibindings.Multibinder;
+import com.nhl.bootique.jdbc.JdbcModule;
+import com.nhl.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.CayenneDataObject;
 import org.apache.cayenne.DataChannelFilter;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.ObjectId;
 import org.apache.cayenne.annotation.PostPersist;
 import org.apache.cayenne.configuration.server.ServerRuntime;
-import org.apache.cayenne.datasource.DataSourceBuilder;
 import org.apache.cayenne.graph.GraphDiff;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.multibindings.Multibinder;
-import com.nhl.bootique.config.ConfigurationFactory;
-import com.nhl.bootique.jdbc.DataSourceFactory;
-import com.nhl.bootique.log.BootLogger;
-import com.nhl.bootique.shutdown.ShutdownManager;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class CayenneModule_ListenersIT {
 
-	private Module bqMocksModule;
+    @Rule
+    public BQTestFactory testFactory = new BQTestFactory();
 
-	@Before
-	public void before() {
-		DataSourceFactory mockDataSourceFactory = mock(DataSourceFactory.class);
-		when(mockDataSourceFactory.forName(anyString())).thenReturn(createDataSource());
+    private ServerRuntime runtimeWithListeners(Object... listeners) {
 
-		BootLogger mockBootLogger = mock(BootLogger.class);
-		ShutdownManager mockShutdownManager = mock(ShutdownManager.class);
+        Module listenersModule = (binder) -> {
 
-		ServerRuntimeFactory serverRuntimeFactory = new ServerRuntimeFactory();
-		serverRuntimeFactory.setDatasource("ds1");
-		serverRuntimeFactory.setCreateSchema(true);
+            Multibinder<Object> listenersBinder = CayenneModule.contributeListeners(binder);
+            Arrays.asList(listeners).forEach(l -> listenersBinder.addBinding().toInstance(l));
+        };
 
-		ConfigurationFactory mockConfigFactory = mock(ConfigurationFactory.class);
-		when(mockConfigFactory.config(ServerRuntimeFactory.class, "cayenne")).thenReturn(serverRuntimeFactory);
+        return testFactory.newRuntime()
+                .configurator(bootique -> bootique.modules(JdbcModule.class, CayenneModule.class).module(listenersModule))
+                .build("--config=classpath:genericconfig.yml")
+                .getRuntime()
+                .getInstance(ServerRuntime.class);
+    }
 
-		this.bqMocksModule = b -> {
-			b.bind(ConfigurationFactory.class).toInstance(mockConfigFactory);
-			b.bind(DataSourceFactory.class).toInstance(mockDataSourceFactory);
-			b.bind(BootLogger.class).toInstance(mockBootLogger);
-			b.bind(ShutdownManager.class).toInstance(mockShutdownManager);
-		};
-	}
+    private ServerRuntime runtimeWithFilters(DataChannelFilter... filters) {
 
-	private DataSource createDataSource() {
-		// TODO: shut down Derby...
-		return DataSourceBuilder.url("jdbc:derby:target/derby/CayenneModule_ListenersIT;create=true")
-				.driver("org.apache.derby.jdbc.EmbeddedDriver").build();
-	}
+        Module filtersModule = (binder) -> {
 
-	private ServerRuntime runtimeWithListeners(Object... listeners) {
-		CayenneModule cayenneModule = CayenneModule.builder().configName("com/nhl/bootique/cayenne/cayenne-generic.xml")
-				.build();
+            Multibinder<DataChannelFilter> filterBinder = CayenneModule.contributeFilters(binder);
+            Arrays.asList(filters).forEach(f -> filterBinder.addBinding().toInstance(f));
+        };
 
-		Module listenersModule = (binder) -> {
+        return testFactory.newRuntime()
+                .configurator(bootique -> bootique.modules(JdbcModule.class, CayenneModule.class).module(filtersModule))
+                .build("--config=classpath:genericconfig.yml")
+                .getRuntime()
+                .getInstance(ServerRuntime.class);
+    }
 
-			Multibinder<Object> listenersBinder = CayenneModule.contributeListeners(binder);
-			Arrays.asList(listeners).forEach(l -> listenersBinder.addBinding().toInstance(l));
-		};
+    @Test
+    public void testListeners() {
 
-		Injector i = Guice.createInjector(cayenneModule, listenersModule, bqMocksModule);
+        L1 l1 = new L1();
 
-		return i.getInstance(ServerRuntime.class);
-	}
+        CayenneDataObject o1 = new CayenneDataObject();
+        o1.setObjectId(new ObjectId("T1"));
+        o1.writeProperty("name", "n" + 1);
 
-	private ServerRuntime runtimeWithFilters(DataChannelFilter... filters) {
-		CayenneModule cayenneModule = CayenneModule.builder().configName("com/nhl/bootique/cayenne/cayenne-generic.xml")
-				.build();
+        CayenneDataObject o2 = new CayenneDataObject();
+        o2.setObjectId(new ObjectId("T1"));
+        o2.writeProperty("name", "n" + 2);
 
-		Module filtersModule = (binder) -> {
+        ServerRuntime runtime = runtimeWithListeners(l1);
+        try {
+            ObjectContext c = runtime.newContext();
+            c.registerNewObject(o1);
+            c.registerNewObject(o2);
+            c.commitChanges();
 
-			Multibinder<DataChannelFilter> filterBinder = CayenneModule.contributeFilters(binder);
-			Arrays.asList(filters).forEach(f -> filterBinder.addBinding().toInstance(f));
-		};
+        } finally {
+            runtime.shutdown();
+        }
 
-		Injector i = Guice.createInjector(cayenneModule, filtersModule, bqMocksModule);
+        assertEquals(2, l1.postPersisted.size());
+        assertTrue(l1.postPersisted.contains(o1));
+        assertTrue(l1.postPersisted.contains(o2));
+    }
 
-		return i.getInstance(ServerRuntime.class);
-	}
+    @Test
+    public void testFilters() {
 
-	@Test
-	public void testListeners() {
+        DataChannelFilter f = mock(DataChannelFilter.class);
+        when(f.onSync(any(), any(), anyInt(), any())).thenReturn(mock(GraphDiff.class));
 
-		L1 l1 = new L1();
+        CayenneDataObject o1 = new CayenneDataObject();
+        o1.setObjectId(new ObjectId("T1"));
+        o1.writeProperty("name", "n" + 1);
 
-		CayenneDataObject o1 = new CayenneDataObject();
-		o1.setObjectId(new ObjectId("T1"));
-		o1.writeProperty("name", "n" + 1);
+        CayenneDataObject o2 = new CayenneDataObject();
+        o2.setObjectId(new ObjectId("T1"));
+        o2.writeProperty("name", "n" + 2);
 
-		CayenneDataObject o2 = new CayenneDataObject();
-		o2.setObjectId(new ObjectId("T1"));
-		o2.writeProperty("name", "n" + 2);
+        ServerRuntime runtime = runtimeWithFilters(f);
+        try {
+            ObjectContext c = runtime.newContext();
+            c.registerNewObject(o1);
+            c.registerNewObject(o2);
+            c.commitChanges();
 
-		ServerRuntime runtime = runtimeWithListeners(l1);
-		try {
-			ObjectContext c = runtime.newContext();
-			c.registerNewObject(o1);
-			c.registerNewObject(o2);
-			c.commitChanges();
+        } finally {
+            runtime.shutdown();
+        }
 
-		} finally {
-			runtime.shutdown();
-		}
-
-		assertEquals(2, l1.postPersisted.size());
-		assertTrue(l1.postPersisted.contains(o1));
-		assertTrue(l1.postPersisted.contains(o2));
-	}
-
-	@Test
-	public void testFilters() {
-
-		DataChannelFilter f = mock(DataChannelFilter.class);
-		when(f.onSync(any(), any(), anyInt(), any())).thenReturn(mock(GraphDiff.class));
-
-		CayenneDataObject o1 = new CayenneDataObject();
-		o1.setObjectId(new ObjectId("T1"));
-		o1.writeProperty("name", "n" + 1);
-
-		CayenneDataObject o2 = new CayenneDataObject();
-		o2.setObjectId(new ObjectId("T1"));
-		o2.writeProperty("name", "n" + 2);
-
-		ServerRuntime runtime = runtimeWithFilters(f);
-		try {
-			ObjectContext c = runtime.newContext();
-			c.registerNewObject(o1);
-			c.registerNewObject(o2);
-			c.commitChanges();
-
-		} finally {
-			runtime.shutdown();
-		}
-
-		verify(f).onSync(any(), any(), anyInt(), any());
-	}
+        verify(f).onSync(any(), any(), anyInt(), any());
+    }
 }
 
 class L1 {
 
-	List<Object> postPersisted = new ArrayList<>();
+    List<Object> postPersisted = new ArrayList<>();
 
-	@PostPersist
-	public void postPersist(Object o) {
-		postPersisted.add(o);
-	}
+    @PostPersist
+    public void postPersist(Object o) {
+        postPersisted.add(o);
+    }
 }
