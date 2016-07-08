@@ -1,68 +1,122 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.nhl.bootique.parent</groupId>
-		<artifactId>bootique-parent</artifactId>
-		<version>0.11</version>
-	</parent>
+    <parent>
+        <groupId>com.nhl.bootique.parent</groupId>
+        <artifactId>bootique-parent</artifactId>
+        <version>0.11</version>
+    </parent>
 
-	<groupId>com.nhl.bootique.cayenne</groupId>
-	<artifactId>bootique-cayenne-parent</artifactId>
-	<version>0.15-SNAPSHOT</version>
-	<packaging>pom</packaging>
+    <groupId>com.nhl.bootique.cayenne</groupId>
+    <artifactId>bootique-cayenne-parent</artifactId>
+    <version>0.15-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-	<name>bootique-cayenne-parent: parent of Bootique/Cayenne integration modules</name>
-	<description>
-		Parent POM of Bootique/Cayenne integration modules.
-	</description>
+    <name>bootique-cayenne-parent: parent of Bootique/Cayenne integration modules</name>
+    <description>
+        Parent POM of Bootique/Cayenne integration modules.
+    </description>
 
-	<modules>
-		<module>bootique-cayenne</module>
-	</modules>
+    <modules>
+        <module>bootique-cayenne</module>
+        <module>bootique-cayenne-default-it</module>
+    </modules>
 
-	<properties>
-		<cayenne-version>4.0.M3</cayenne-version>
-		<bootique-version>0.18-SNAPSHOT</bootique-version>
-		<bootique-jdbc-version>0.10.1</bootique-jdbc-version>
-	</properties>
+    <properties>
+        <cayenne-version>4.0.M3</cayenne-version>
+        <bootique-version>0.18-SNAPSHOT</bootique-version>
+        <bootique-jdbc-version>0.10.1</bootique-jdbc-version>
+    </properties>
 
-	<scm>
-		<developerConnection>scm:git:ssh://git@github.com/nhl/bootique-cayenne</developerConnection>
-		<url>https://github.com/nhl/bootique-cayenne</url>
-		<tag>HEAD</tag>
-	</scm>
+    <scm>
+        <developerConnection>scm:git:ssh://git@github.com/nhl/bootique-cayenne</developerConnection>
+        <url>https://github.com/nhl/bootique-cayenne</url>
+        <tag>HEAD</tag>
+    </scm>
 
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-failsafe-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.nhl.bootique</groupId>
+                <artifactId>bootique</artifactId>
+                <version>${bootique-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nhl.bootique</groupId>
+                <artifactId>bootique-test</artifactId>
+                <version>${bootique-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nhl.bootique.jdbc</groupId>
+                <artifactId>bootique-jdbc</artifactId>
+                <version>${bootique-jdbc-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cayenne</groupId>
+                <artifactId>cayenne-server</artifactId>
+                <version>${cayenne-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cayenne</groupId>
+                <artifactId>cayenne-java8</artifactId>
+                <version>${cayenne-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.7.13</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <!-- Should match the SLF version coming from Logback -->
+                <version>1.7.7</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.derby</groupId>
+                <artifactId>derby</artifactId>
+                <version>10.12.1.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
-	<!-- Optional profile used to sign artifacts -->
-	<profiles>
-		<profile>
-			<id>gpg</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- Optional profile used to sign artifacts -->
+    <profiles>
+        <profile>
+            <id>gpg</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

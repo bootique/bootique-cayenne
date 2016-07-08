@@ -1,5 +1,14 @@
 package com.nhl.bootique.cayenne;
 
+import com.nhl.bootique.jdbc.DataSourceFactory;
+import org.apache.cayenne.access.DataDomain;
+import org.apache.cayenne.configuration.server.ServerRuntime;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.sql.DataSource;
+import java.util.Collections;
+
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -7,17 +16,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import java.util.Collections;
-
-import javax.sql.DataSource;
-
-import org.apache.cayenne.access.DataDomain;
-import org.apache.cayenne.configuration.server.ServerRuntime;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.nhl.bootique.jdbc.DataSourceFactory;
 
 public class ServerRuntimeFactoryTest {
 
@@ -51,6 +49,7 @@ public class ServerRuntimeFactoryTest {
 	@Test
 	public void testCreateCayenneRuntime_Name() {
 		ServerRuntimeFactory factory = new ServerRuntimeFactory();
+		factory.setConfigs(asList("cayenne-project1.xml"));
 		factory.setDatasource("ds1");
 		factory.setName("me");
 
@@ -73,7 +72,7 @@ public class ServerRuntimeFactoryTest {
 	public void testCreateCayenneRuntime_Configs() {
 		ServerRuntimeFactory factory = new ServerRuntimeFactory();
 		factory.setDatasource("ds1");
-		factory.setConfigs(asList("cayenne-project2.xml", "cayenne-project.xml"));
+		factory.setConfigs(asList("cayenne-project2.xml", "cayenne-project1.xml"));
 
 		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory, Collections.emptyList());
 		try {
@@ -92,7 +91,7 @@ public class ServerRuntimeFactoryTest {
 	public void testCreateCayenneRuntime_Config() {
 		ServerRuntimeFactory factory = new ServerRuntimeFactory();
 		factory.setDatasource("ds1");
-		factory.setConfig("cayenne-project.xml");
+		factory.setConfig("cayenne-project1.xml");
 
 		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory, Collections.emptyList());
 		try {
@@ -112,7 +111,7 @@ public class ServerRuntimeFactoryTest {
 		factory.setDatasource("ds1");
 		
 		// should merge the old and the new style of config
-		factory.setConfig("cayenne-project.xml");
+		factory.setConfig("cayenne-project1.xml");
 		factory.setConfigs(asList("cayenne-project2.xml"));
 
 		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory, Collections.emptyList());

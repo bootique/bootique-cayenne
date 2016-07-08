@@ -1,0 +1,8 @@
+jdbc:
+  ds:
+    url: jdbc:derby:target/derby/bqjdbc_noconfig;create=true
+    driver: org.apache.derby.jdbc.EmbeddedDriver
+    initialSize: 1
+
+cayenne:
+  createSchema: true

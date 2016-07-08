@@ -14,58 +14,6 @@
 	<name>bootique-cayenne: Cayenne Integration Bundle for Bootique</name>
 	<description>Provides Apache Cayenne integration with Bootique</description>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.nhl.bootique</groupId>
-				<artifactId>bootique</artifactId>
-				<version>${bootique-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.nhl.bootique</groupId>
-				<artifactId>bootique-test</artifactId>
-				<version>${bootique-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.nhl.bootique.jdbc</groupId>
-				<artifactId>bootique-jdbc</artifactId>
-				<version>${bootique-jdbc-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.cayenne</groupId>
-				<artifactId>cayenne-server</artifactId>
-				<version>${cayenne-version}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.cayenne</groupId>
-				<artifactId>cayenne-java8</artifactId>
-				<version>${cayenne-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-simple</artifactId>
-				<version>1.7.13</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>jcl-over-slf4j</artifactId>
-				<!-- Should match the SLF version coming from Logback -->
-				<version>1.7.7</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.derby</groupId>
-				<artifactId>derby</artifactId>
-				<version>10.12.1.1</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
 	<dependencies>
 		<!-- Unit test dependencies -->
 		<dependency>
