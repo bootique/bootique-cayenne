@@ -19,7 +19,10 @@ public class ServerRuntimeFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerRuntimeFactory.class);
 
     private String name;
+
+    @Deprecated
     private String config;
+
     private Collection<String> configs;
     private String datasource;
     private boolean createSchema;

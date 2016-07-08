@@ -49,6 +49,7 @@ public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
 
     protected DataSource cayenneDataSource(DataNodeDescriptor nodeDescriptor) throws Exception {
 
+        // trying to guess whether Cayenne will be able to provide a DataSource without our help...
         if (shouldConfigureDataSourceFromProperties(nodeDescriptor)
                 || nodeDescriptor.getDataSourceFactoryType() != null
                 || nodeDescriptor.getDataSourceDescriptor() != null) {
