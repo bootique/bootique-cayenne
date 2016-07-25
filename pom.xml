@@ -26,7 +26,7 @@
 
     <properties>
         <cayenne-version>4.0.M3</cayenne-version>
-        <bootique-version>0.18-SNAPSHOT</bootique-version>
+        <bootique-version>0.18</bootique-version>
         <bootique-jdbc-version>0.10.1</bootique-jdbc-version>
     </properties>
 
