@@ -1,3 +1,7 @@
+## 0.16
+
+* #18 Move to io.bootique namespace 
+
 ## 0.15
 
 * #12 Make project-less ServerRuntime possible

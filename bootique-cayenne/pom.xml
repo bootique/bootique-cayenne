@@ -3,7 +3,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.nhl.bootique.cayenne</groupId>
+		<groupId>io.bootique.cayenne</groupId>
 		<artifactId>bootique-cayenne-parent</artifactId>
 		<version>0.16-SNAPSHOT</version>
 	</parent>
@@ -37,19 +37,19 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.nhl.bootique</groupId>
+			<groupId>io.bootique</groupId>
 			<artifactId>bootique-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 
 		<!-- Compile dependencies -->
 		<dependency>
-			<groupId>com.nhl.bootique</groupId>
+			<groupId>io.bootique</groupId>
 			<artifactId>bootique</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.nhl.bootique.jdbc</groupId>
+			<groupId>io.bootique.jdbc</groupId>
 			<artifactId>bootique-jdbc</artifactId>
 			<scope>compile</scope>
 		</dependency>

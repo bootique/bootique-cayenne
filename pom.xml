@@ -3,12 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.nhl.bootique.parent</groupId>
+        <groupId>io.bootique.parent</groupId>
         <artifactId>bootique-parent</artifactId>
-        <version>0.11</version>
+        <version>0.12</version>
     </parent>
 
-    <groupId>com.nhl.bootique.cayenne</groupId>
+    <groupId>io.bootique.cayenne</groupId>
     <artifactId>bootique-cayenne-parent</artifactId>
     <version>0.16-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -25,30 +25,30 @@
 
     <properties>
         <cayenne-version>4.0.M3</cayenne-version>
-        <bootique-version>0.18</bootique-version>
-        <bootique-jdbc-version>0.10.1</bootique-jdbc-version>
+        <bootique-version>0.19-SNAPSHOT</bootique-version>
+        <bootique-jdbc-version>0.11-SNAPSHOT</bootique-jdbc-version>
     </properties>
 
     <scm>
-        <developerConnection>scm:git:ssh://git@github.com/nhl/bootique-cayenne</developerConnection>
-        <url>https://github.com/nhl/bootique-cayenne</url>
+        <developerConnection>scm:git:ssh://git@github.com/bootique/bootique-cayenne</developerConnection>
+        <url>https://github.com/bootique/bootique-cayenne</url>
         <tag>HEAD</tag>
     </scm>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.nhl.bootique</groupId>
+                <groupId>io.bootique</groupId>
                 <artifactId>bootique</artifactId>
                 <version>${bootique-version}</version>
             </dependency>
             <dependency>
-                <groupId>com.nhl.bootique</groupId>
+                <groupId>io.bootique</groupId>
                 <artifactId>bootique-test</artifactId>
                 <version>${bootique-version}</version>
             </dependency>
             <dependency>
-                <groupId>com.nhl.bootique.jdbc</groupId>
+                <groupId>io.bootique.jdbc</groupId>
                 <artifactId>bootique-jdbc</artifactId>
                 <version>${bootique-jdbc-version}</version>
             </dependency>
