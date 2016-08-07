@@ -9,8 +9,8 @@ branches:
 
 script: mvn clean deploy javadoc:javadoc --settings travis_settings.xml
 
-# travis encrypt -r nhl/bootique-cayenne "CI_DEPLOY_USERNAME='name'"
-# travis encrypt -r nhl/bootique-cayenne "CI_DEPLOY_PASSWORD='password'"
+# travis encrypt -r bootique/bootique-cayenne "CI_DEPLOY_USERNAME='name'"
+# travis encrypt -r bootique/bootique-cayenne "CI_DEPLOY_PASSWORD='password'"
 env:
   global:
     - secure: "D+4rU4vmLJXoN+44OecjMy8mKgT5oMg7k1JdHuuGBlMKufshOlz6TukmbdHtxn8UQznxxU6MpSF1oM9WUCl3ACYpP/SSekPbZJenHRgFqa19FlMmJebik1Qnsk0Fwb1lp/sM9R3fdWysZiNMDyo4EfgbgrcUymE/G+jFMo2AmVXg0D7Pk+rqfc/SZN29o19lkm08Bb12wratfdZTT3YPd6GgNh85DL6gHtST6YB00pB4Ni0XTZ1CLkFG2Om3RbhESk2AaKIi0MCvo3JHsoKytl+C8hLlpklt1hLJTpntoD4shJ3gq2pBSS3kI/ls+avzxpuQY+j4FUt0pzxOd4z2NZDXCXcT/90+bQ8c9UCMrIVz3zQWKaIX540wMv/D1y3LAXvR9oj6GfL/MKf3kj8SUvSOWLpVChDBif2vrpKmcA3win0JuZz5JjVGqUgXYAe34aTFeSvRSiE5+WOai/M95pEtowtUJuWwCYAehcQ/6E/o7zttHxhNIHyzqRj+WP21j+aQ8ID7PkzZZC2CYX4m3WavV1L8GOgrvgpv1NDuAXWc09SZ3emS6xmV+4fMlPlPu4+ysCx+NcQDjYtlI7aScVVKlhQ8cLoH9eHeZloWvx/6SpATEWNv7BXou0n/ZBaekkctAnwC2u9DMdJ+ZrmnLWZzDKhKR5dmBwKZflfL2wo="
