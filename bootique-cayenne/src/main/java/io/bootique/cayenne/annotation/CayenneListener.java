@@ -1,4 +1,4 @@
-package com.nhl.bootique.cayenne.annotation;
+package io.bootique.cayenne.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

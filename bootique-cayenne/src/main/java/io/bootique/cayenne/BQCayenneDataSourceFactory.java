@@ -1,7 +1,7 @@
-package com.nhl.bootique.cayenne;
+package io.bootique.cayenne;
 
 
-import com.nhl.bootique.jdbc.DataSourceFactory;
+import io.bootique.jdbc.DataSourceFactory;
 import org.apache.cayenne.configuration.DataNodeDescriptor;
 import org.apache.cayenne.configuration.server.DelegatingDataSourceFactory;
 
@@ -11,7 +11,7 @@ import java.util.Collection;
 public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
 
     private String dataSourceName;
-    private com.nhl.bootique.jdbc.DataSourceFactory bqDataSourceFactory;
+    private DataSourceFactory bqDataSourceFactory;
 
     public BQCayenneDataSourceFactory(DataSourceFactory bqDataSourceFactory,
                                       String dataSourceName) {

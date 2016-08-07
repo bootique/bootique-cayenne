@@ -1,9 +1,9 @@
-package com.nhl.bootique.cayenne;
+package io.bootique.cayenne;
 
 import com.google.inject.Module;
 import com.google.inject.multibindings.Multibinder;
-import com.nhl.bootique.jdbc.JdbcModule;
-import com.nhl.bootique.test.junit.BQTestFactory;
+import io.bootique.jdbc.JdbcModule;
+import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.CayenneDataObject;
 import org.apache.cayenne.DataChannelFilter;
 import org.apache.cayenne.ObjectContext;

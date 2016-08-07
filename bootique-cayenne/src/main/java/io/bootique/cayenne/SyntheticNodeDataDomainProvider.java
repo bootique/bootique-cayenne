@@ -1,4 +1,4 @@
-package com.nhl.bootique.cayenne;
+package io.bootique.cayenne;
 
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.access.DataNode;

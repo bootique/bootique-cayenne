@@ -1,7 +1,7 @@
-package com.nhl.bootique.cayenne;
+package io.bootique.cayenne;
 
 import com.google.inject.Module;
-import com.nhl.bootique.BQModuleProvider;
+import io.bootique.BQModuleProvider;
 
 public class CayenneModuleProvider implements BQModuleProvider {
 

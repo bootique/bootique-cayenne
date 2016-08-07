@@ -1,7 +1,7 @@
-package com.nhl.bootique.cayenne;
+package io.bootique.cayenne;
 
-import com.nhl.bootique.jdbc.JdbcModule;
-import com.nhl.bootique.test.junit.BQTestFactory;
+import io.bootique.jdbc.JdbcModule;
+import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.query.SQLSelect;

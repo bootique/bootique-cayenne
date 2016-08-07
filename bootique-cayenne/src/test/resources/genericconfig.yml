@@ -8,4 +8,4 @@ cayenne:
   datasource: ds
   createSchema: true
   configs:
-    - com/nhl/bootique/cayenne/cayenne-generic.xml
+    - io/bootique/cayenne/cayenne-generic.xml

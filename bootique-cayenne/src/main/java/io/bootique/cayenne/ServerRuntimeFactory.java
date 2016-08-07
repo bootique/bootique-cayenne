@@ -1,6 +1,6 @@
-package com.nhl.bootique.cayenne;
+package io.bootique.cayenne;
 
-import com.nhl.bootique.jdbc.DataSourceFactory;
+import io.bootique.jdbc.DataSourceFactory;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.access.dbsync.CreateIfNoSchemaStrategy;
 import org.apache.cayenne.access.dbsync.SchemaUpdateStrategy;
