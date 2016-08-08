@@ -1,5 +1,6 @@
 ## 0.16
 
+* #16 Support for contributing Cayenne modules
 * #18 Move to io.bootique namespace 
 
 ## 0.15

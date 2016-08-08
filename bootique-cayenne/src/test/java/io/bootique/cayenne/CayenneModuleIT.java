@@ -1,5 +1,6 @@
 package io.bootique.cayenne;
 
+import com.google.inject.Module;
 import io.bootique.jdbc.JdbcModule;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.access.DataDomain;
@@ -9,6 +10,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 public class CayenneModuleIT {
@@ -43,5 +45,25 @@ public class CayenneModuleIT {
 
         DataDomain domain = runtime.getDataDomain();
         assertTrue(domain.getEntityResolver().getDbEntities().isEmpty());
+    }
+
+    @Test
+    public void testContributeModules() {
+
+        Module guiceModule = b -> {
+            org.apache.cayenne.di.Module cayenneModule = (cb) -> {
+                cb.bind(CayenneModuleIT.class).toInstance(this);
+            };
+            CayenneModule.contribueModules(b).addBinding().toInstance(cayenneModule);
+        };
+
+        ServerRuntime runtime = testFactory.newRuntime()
+                .configurator(bootique ->
+                        bootique.modules(JdbcModule.class, CayenneModule.class).module(guiceModule))
+                .build("--config=classpath:fullconfig.yml")
+                .getRuntime()
+                .getInstance(ServerRuntime.class);
+
+        assertSame(this, runtime.getInjector().getInstance(CayenneModuleIT.class));
     }
 }

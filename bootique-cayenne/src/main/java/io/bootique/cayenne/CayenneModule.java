@@ -54,11 +54,23 @@ public class CayenneModule extends ConfigModule {
         return Multibinder.newSetBinder(binder, Object.class, CayenneListener.class);
     }
 
+    /**
+     * Returns a Guice {@link Multibinder} to add custom Cayenne DI modules.
+     *
+     * @since 0.16
+     * @param binder DI binder passed to the Module that invokes this method.
+     * @return returns a {@link Multibinder} for Cayenne DI modules.
+     */
+    public static Multibinder<Module> contribueModules(Binder binder) {
+        return Multibinder.newSetBinder(binder, Module.class);
+    }
+
     @Override
     public void configure(Binder binder) {
         // trigger extension points creation
         CayenneModule.contributeListeners(binder);
         CayenneModule.contributeFilters(binder);
+        CayenneModule.contribueModules(binder);
     }
 
     @Provides
@@ -67,9 +79,10 @@ public class CayenneModule extends ConfigModule {
                                                  DataSourceFactory dataSourceFactory,
                                                  BootLogger bootLogger,
                                                  ShutdownManager shutdownManager,
+                                                 Set<Module> customModules,
                                                  @CayenneListener Set<Object> listeners, Set<DataChannelFilter> filters) {
 
-        Collection<Module> extras = extraCayenneModules(filters);
+        Collection<Module> extras = extraCayenneModules(customModules, filters);
         ServerRuntime runtime = configFactory.config(ServerRuntimeFactory.class, configPrefix)
                 .createCayenneRuntime(dataSourceFactory, extras);
 
@@ -88,9 +101,10 @@ public class CayenneModule extends ConfigModule {
         return runtime;
     }
 
-    protected Collection<Module> extraCayenneModules(Set<DataChannelFilter> filters) {
+    protected Collection<Module> extraCayenneModules(Set<Module> customModules, Set<DataChannelFilter> filters) {
         Collection<Module> extras = new ArrayList<>();
         extras.add(new CayenneJava8Module());
+        extras.addAll(customModules);
 
         if (!filters.isEmpty()) {
             extras.add(cayenneBinder -> {
