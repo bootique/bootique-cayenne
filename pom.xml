@@ -25,9 +25,23 @@
 
     <properties>
         <cayenne-version>4.0.M3</cayenne-version>
-        <bootique-version>0.19-SNAPSHOT</bootique-version>
-        <bootique-jdbc-version>0.11-SNAPSHOT</bootique-jdbc-version>
+        <bootique-version>0.19</bootique-version>
+        <bootique-jdbc-version>0.11</bootique-jdbc-version>
     </properties>
+
+    <scm>
+        <developerConnection>scm:git:ssh://git@github.com/bootique/bootique-cayenne</developerConnection>
+        <url>https://github.com/bootique/bootique-cayenne</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>bintray-bootique-releases</id>
+            <name>bintray-bootique-releases</name>
+            <url>https://api.bintray.com/maven/bootique/releases/bootique-cayenne/;publish=1</url>
+        </repository>
+    </distributionManagement>
 
     <dependencyManagement>
         <dependencies>
