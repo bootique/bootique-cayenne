@@ -57,11 +57,24 @@ public class CayenneModule extends ConfigModule {
     /**
      * Returns a Guice {@link Multibinder} to add custom Cayenne DI modules.
      *
-     * @since 0.16
      * @param binder DI binder passed to the Module that invokes this method.
      * @return returns a {@link Multibinder} for Cayenne DI modules.
+     * @since 0.16
+     * @deprecated since 0.17. There's a typo in the name. Use {@link #contributeModules(Binder)} instead.
      */
+    @Deprecated
     public static Multibinder<Module> contribueModules(Binder binder) {
+        return contributeModules(binder);
+    }
+
+    /**
+     * Returns a Guice {@link Multibinder} to add custom Cayenne DI modules.
+     *
+     * @param binder DI binder passed to the Module that invokes this method.
+     * @return returns a {@link Multibinder} for Cayenne DI modules.
+     * @since 0.17
+     */
+    public static Multibinder<Module> contributeModules(Binder binder) {
         return Multibinder.newSetBinder(binder, Module.class);
     }
 
@@ -70,7 +83,7 @@ public class CayenneModule extends ConfigModule {
         // trigger extension points creation
         CayenneModule.contributeListeners(binder);
         CayenneModule.contributeFilters(binder);
-        CayenneModule.contribueModules(binder);
+        CayenneModule.contributeModules(binder);
     }
 
     @Provides

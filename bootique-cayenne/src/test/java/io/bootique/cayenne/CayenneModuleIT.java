@@ -54,7 +54,7 @@ public class CayenneModuleIT {
             org.apache.cayenne.di.Module cayenneModule = (cb) -> {
                 cb.bind(CayenneModuleIT.class).toInstance(this);
             };
-            CayenneModule.contribueModules(b).addBinding().toInstance(cayenneModule);
+            CayenneModule.contributeModules(b).addBinding().toInstance(cayenneModule);
         };
 
         ServerRuntime runtime = testFactory.newRuntime()
