@@ -1,3 +1,7 @@
+## 0.17
+
+* #19 Upgrade to Bootique 0.20
+
 ## 0.16
 
 * #16 Support for contributing Cayenne modules
