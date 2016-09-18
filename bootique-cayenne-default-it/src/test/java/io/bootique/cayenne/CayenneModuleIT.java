@@ -18,9 +18,9 @@ public class CayenneModuleIT {
     @Test
     public void testDefaultConfig() {
 
-        ServerRuntime runtime = testFactory.newRuntime()
-                .configurator(bootique -> bootique.modules(JdbcModule.class, CayenneModule.class))
-                .build("--config=classpath:defaultconfig.yml")
+        ServerRuntime runtime = testFactory.app("--config=classpath:defaultconfig.yml")
+                .modules(JdbcModule.class, CayenneModule.class)
+                .createRuntime()
                 .getRuntime()
                 .getInstance(ServerRuntime.class);
 

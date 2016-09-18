@@ -21,9 +21,9 @@ public class CayenneModuleIT {
     @Test
     public void testFullConfig() {
 
-        ServerRuntime runtime = testFactory.newRuntime()
-                .configurator(bootique -> bootique.modules(JdbcModule.class, CayenneModule.class))
-                .build("--config=classpath:fullconfig.yml")
+        ServerRuntime runtime = testFactory.app("--config=classpath:fullconfig.yml")
+                .modules(JdbcModule.class, CayenneModule.class)
+                .createRuntime()
                 .getRuntime()
                 .getInstance(ServerRuntime.class);
 
@@ -37,9 +37,9 @@ public class CayenneModuleIT {
     @Test
     public void testNoConfig() {
 
-        ServerRuntime runtime = testFactory.newRuntime()
-                .configurator(bootique -> bootique.modules(JdbcModule.class, CayenneModule.class))
-                .build("--config=classpath:noconfig.yml")
+        ServerRuntime runtime = testFactory.app("--config=classpath:noconfig.yml")
+                .modules(JdbcModule.class, CayenneModule.class)
+                .createRuntime()
                 .getRuntime()
                 .getInstance(ServerRuntime.class);
 
@@ -57,10 +57,9 @@ public class CayenneModuleIT {
             CayenneModule.contributeModules(b).addBinding().toInstance(cayenneModule);
         };
 
-        ServerRuntime runtime = testFactory.newRuntime()
-                .configurator(bootique ->
-                        bootique.modules(JdbcModule.class, CayenneModule.class).module(guiceModule))
-                .build("--config=classpath:fullconfig.yml")
+        ServerRuntime runtime = testFactory.app("--config=classpath:fullconfig.yml")
+                .modules(JdbcModule.class, CayenneModule.class).module(guiceModule)
+                .createRuntime()
                 .getRuntime()
                 .getInstance(ServerRuntime.class);
 

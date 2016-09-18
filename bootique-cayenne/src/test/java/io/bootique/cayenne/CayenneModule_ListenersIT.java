@@ -39,9 +39,9 @@ public class CayenneModule_ListenersIT {
             Arrays.asList(listeners).forEach(l -> listenersBinder.addBinding().toInstance(l));
         };
 
-        return testFactory.newRuntime()
-                .configurator(bootique -> bootique.modules(JdbcModule.class, CayenneModule.class).module(listenersModule))
-                .build("--config=classpath:genericconfig.yml")
+        return testFactory.app("--config=classpath:genericconfig.yml")
+                .modules(JdbcModule.class, CayenneModule.class).module(listenersModule)
+                .createRuntime()
                 .getRuntime()
                 .getInstance(ServerRuntime.class);
     }
@@ -54,9 +54,9 @@ public class CayenneModule_ListenersIT {
             Arrays.asList(filters).forEach(f -> filterBinder.addBinding().toInstance(f));
         };
 
-        return testFactory.newRuntime()
-                .configurator(bootique -> bootique.modules(JdbcModule.class, CayenneModule.class).module(filtersModule))
-                .build("--config=classpath:genericconfig.yml")
+        return testFactory.app("--config=classpath:genericconfig.yml")
+                .modules(JdbcModule.class, CayenneModule.class).module(filtersModule)
+                .createRuntime()
                 .getRuntime()
                 .getInstance(ServerRuntime.class);
     }
