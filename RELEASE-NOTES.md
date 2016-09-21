@@ -1,6 +1,7 @@
 ## 0.17
 
 * #19 Upgrade to Bootique 0.20
+* #20 bootique-cayenne-test
 
 ## 0.16
 
