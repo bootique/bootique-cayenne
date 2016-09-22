@@ -93,7 +93,8 @@ public class CayenneModule extends ConfigModule {
                                                  BootLogger bootLogger,
                                                  ShutdownManager shutdownManager,
                                                  Set<Module> customModules,
-                                                 @CayenneListener Set<Object> listeners, Set<DataChannelFilter> filters) {
+                                                 @CayenneListener Set<Object> listeners,
+                                                 Set<DataChannelFilter> filters) {
 
         Collection<Module> extras = extraCayenneModules(customModules, filters);
         ServerRuntime runtime = configFactory.config(ServerRuntimeFactory.class, configPrefix)
