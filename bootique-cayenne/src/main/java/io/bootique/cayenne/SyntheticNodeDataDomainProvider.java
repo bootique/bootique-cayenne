@@ -29,6 +29,23 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
 
         DataDomain dataDomain = super.createAndInitDataDomain();
 
+        // no nodes... add a synthetic node... it will become the default
+        if (dataDomain.getDataNodes().isEmpty()) {
+
+            DataChannelDescriptor channelDescriptor = new DataChannelDescriptor();
+
+            DataNodeDescriptor nodeDescriptor = new DataNodeDescriptor(createSyntheticDataNodeName(dataDomain));
+
+            for (DataMap map : dataDomain.getDataMaps()) {
+                nodeDescriptor.getDataMapNames().add(map.getName());
+            }
+
+            nodeDescriptor.setDataChannelDescriptor(channelDescriptor);
+
+            DataNode node = addDataNode(dataDomain, nodeDescriptor);
+            dataDomain.setDefaultNode(node);
+        }
+
         // add DataMaps that were explicitly configured in BQ config
         if (!dataMapConfigs.isEmpty()) {
 
@@ -56,22 +73,6 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
 
                 addDataNode(dataDomain, nodeDescriptor);
             }
-
-            // no nodes... add a synthetic node... it will become the default
-        } else if (dataDomain.getDataNodes().isEmpty()) {
-
-            DataChannelDescriptor channelDescriptor = new DataChannelDescriptor();
-
-            DataNodeDescriptor nodeDescriptor = new DataNodeDescriptor(createSyntheticDataNodeName(dataDomain));
-
-            for (DataMap map : dataDomain.getDataMaps()) {
-                nodeDescriptor.getDataMapNames().add(map.getName());
-            }
-
-            nodeDescriptor.setDataChannelDescriptor(channelDescriptor);
-
-            DataNode node = addDataNode(dataDomain, nodeDescriptor);
-            dataDomain.setDefaultNode(node);
         }
 
         return dataDomain;
