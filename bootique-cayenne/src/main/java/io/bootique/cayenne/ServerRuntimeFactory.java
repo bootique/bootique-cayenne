@@ -6,15 +6,20 @@ import org.apache.cayenne.access.dbsync.CreateIfNoSchemaStrategy;
 import org.apache.cayenne.access.dbsync.SchemaUpdateStrategy;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
+import org.apache.cayenne.di.ListBuilder;
 import org.apache.cayenne.di.Module;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 public class ServerRuntimeFactory {
+
+    static final String DATAMAP_CONFIGS_LIST = "cayenne.bq.datamap_locations";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerRuntimeFactory.class);
     private static final String DEFAULT_CONFIG = "cayenne-project.xml";
@@ -25,8 +30,14 @@ public class ServerRuntimeFactory {
     private String config;
 
     private Collection<String> configs;
+    private List<DataMapConfig> maps;
     private String datasource;
     private boolean createSchema;
+
+    public ServerRuntimeFactory() {
+        this.configs = new ArrayList<>();
+        this.maps = new ArrayList<>();
+    }
 
     public ServerRuntime createCayenneRuntime(DataSourceFactory dataSourceFactory, Collection<Module> extraModules) {
         return cayenneBuilder(dataSourceFactory).addModules(extraModules).build();
@@ -44,7 +55,7 @@ public class ServerRuntimeFactory {
     protected ServerRuntimeBuilder cayenneBuilder(DataSourceFactory dataSourceFactory) {
         ServerRuntimeBuilder builder = ServerRuntimeBuilder.builder(name);
 
-        configs().forEach(config -> builder.addConfig(config));
+        configs().forEach(builder::addConfig);
 
         // building our own Cayenne extensions module...
         builder.addModule(binder -> {
@@ -54,6 +65,9 @@ public class ServerRuntimeFactory {
                 binder.bind(SchemaUpdateStrategy.class).to(CreateIfNoSchemaStrategy.class);
             }
 
+            ListBuilder<DataMapConfig> datamapLocations = binder.bindList(DATAMAP_CONFIGS_LIST);
+            maps.forEach(datamapLocations::add);
+
             // provide default DataNode
             // TODO: copied from Cayenne, as the corresponding provider is not public or rather
             // until https://issues.apache.org/jira/browse/CAY-2095 is implemented
@@ -61,7 +75,7 @@ public class ServerRuntimeFactory {
 
             // Bootique DataSource hooks...
             BQCayenneDataSourceFactory bqCayenneDSFactory =
-                    new BQCayenneDataSourceFactory(dataSourceFactory, datasource);
+                    new BQCayenneDataSourceFactory(dataSourceFactory, datasource, maps);
             binder.bind(org.apache.cayenne.configuration.server.DataSourceFactory.class).toInstance(bqCayenneDSFactory);
         });
 
@@ -106,6 +120,14 @@ public class ServerRuntimeFactory {
      */
     public void setConfigs(Collection<String> configs) {
         this.configs = configs;
+    }
+
+    /**
+     * @param maps list of DataMap configs
+     * @since 0.18
+     */
+    public void setMaps(List<DataMapConfig> maps) {
+        this.maps = maps;
     }
 
     /**

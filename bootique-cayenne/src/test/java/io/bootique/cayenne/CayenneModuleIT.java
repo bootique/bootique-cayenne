@@ -35,6 +35,24 @@ public class CayenneModuleIT {
     }
 
     @Test
+    public void testConfig_ExplicitMaps() {
+
+        ServerRuntime runtime = testFactory.app("--config=classpath:config_explicit_maps.yml")
+                .modules(JdbcModule.class, CayenneModule.class)
+                .createRuntime()
+                .getRuntime()
+                .getInstance(ServerRuntime.class);
+
+        DataDomain domain = runtime.getDataDomain();
+        assertNotNull(domain.getEntityResolver().getDbEntity("db_entity"));
+        assertNotNull(domain.getEntityResolver().getDbEntity("db_entity2"));
+
+        // trigger a DB op
+        SQLSelect.dataRowQuery("map1", "SELECT * FROM db_entity").select(runtime.newContext());
+        SQLSelect.dataRowQuery("map2", "SELECT * FROM db_entity2").select(runtime.newContext());
+    }
+
+    @Test
     public void testNoConfig() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:noconfig.yml")

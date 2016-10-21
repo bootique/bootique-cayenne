@@ -1,22 +1,26 @@
 package io.bootique.cayenne;
 
-
 import io.bootique.jdbc.DataSourceFactory;
 import org.apache.cayenne.configuration.DataNodeDescriptor;
 import org.apache.cayenne.configuration.server.DelegatingDataSourceFactory;
 
 import javax.sql.DataSource;
 import java.util.Collection;
+import java.util.List;
 
 public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
 
-    private String dataSourceName;
     private DataSourceFactory bqDataSourceFactory;
+    private String defaultDataSourceName;
+    private List<DataMapConfig> dataMapConfigs;
 
     public BQCayenneDataSourceFactory(DataSourceFactory bqDataSourceFactory,
-                                      String dataSourceName) {
-        this.dataSourceName = dataSourceName;
+                                      String defaultDataSourceName,
+                                      List<DataMapConfig> dataMapConfigs) {
+
         this.bqDataSourceFactory = bqDataSourceFactory;
+        this.defaultDataSourceName = defaultDataSourceName;
+        this.dataMapConfigs = dataMapConfigs;
     }
 
     @Override
@@ -25,7 +29,7 @@ public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
         DataSource dataSource;
 
         // 1. try DataSource explicitly mapped in Bootique
-        dataSource = mappedBootiqueDataSource();
+        dataSource = mappedBootiqueDataSource(nodeDescriptor);
         if (dataSource != null) {
             return dataSource;
         }
@@ -69,8 +73,21 @@ public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
         return null;
     }
 
-    protected DataSource mappedBootiqueDataSource() {
-        return mappedBootiqueDataSource(dataSourceName);
+    protected DataSource mappedBootiqueDataSource(DataNodeDescriptor nodeDescriptor) {
+
+        String datasource = null;
+        for (DataMapConfig dataMapConfig : dataMapConfigs) {
+            if (nodeDescriptor.getName().equals(dataMapConfig.getName())) {
+                datasource = dataMapConfig.getDatasource();
+                break;
+            }
+        }
+
+        if (datasource == null) {
+            datasource = defaultDataSourceName;
+        }
+
+        return mappedBootiqueDataSource(datasource);
     }
 
     protected DataSource mappedBootiqueDataSource(String datasource) {
@@ -81,7 +98,7 @@ public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
 
         DataSource ds = bqDataSourceFactory.forName(datasource);
         if (ds == null) {
-            throw new IllegalStateException("Unknown 'dataSourceName': " + datasource);
+            throw new IllegalStateException("Unknown 'defaultDataSourceName': " + datasource);
         }
 
         return ds;

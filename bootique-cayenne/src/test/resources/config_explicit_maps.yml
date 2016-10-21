@@ -1,0 +1,15 @@
+jdbc:
+  ds:
+    url: jdbc:derby:target/derby/bqjdbc_config_explicit_maps;create=true
+    driver: org.apache.derby.jdbc.EmbeddedDriver
+    initialSize: 1
+
+cayenne:
+  datasource: ds
+  createSchema: true
+  maps:
+    - location: classpath:datamap1.map.xml
+      name: map1
+      datasource: ds
+    - location: classpath:datamap2.map.xml
+      name: map2
