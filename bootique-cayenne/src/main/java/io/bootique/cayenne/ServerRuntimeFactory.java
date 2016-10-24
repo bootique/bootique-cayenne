@@ -6,6 +6,7 @@ import org.apache.cayenne.access.dbsync.CreateIfNoSchemaStrategy;
 import org.apache.cayenne.access.dbsync.SchemaUpdateStrategy;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
+import org.apache.cayenne.di.Key;
 import org.apache.cayenne.di.ListBuilder;
 import org.apache.cayenne.di.Module;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import java.util.List;
 
 public class ServerRuntimeFactory {
 
+    static final String DEFAULT_DATASOURCE = "cayenne.bq.default_datasource";
     static final String DATAMAP_CONFIGS_LIST = "cayenne.bq.datamap_locations";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerRuntimeFactory.class);
@@ -65,6 +67,8 @@ public class ServerRuntimeFactory {
                 binder.bind(SchemaUpdateStrategy.class).to(CreateIfNoSchemaStrategy.class);
             }
 
+            String defaultDataSourceName = defaultDataSourceName(dataSourceFactory);
+            binder.bind(Key.get(String.class, DEFAULT_DATASOURCE)).toInstance(defaultDataSourceName);
             ListBuilder<DataMapConfig> datamapLocations = binder.bindList(DATAMAP_CONFIGS_LIST);
             maps.forEach(datamapLocations::add);
 
@@ -103,6 +107,19 @@ public class ServerRuntimeFactory {
         return getClass().getClassLoader().getResource(DEFAULT_CONFIG) != null
                 ? Collections.singleton(DEFAULT_CONFIG)
                 : Collections.emptySet();
+    }
+
+    String defaultDataSourceName(DataSourceFactory dataSourceFactory) {
+
+        if (datasource != null) {
+            return datasource;
+        }
+
+        if (dataSourceFactory.allNames().size() == 1) {
+            return dataSourceFactory.allNames().iterator().next();
+        }
+
+        return null;
     }
 
     /**

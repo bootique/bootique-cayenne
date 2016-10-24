@@ -76,10 +76,13 @@ public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
     protected DataSource mappedBootiqueDataSource(DataNodeDescriptor nodeDescriptor) {
 
         String datasource = null;
-        for (DataMapConfig dataMapConfig : dataMapConfigs) {
-            if (nodeDescriptor.getName().equals(dataMapConfig.getName())) {
-                datasource = dataMapConfig.getDatasource();
-                break;
+        if (!nodeDescriptor.getDataMapNames().isEmpty()) {
+            String dataMapName = nodeDescriptor.getDataMapNames().iterator().next();
+            for (DataMapConfig dataMapConfig : dataMapConfigs) {
+                if (dataMapName.equals(dataMapConfig.getName())) {
+                    datasource = dataMapConfig.getDatasource();
+                    break;
+                }
             }
         }
 
