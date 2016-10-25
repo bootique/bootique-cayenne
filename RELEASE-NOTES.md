@@ -1,3 +1,7 @@
+## 0.18
+
+* #15 Pure Bootique bootstrap of Cayenne projects
+
 ## 0.17
 
 * #19 Upgrade to Bootique 0.20
