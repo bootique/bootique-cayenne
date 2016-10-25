@@ -43,25 +43,9 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
 
         DataDomain dataDomain = super.createAndInitDataDomain();
 
-        // no nodes... add a synthetic node... it will become the default
-        if (dataDomain.getDataNodes().isEmpty()) {
-
-            DataChannelDescriptor channelDescriptor = new DataChannelDescriptor();
-
-            DataNodeDescriptor nodeDescriptor = new DataNodeDescriptor(createSyntheticDataNodeName(dataDomain));
-
-            for (DataMap map : dataDomain.getDataMaps()) {
-                nodeDescriptor.getDataMapNames().add(map.getName());
-            }
-
-            nodeDescriptor.setDataChannelDescriptor(channelDescriptor);
-
-            DataNode node = addDataNode(dataDomain, nodeDescriptor);
-            dataDomain.setDefaultNode(node);
-        }
+        DataNodeDescriptor defaultNodeDescriptor = createDefaultNodeDescriptor(dataDomain);
 
         // add DataMaps that were explicitly configured in BQ config
-
         Map<String, Collection<DataMapConfig>> explicitConfigs = getDataMapConfigs();
         if (!explicitConfigs.isEmpty()) {
 
@@ -69,9 +53,8 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
             explicitConfigs.forEach((datasource, configs) -> {
 
                 DataNodeDescriptor nodeDescriptor = new DataNodeDescriptor(createSyntheticDataNodeName(datasource));
-                DataChannelDescriptor[] channelDescriptors = new DataChannelDescriptor[configs.size()];
+                List<DataChannelDescriptor> channelDescriptors = new ArrayList<>();
 
-                int i = 0;
                 for (DataMapConfig config : configs) {
 
                     URL url = new ResourceFactory(config.getLocation()).getUrl();
@@ -90,12 +73,18 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
                     DataChannelDescriptor channelDescriptor = new DataChannelDescriptor();
                     channelDescriptor.getDataMaps().add(dataMap);
                     channelDescriptor.getNodeDescriptors().add(nodeDescriptor);
-                    channelDescriptors[i++] = channelDescriptor;
+                    channelDescriptors.add(channelDescriptor);
 
                     nodeDescriptor.getDataMapNames().add(dataMapName);
                 }
 
-                nodeDescriptor.setDataChannelDescriptor(descriptorMerger.merge(channelDescriptors));
+                if (datasource.equals(defaultDatasource) && !defaultNodeDescriptor.getDataMapNames().isEmpty()) {
+                    channelDescriptors.add(defaultNodeDescriptor.getDataChannelDescriptor());
+                    nodeDescriptor.getDataMapNames().addAll(defaultNodeDescriptor.getDataMapNames());
+                }
+
+                nodeDescriptor.setDataChannelDescriptor(descriptorMerger.merge(
+                        channelDescriptors.toArray(new DataChannelDescriptor[channelDescriptors.size()])));
 
                 // currently SchemaUpdateStrategy instance is shared among DataNodes,
                 // which prevents schema generation for any nodes other than the first one
@@ -112,9 +101,28 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
                     e.printStackTrace();
                 }
             });
+        } else if (dataDomain.getDataNodes().isEmpty()) {
+            // no nodes... add a synthetic node... it will become the default
+            DataNode defaultNode = addDataNode(dataDomain, defaultNodeDescriptor);
+            dataDomain.setDefaultNode(defaultNode);
         }
 
         return dataDomain;
+    }
+
+    private DataNodeDescriptor createDefaultNodeDescriptor(DataDomain dataDomain) {
+
+        DataChannelDescriptor channelDescriptor = new DataChannelDescriptor();
+        DataNodeDescriptor defaultDescriptor = new DataNodeDescriptor(createSyntheticDataNodeName(dataDomain));
+        channelDescriptor.getNodeDescriptors().add(defaultDescriptor);
+
+        for (DataMap map : dataDomain.getDataMaps()) {
+            channelDescriptor.getDataMaps().add(map);
+            defaultDescriptor.getDataMapNames().add(map.getName());
+        }
+
+        defaultDescriptor.setDataChannelDescriptor(channelDescriptor);
+        return defaultDescriptor;
     }
 
     protected String createSyntheticDataNodeName(DataDomain domain) {
