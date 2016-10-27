@@ -155,7 +155,7 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
             Collection<DataMapConfig> configs = result.get(datasource);
             if (configs == null) {
                 configs = new ArrayList<>();
-                result.put(dataMapConfig.getDatasource(), configs);
+                result.put(datasource, configs);
             }
             configs.add(dataMapConfig);
         }

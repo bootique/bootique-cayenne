@@ -14,7 +14,6 @@ cayenne:
   maps:
     - location: classpath:datamap1.map.xml
       name: map1
-      datasource: ds1
     - location: classpath:datamap2.map.xml
       name: map2
       datasource: ds2
