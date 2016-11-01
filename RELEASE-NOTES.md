@@ -1,6 +1,7 @@
 ## 0.18
 
 * #15 Pure Bootique bootstrap of Cayenne projects
+* #23 Contributing Cayenne projects via DI
 
 ## 0.17
 
