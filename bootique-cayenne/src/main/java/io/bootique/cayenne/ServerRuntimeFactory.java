@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.function.Function;
 
 public class ServerRuntimeFactory {
 
@@ -42,7 +43,14 @@ public class ServerRuntimeFactory {
     }
 
     public ServerRuntime createCayenneRuntime(DataSourceFactory dataSourceFactory, Collection<Module> extraModules) {
-        return cayenneBuilder(dataSourceFactory).addModules(extraModules).build();
+        return createCayenneRuntime(dataSourceFactory, extraModules, __ -> configs());
+    }
+
+    public ServerRuntime createCayenneRuntime(DataSourceFactory dataSourceFactory, Collection<Module> extraModules,
+                                              Function<Collection<String>, Collection<String>> configMerger) {
+        return cayenneBuilder(dataSourceFactory)
+                .addConfigs(configMerger.apply(configs()))
+                .addModules(extraModules).build();
     }
 
     /**
@@ -56,8 +64,6 @@ public class ServerRuntimeFactory {
      */
     protected ServerRuntimeBuilder cayenneBuilder(DataSourceFactory dataSourceFactory) {
         ServerRuntimeBuilder builder = ServerRuntimeBuilder.builder(name);
-
-        configs().forEach(builder::addConfig);
 
         // building our own Cayenne extensions module...
         builder.addModule(binder -> {

@@ -9,6 +9,7 @@ import org.apache.cayenne.query.SQLSelect;
 import org.junit.Rule;
 import org.junit.Test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -100,5 +101,22 @@ public class CayenneModuleIT {
                 .getInstance(ServerRuntime.class);
 
         assertSame(this, runtime.getInjector().getInstance(CayenneModuleIT.class));
+    }
+
+    @Test
+    public void testMergeConfigs() {
+
+        Module cayenneProjectModule = binder -> CayenneModule.contributeProjects(binder)
+                .addBinding().toInstance("cayenne-project2.xml");
+
+        ServerRuntime runtime = testFactory.app("--config=classpath:noconfig.yml")
+                .modules(JdbcModule.class, CayenneModule.class)
+                .module(cayenneProjectModule)
+                .createRuntime()
+                .getRuntime()
+                .getInstance(ServerRuntime.class);
+
+        DataDomain domain = runtime.getDataDomain();
+        assertFalse(domain.getEntityResolver().getDbEntities().isEmpty());
     }
 }

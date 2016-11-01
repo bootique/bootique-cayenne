@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
 import io.bootique.ConfigModule;
 import io.bootique.cayenne.annotation.CayenneListener;
+import io.bootique.cayenne.annotation.CayenneConfigs;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.jdbc.DataSourceFactory;
 import io.bootique.log.BootLogger;
@@ -23,7 +24,6 @@ import java.util.Collection;
 import java.util.Set;
 
 public class CayenneModule extends ConfigModule {
-
 
     public CayenneModule() {
     }
@@ -68,6 +68,16 @@ public class CayenneModule extends ConfigModule {
     }
 
     /**
+     * Returns a Guice {@link Multibinder} to add Cayenne project configs.
+     * @param binder DI binder passed to the Module that invokes this method.
+     * @return returns a {@link Multibinder} for Cayenne project configs.
+     * @since 0.18
+     */
+    public static Multibinder<String> contributeProjects(Binder binder) {
+        return Multibinder.newSetBinder(binder, String.class, CayenneConfigs.class);
+    }
+
+    /**
      * Returns a Guice {@link Multibinder} to add custom Cayenne DI modules.
      *
      * @param binder DI binder passed to the Module that invokes this method.
@@ -84,6 +94,13 @@ public class CayenneModule extends ConfigModule {
         CayenneModule.contributeListeners(binder);
         CayenneModule.contributeFilters(binder);
         CayenneModule.contributeModules(binder);
+        CayenneModule.contributeProjects(binder);
+    }
+
+    @Provides
+    @Singleton
+    CayenneConfigMerger provideConfigMerger() {
+        return new CayenneConfigMerger();
     }
 
     @Provides
@@ -94,11 +111,14 @@ public class CayenneModule extends ConfigModule {
                                                  ShutdownManager shutdownManager,
                                                  Set<Module> customModules,
                                                  @CayenneListener Set<Object> listeners,
-                                                 Set<DataChannelFilter> filters) {
+                                                 Set<DataChannelFilter> filters,
+                                                 CayenneConfigMerger configMerger,
+                                                 @CayenneConfigs Set<String> injectedCayenneConfigs) {
 
         Collection<Module> extras = extraCayenneModules(customModules, filters);
         ServerRuntime runtime = configFactory.config(ServerRuntimeFactory.class, configPrefix)
-                .createCayenneRuntime(dataSourceFactory, extras);
+                .createCayenneRuntime(dataSourceFactory, extras,
+                        cayenneConfigs -> configMerger.merge(cayenneConfigs, injectedCayenneConfigs));
 
         shutdownManager.addShutdownHook(() -> {
             bootLogger.trace(() -> "shutting down Cayenne...");
