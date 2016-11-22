@@ -21,7 +21,6 @@ import java.util.function.Function;
 
 public class ServerRuntimeFactory {
 
-    static final String DEFAULT_DATASOURCE = "cayenne.bq.default_datasource";
     static final String DATAMAP_CONFIGS_LIST = "cayenne.bq.datamap_locations";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerRuntimeFactory.class);
@@ -73,8 +72,8 @@ public class ServerRuntimeFactory {
                 binder.bind(SchemaUpdateStrategy.class).to(CreateIfNoSchemaStrategy.class);
             }
 
-            String defaultDataSourceName = defaultDataSourceName(dataSourceFactory);
-            binder.bind(Key.get(String.class, DEFAULT_DATASOURCE)).toInstance(defaultDataSourceName);
+            DefaultDataSourceName defaultDataSourceName = defaultDataSourceName(dataSourceFactory);
+            binder.bind(Key.get(DefaultDataSourceName.class)).toInstance(defaultDataSourceName);
             ListBuilder<DataMapConfig> datamapLocations = binder.bindList(DATAMAP_CONFIGS_LIST);
             maps.forEach(datamapLocations::add);
 
@@ -115,17 +114,18 @@ public class ServerRuntimeFactory {
                 : Collections.emptySet();
     }
 
-    String defaultDataSourceName(DataSourceFactory dataSourceFactory) {
+    DefaultDataSourceName defaultDataSourceName(DataSourceFactory dataSourceFactory) {
 
         if (datasource != null) {
-            return datasource;
+            return new DefaultDataSourceName(datasource);
         }
 
-        if (dataSourceFactory.allNames().size() == 1) {
-            return dataSourceFactory.allNames().iterator().next();
+        Collection<String> allNames = dataSourceFactory.allNames();
+        if (allNames.size() == 1) {
+            return new DefaultDataSourceName(allNames.iterator().next());
         }
 
-        return null;
+        return new DefaultDataSourceName(null);
     }
 
     /**

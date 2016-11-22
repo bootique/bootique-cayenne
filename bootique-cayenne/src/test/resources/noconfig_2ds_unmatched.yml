@@ -1,0 +1,12 @@
+jdbc:
+  ds1:
+    url: jdbc:derby:target/derby/cayenne1;create=true
+    driver: org.apache.derby.jdbc.EmbeddedDriver
+    initialSize: 1
+  ds2:
+    url: jdbc:derby:target/derby/cayenne2;create=true
+    driver: org.apache.derby.jdbc.EmbeddedDriver
+    initialSize: 1
+
+cayenne:
+  datasource: ds3

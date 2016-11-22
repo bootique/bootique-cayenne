@@ -4,11 +4,17 @@ import com.google.inject.Module;
 import io.bootique.jdbc.JdbcModule;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.access.DataDomain;
+import org.apache.cayenne.configuration.server.DataDomainLoadException;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.query.SQLSelect;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
@@ -69,6 +75,59 @@ public class CayenneModuleIT {
         // trigger a DB op
         SQLSelect.dataRowQuery("map1", "SELECT * FROM db_entity").select(runtime.newContext());
         SQLSelect.dataRowQuery("map2", "SELECT * FROM db_entity2").select(runtime.newContext());
+    }
+
+    @Test
+    public void testDefaultDataSource() throws SQLException {
+
+        ServerRuntime runtime = testFactory.app("--config=classpath:noconfig.yml")
+                .modules(JdbcModule.class, CayenneModule.class)
+                .createRuntime()
+                .getRuntime()
+                .getInstance(ServerRuntime.class);
+
+        DataDomain domain = runtime.getDataDomain();
+        assertNotNull(domain.getDataNode("cayenne"));
+
+        try(Connection c = domain.getDataNode("cayenne").getDataSource().getConnection();) {
+            DatabaseMetaData md = c.getMetaData();
+            assertEquals("jdbc:derby:target/derby/bqjdbc_noconfig", md.getURL());
+        }
+    }
+
+    @Test
+    public void testUndefinedDataSource() throws SQLException {
+
+        ServerRuntime runtime = testFactory.app("--config=classpath:noconfig_2ds.yml")
+                .modules(JdbcModule.class, CayenneModule.class)
+                .createRuntime()
+                .getRuntime()
+                .getInstance(ServerRuntime.class);
+
+        try {
+            runtime.getDataDomain();
+        }
+        catch (DataDomainLoadException e) {
+            assertTrue(e.getCause().getMessage()
+                    .startsWith("Can't map Cayenne DataSource: 'cayenne.datasource' is missing."));
+        }
+    }
+
+    @Test
+    public void testUnmatchedDataSource() throws SQLException {
+
+        ServerRuntime runtime = testFactory.app("--config=classpath:noconfig_2ds_unmatched.yml")
+                .modules(JdbcModule.class, CayenneModule.class)
+                .createRuntime()
+                .getRuntime()
+                .getInstance(ServerRuntime.class);
+
+        try {
+            runtime.getDataDomain();
+        }
+        catch (DataDomainLoadException e) {
+            assertTrue(e.getCause().getMessage().startsWith("No DataSource config for name 'ds3'"));
+        }
     }
 
     @Test

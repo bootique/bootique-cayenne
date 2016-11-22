@@ -32,8 +32,8 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
     @Inject(ServerRuntimeFactory.DATAMAP_CONFIGS_LIST)
     private List<DataMapConfig> dataMapConfigs;
 
-    @Inject(ServerRuntimeFactory.DEFAULT_DATASOURCE)
-    private String defaultDatasource;
+    @Inject
+    private DefaultDataSourceName defaultDatasource;
 
     @Inject
     private SchemaUpdateStrategy defaultSchemaUpdateStrategy;
@@ -78,7 +78,8 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
                     nodeDescriptor.getDataMapNames().add(dataMapName);
                 }
 
-                if (datasource.equals(defaultDatasource) && !defaultNodeDescriptor.getDataMapNames().isEmpty()) {
+                if (datasource.equals(defaultDatasource.getOptionalName())
+                        && !defaultNodeDescriptor.getDataMapNames().isEmpty()) {
                     channelDescriptors.add(defaultNodeDescriptor.getDataChannelDescriptor());
                     nodeDescriptor.getDataMapNames().addAll(defaultNodeDescriptor.getDataMapNames());
                 }
@@ -98,6 +99,8 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
                 try {
                     addDataNode(dataDomain, nodeDescriptor);
                 } catch (Exception e) {
+
+                    // TODO: better exception handling
                     e.printStackTrace();
                 }
             });
@@ -149,7 +152,7 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
 
             String datasource = dataMapConfig.getDatasource();
             if (datasource == null) {
-                datasource = defaultDatasource;
+                datasource = defaultDatasource.getOptionalName();
             }
 
             Collection<DataMapConfig> configs = result.get(datasource);
