@@ -4,6 +4,7 @@
 * #23 Contributing Cayenne projects via DI
 * #26 Bad DataSource mapping results in an obscure Cayenne DI NPE
 
+
 ## 0.17
 
 * #19 Upgrade to Bootique 0.20
