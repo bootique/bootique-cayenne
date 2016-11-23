@@ -41,7 +41,7 @@ public class CayenneTestUtil {
         Column[] columns = new Column[dbEntity.getAttributes().size()];
         int i = 0;
         for (DbAttribute a : dbEntity.getAttributes()) {
-            columns[i] = new Column(a.getName(), a.getType());
+            columns[i++] = new Column(Objects.requireNonNull(a.getName()), a.getType());
         }
 
         // ensure predictable column order .. DbEntity's attributes are presumably already sorted, but just in case
