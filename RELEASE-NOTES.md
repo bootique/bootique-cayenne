@@ -3,7 +3,7 @@
 * #15 Pure Bootique bootstrap of Cayenne projects
 * #23 Contributing Cayenne projects via DI
 * #26 Bad DataSource mapping results in an obscure Cayenne DI NPE
-
+* #27 Unit tests: add a builder of Table objects based on DbEntity
 
 ## 0.17
 
