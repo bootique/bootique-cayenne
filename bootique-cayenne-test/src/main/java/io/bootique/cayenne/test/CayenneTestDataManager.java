@@ -29,8 +29,12 @@ public class CayenneTestDataManager extends TestDataManager {
     private static Table[] tablesInInsertOrder(BQTestRuntime runtime, Class<?>... entityTypes) {
 
         ServerRuntime serverRuntime = runtime.getRuntime().getInstance(ServerRuntime.class);
-        EntitySorter sorter = serverRuntime.getInjector().getInstance(EntitySorter.class);
         EntityResolver resolver = serverRuntime.getDataDomain().getEntityResolver();
+
+        // note: do not obtain sorter from Cayenne DI. It is not a singleton and will come
+        // uninitialized
+        EntitySorter sorter = serverRuntime.getDataDomain().getEntitySorter();
+
 
         List<DbEntity> dbEntities = new ArrayList<>();
 
@@ -44,7 +48,7 @@ public class CayenneTestDataManager extends TestDataManager {
 
         Table[] tables = new Table[dbEntities.size()];
         for (int i = 0; i < tables.length; i++) {
-            tables[i] = createTableModel(channel, dbEntities.get(0));
+            tables[i] = createTableModel(channel, dbEntities.get(i));
         }
         return tables;
     }
@@ -64,8 +68,13 @@ public class CayenneTestDataManager extends TestDataManager {
     static DbEntity getDbEntity(ServerRuntime runtime, Class<?> entityType) {
         ObjEntity entity = runtime.getDataDomain().getEntityResolver().getObjEntity(entityType);
 
-        Objects.requireNonNull(entity);
-        Objects.requireNonNull(entity.getDbEntityName());
+        if (entity == null) {
+            throw new IllegalArgumentException("Not a Cayenne entity class: " + entityType.getName());
+        }
+
+        if (entity.getDbEntityName() == null) {
+            throw new IllegalArgumentException("Cayenne entity class is not mapped to a DbEntity: " + entityType.getName());
+        }
 
         return entity.getDbEntity();
     }

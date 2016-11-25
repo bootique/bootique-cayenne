@@ -18,7 +18,7 @@ public class CayenneTestDataManagerStaticsIT {
     public BQTestFactory testFactory = new BQTestFactory();
 
     @Test
-    public void testGetTable() {
+    public void testCreateTableModel() {
         BQTestRuntime testRuntime = testFactory.app("-c", "classpath:config1.yml")
                 .autoLoadModules()
                 .createRuntime();
