@@ -4,6 +4,7 @@
 * #23 Contributing Cayenne projects via DI
 * #26 Bad DataSource mapping results in an obscure Cayenne DI NPE
 * #27 Unit tests: add a builder of Table objects based on DbEntity
+* #28 Extend TestDataManager for Cayenne
 
 ## 0.17
 
