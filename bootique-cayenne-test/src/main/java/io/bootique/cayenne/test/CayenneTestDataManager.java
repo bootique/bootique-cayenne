@@ -17,13 +17,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * @since 0.18
+ */
 public class CayenneTestDataManager extends TestDataManager {
 
-    private ServerRuntime runtime;
+    private CayenneTableManager tableManager;
 
     public CayenneTestDataManager(BQTestRuntime runtime, boolean deleteData, Class<?>... entityTypes) {
         super(deleteData, tablesInInsertOrder(runtime, entityTypes));
-        this.runtime = runtime.getRuntime().getInstance(ServerRuntime.class);
+        this.tableManager = runtime.getRuntime().getInstance(CayenneTableManager.class);
     }
 
     private static Table[] tablesInInsertOrder(BQTestRuntime runtime, Class<?>... entityTypes) {
@@ -96,6 +99,6 @@ public class CayenneTestDataManager extends TestDataManager {
     }
 
     public Table getTable(Class<?> entityType) {
-        return super.getTable(getDbEntity(runtime, entityType).getFullyQualifiedName());
+        return tableManager.getTable(entityType);
     }
 }

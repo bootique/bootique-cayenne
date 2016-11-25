@@ -7,6 +7,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
 import io.bootique.jdbc.test.JdbcTestModule;
+import io.bootique.jdbc.test.runtime.DatabaseChannelFactory;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 
 import java.util.Set;
@@ -31,6 +32,13 @@ public class CayenneTestModule implements Module {
 
         // this will trigger eager Cayenne startup and subsequent schema loading in the test DB
         binder.bind(SchemaLoader.class).asEagerSingleton();
+    }
+
+    @Provides
+    @Singleton
+    CayenneTableManager provideCayenneTableManager(DatabaseChannelFactory channelFactory, ServerRuntime runtime) {
+        // TODO: only works with a single DatabaseChannel per runtime
+        return new CayenneTableManager(runtime.getDataDomain().getEntityResolver(), channelFactory.getChannel());
     }
 
     @Provides
