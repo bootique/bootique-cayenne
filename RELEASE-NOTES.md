@@ -5,6 +5,7 @@
 * #26 Bad DataSource mapping results in an obscure Cayenne DI NPE
 * #27 Unit tests: add a builder of Table objects based on DbEntity
 * #28 Extend TestDataManager for Cayenne
+* #30 Add a way to register a listener of schema creation event
 
 ## 0.17
 

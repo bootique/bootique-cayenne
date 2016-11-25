@@ -5,8 +5,11 @@ import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.multibindings.Multibinder;
 import io.bootique.jdbc.test.JdbcTestModule;
 import org.apache.cayenne.configuration.server.ServerRuntime;
+
+import java.util.Set;
 
 /**
  * An auto-loadable module that installs Cayenne schema generation hooks in bootique-jdbc-test.
@@ -14,6 +17,10 @@ import org.apache.cayenne.configuration.server.ServerRuntime;
  * @since 0.17
  */
 public class CayenneTestModule implements Module {
+
+    public static Multibinder<SchemaListener> contributeSchemaListener(Binder binder) {
+        return Multibinder.newSetBinder(binder, SchemaListener.class);
+    }
 
     @Override
     public void configure(Binder binder) {
@@ -25,8 +32,8 @@ public class CayenneTestModule implements Module {
 
     @Provides
     @Singleton
-    SchemaCreationListener provideSchemaCreationListener() {
-        return new SchemaCreationListener();
+    SchemaCreationListener provideSchemaCreationListener(Set<SchemaListener> schemaListeners) {
+        return new SchemaCreationListener(schemaListeners);
     }
 
     static class SchemaLoader {

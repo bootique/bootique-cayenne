@@ -21,8 +21,8 @@ public class CayenneTestDataManager extends TestDataManager {
 
     private ServerRuntime runtime;
 
-    public CayenneTestDataManager(BQTestRuntime runtime, Class<?>... entityTypes) {
-        super(tablesInInsertOrder(runtime, entityTypes));
+    public CayenneTestDataManager(BQTestRuntime runtime, boolean deleteData, Class<?>... entityTypes) {
+        super(deleteData, tablesInInsertOrder(runtime, entityTypes));
         this.runtime = runtime.getRuntime().getInstance(ServerRuntime.class);
     }
 

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -21,7 +22,13 @@ import java.util.stream.Stream;
  */
 public class SchemaCreationListener implements DataSourceListener {
 
-    private List<Consumer<Collection<DataNode>>> schemaGenerators = new ArrayList<>();
+    private List<Consumer<Collection<DataNode>>> schemaGenerators;
+    private Set<SchemaListener> schemaListeners;
+
+    public SchemaCreationListener(Set<SchemaListener> schemaListeners) {
+        this.schemaGenerators = new ArrayList<>();
+        this.schemaListeners = schemaListeners;
+    }
 
     /**
      * Invoked explicitly after all {@link DataSourceListener} methods are processed to generate DB schemas based on
@@ -92,6 +99,8 @@ public class SchemaCreationListener implements DataSourceListener {
             } catch (Exception e) {
                 throw new RuntimeException("Error creating schema for DataNode: " + node.getName(), e);
             }
+
+            schemaListeners.forEach(l -> l.afterSchemaCreated(map));
         });
     }
 }
