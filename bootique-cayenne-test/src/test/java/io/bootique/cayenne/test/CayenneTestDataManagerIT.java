@@ -19,7 +19,7 @@ public class CayenneTestDataManagerIT {
     private static BQTestRuntime TEST_RUNTIME;
 
     @Rule
-    public CayenneTestDataManager dataManager = new CayenneTestDataManager(TEST_RUNTIME, Table1.class, Table2.class);
+    public CayenneTestDataManager dataManager = new CayenneTestDataManager(TEST_RUNTIME, true, Table1.class, Table2.class);
 
     @BeforeClass
     public static void beforeClass() {
