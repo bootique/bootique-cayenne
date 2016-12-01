@@ -19,6 +19,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class CayenneModuleIT {
 
@@ -124,9 +125,11 @@ public class CayenneModuleIT {
 
         try {
             runtime.getDataDomain();
+            fail();
         }
         catch (DataDomainLoadException e) {
-            assertTrue(e.getCause().getMessage().startsWith("No DataSource config for name 'ds3'"));
+            String message = e.getCause().getMessage();
+            assertEquals("No configuration present for DataSource named 'ds3'", message);
         }
     }
 

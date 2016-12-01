@@ -1,11 +1,9 @@
 jdbc:
   ds1:
     url: jdbc:derby:target/derby/bqjdbc_config_explicit_maps1;create=true
-    driver: org.apache.derby.jdbc.EmbeddedDriver
     initialSize: 1
   ds2:
     url: jdbc:derby:target/derby/bqjdbc_config_explicit_maps2;create=true
-    driver: org.apache.derby.jdbc.EmbeddedDriver
     initialSize: 1
 
 cayenne:
