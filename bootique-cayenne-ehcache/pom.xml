@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>io.bootique.cayenne</groupId>
+		<artifactId>bootique-cayenne-parent</artifactId>
+		<version>0.18-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>bootique-cayenne-ehcache</artifactId>
+	<packaging>jar</packaging>
+
+	<name>bootique-cayenne-ehcache: Integrates bootique-cayenne with bootique-ehcache</name>
+	<description>Integrates bootique-cayenne with bootique-ehcache.</description>
+
+	<dependencies>
+		<!-- Unit test dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derby</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.bootique</groupId>
+			<artifactId>bootique-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.bootique.cayenne</groupId>
+			<artifactId>bootique-cayenne-test</artifactId>
+			<scope>test</scope>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- Compile dependencies -->
+		<dependency>
+			<groupId>io.bootique.cayenne</groupId>
+			<artifactId>bootique-cayenne</artifactId>
+			<scope>compile</scope>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.bootique.ehcache</groupId>
+			<artifactId>bootique-ehcache</artifactId>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+	<!-- Optional profile used to sign artifacts -->
+	<profiles>
+		<profile>
+			<id>gpg</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

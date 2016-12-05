@@ -1,0 +1,8 @@
+jdbc:
+  ds:
+    url: jdbc:derby:target/derby/cached;create=true
+    maxActive: 2
+
+cayenne:
+  configs:
+    - cayenne-project1.xml
