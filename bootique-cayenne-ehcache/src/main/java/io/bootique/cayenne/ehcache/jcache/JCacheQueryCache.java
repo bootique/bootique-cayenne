@@ -25,7 +25,7 @@ public class JCacheQueryCache implements QueryCache {
     /**
      * Default JCache cache name. This will be the cache used for queries with no explicit cache groups.
      */
-    private static final String DEFAULT_CACHE_NAME = "cayenne.default.cache";
+    public static final String DEFAULT_CACHE_NAME = "cayenne.default.cache";
 
     private CacheManager cacheManager;
     private Configuration<String, List> newCachesConfig;

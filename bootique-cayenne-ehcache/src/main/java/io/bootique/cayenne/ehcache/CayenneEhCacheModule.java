@@ -4,13 +4,16 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.multibindings.Multibinder;
 import io.bootique.cayenne.CayenneModule;
 import io.bootique.cayenne.ehcache.invalidation.CacheGroupsHandler;
 import io.bootique.cayenne.ehcache.invalidation.InvalidationHandler;
 import io.bootique.cayenne.ehcache.jcache.JCacheQueryCache;
+import io.bootique.ehcache.EhCacheModule;
 
 import javax.cache.CacheManager;
+import javax.cache.configuration.Configuration;
 import javax.cache.configuration.MutableConfiguration;
 import javax.cache.expiry.CreatedExpiryPolicy;
 import javax.cache.expiry.Duration;
@@ -21,6 +24,10 @@ public class CayenneEhCacheModule implements Module {
 
     public static Multibinder<InvalidationHandler> contributeInvalidationHandler(Binder binder) {
         return Multibinder.newSetBinder(binder, InvalidationHandler.class);
+    }
+
+    public static LinkedBindingBuilder<Configuration<?, ?>> contributeDefaultCacheConfiguration(Binder binder) {
+        return EhCacheModule.contributeConfiguration(binder).addBinding(JCacheQueryCache.DEFAULT_CACHE_NAME);
     }
 
     @Override
