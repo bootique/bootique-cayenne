@@ -46,15 +46,19 @@ public class CacheInvalidationIT {
     public void testInvalidate_Custom() {
 
         ObjectContext context = SERVER_RUNTIME.newContext();
+        // no explicit cache group must still work - it lands inside default cache called 'cayenne.default.cache'
+        ObjectSelect<Table1> g0 = ObjectSelect.query(Table1.class).localCache();
         ObjectSelect<Table1> g1 = ObjectSelect.query(Table1.class).localCache("g1");
         ObjectSelect<Table1> g2 = ObjectSelect.query(Table1.class).localCache("g2");
 
+        assertEquals(0, g0.select(context).size());
         assertEquals(0, g1.select(context).size());
         assertEquals(0, g2.select(context).size());
 
         dataManager.getTable(Table1.class).insert(1).insert(2);
 
         // inserted via SQL... query results are still cached...
+        assertEquals(0, g0.select(context).size());
         assertEquals(0, g1.select(context).size());
         assertEquals(0, g2.select(context).size());
 
@@ -63,6 +67,7 @@ public class CacheInvalidationIT {
         context.commitChanges();
 
         // inserted via Cayenne... "g1" should get auto refreshed...
+        assertEquals(0, g0.select(context).size());
         assertEquals(3, g1.select(context).size());
         assertEquals(0, g2.select(context).size());
 
@@ -71,6 +76,7 @@ public class CacheInvalidationIT {
         context.commitChanges();
 
         // deleted via Cayenne... "g1" should get auto refreshed
+        assertEquals(0, g0.select(context).size());
         assertEquals(2, g1.select(context).size());
         assertEquals(0, g2.select(context).size());
     }
