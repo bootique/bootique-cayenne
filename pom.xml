@@ -80,6 +80,17 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.cayenne</groupId>
+                <artifactId>cayenne-lifecycle</artifactId>
+                <version>${cayenne-version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cayenne</groupId>
                 <artifactId>cayenne-java8</artifactId>
                 <version>${cayenne-version}</version>
             </dependency>

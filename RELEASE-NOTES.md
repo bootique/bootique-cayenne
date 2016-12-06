@@ -7,6 +7,7 @@
 * #28 Extend TestDataManager for Cayenne
 * #30 Add a way to register a listener of schema creation event
 * #31 New module: bootique-cayenne-ehcache
+* #32 bootique-cayenne-ehcache: enable cache refresh on commit
 
 ## 0.17
 
