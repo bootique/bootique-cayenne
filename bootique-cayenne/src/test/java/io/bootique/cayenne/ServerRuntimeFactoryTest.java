@@ -86,46 +86,6 @@ public class ServerRuntimeFactoryTest {
 		}
 	}
 
-	@Deprecated
-	@Test
-	public void testCreateCayenneRuntime_Config() {
-		ServerRuntimeFactory factory = new ServerRuntimeFactory();
-		factory.setDatasource("ds1");
-		factory.setConfig("cayenne-project1.xml");
-
-		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory, Collections.emptyList());
-		try {
-
-			DataDomain domain = runtime.getDataDomain();
-			assertNotNull(domain.getEntityResolver().getDbEntity("db_entity"));
-
-		} finally {
-			runtime.shutdown();
-		}
-	}
-
-	@Deprecated
-	@Test
-	public void testCreateCayenneRuntime_Config_Configs() {
-		ServerRuntimeFactory factory = new ServerRuntimeFactory();
-		factory.setDatasource("ds1");
-		
-		// should merge the old and the new style of config
-		factory.setConfig("cayenne-project1.xml");
-		factory.setConfigs(asList("cayenne-project2.xml"));
-
-		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory, Collections.emptyList());
-		try {
-
-			DataDomain domain = runtime.getDataDomain();
-			assertNotNull(domain.getEntityResolver().getDbEntity("db_entity"));
-			assertNotNull(domain.getEntityResolver().getDbEntity("db_entity2"));
-
-		} finally {
-			runtime.shutdown();
-		}
-	}
-
 	@Test
 	public void testCreateCayenneRuntime_NoConfig() {
 		ServerRuntimeFactory factory = new ServerRuntimeFactory();

@@ -9,6 +9,7 @@
 * #30 Add a way to register a listener of schema creation event
 * #31 New module: bootique-cayenne-ehcache
 * #32 bootique-cayenne-ehcache: enable cache refresh on commit
+* #33 Remove 'cayenne.config' configuration deprecated in 0.14 
 
 ## 0.17
 

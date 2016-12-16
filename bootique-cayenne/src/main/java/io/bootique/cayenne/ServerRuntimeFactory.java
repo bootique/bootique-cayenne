@@ -27,10 +27,6 @@ public class ServerRuntimeFactory {
     private static final String DEFAULT_CONFIG = "cayenne-project.xml";
 
     private String name;
-
-    @Deprecated
-    private String config;
-
     private Collection<String> configs;
     private List<DataMapConfig> maps;
     private String datasource;
@@ -100,11 +96,6 @@ public class ServerRuntimeFactory {
             configs.addAll(this.configs);
         }
 
-        if (this.config != null) {
-            LOGGER.warn("'config' key is deprecated. Use 'configs' instead");
-            configs.add(config);
-        }
-
         return configs.isEmpty() ? defaultConfigs() : configs;
     }
 
@@ -126,15 +117,6 @@ public class ServerRuntimeFactory {
         }
 
         return new DefaultDataSourceName(null);
-    }
-
-    /**
-     * @param config a name of the Cayenne config XML file.
-     * @since 0.9
-     * @deprecated since 0.14 in favor of {@link #setConfigs(Collection)}.
-     */
-    public void setConfig(String config) {
-        this.config = config;
     }
 
     /**
