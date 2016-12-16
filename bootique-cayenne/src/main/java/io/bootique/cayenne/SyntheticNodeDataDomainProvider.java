@@ -3,9 +3,6 @@ package io.bootique.cayenne;
 import io.bootique.resource.ResourceFactory;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.access.DataNode;
-import org.apache.cayenne.access.dbsync.CreateIfNoSchemaStrategy;
-import org.apache.cayenne.access.dbsync.SchemaUpdateStrategy;
-import org.apache.cayenne.access.dbsync.ThrowOnPartialOrCreateSchemaStrategy;
 import org.apache.cayenne.configuration.DataChannelDescriptor;
 import org.apache.cayenne.configuration.DataNodeDescriptor;
 import org.apache.cayenne.configuration.XMLDataMapLoader;
@@ -34,9 +31,6 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
 
     @Inject
     private DefaultDataSourceName defaultDatasource;
-
-    @Inject
-    private SchemaUpdateStrategy defaultSchemaUpdateStrategy;
 
     @Override
     protected DataDomain createAndInitDataDomain() throws Exception {
@@ -86,15 +80,6 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
 
                 nodeDescriptor.setDataChannelDescriptor(descriptorMerger.merge(
                         channelDescriptors.toArray(new DataChannelDescriptor[channelDescriptors.size()])));
-
-                // currently SchemaUpdateStrategy instance is shared among DataNodes,
-                // which prevents schema generation for any nodes other than the first one
-                Class<? extends SchemaUpdateStrategy> schemaUpdateStrategyClass = defaultSchemaUpdateStrategy.getClass();
-                if (schemaUpdateStrategyClass.equals(CreateIfNoSchemaStrategy.class)
-                        || schemaUpdateStrategyClass.equals(ThrowOnPartialOrCreateSchemaStrategy.class)) {
-
-                    nodeDescriptor.setSchemaUpdateStrategyType(schemaUpdateStrategyClass.getName());
-                }
 
                 try {
                     addDataNode(dataDomain, nodeDescriptor);

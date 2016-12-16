@@ -2,6 +2,7 @@
 
 * #15 Pure Bootique bootstrap of Cayenne projects
 * #23 Contributing Cayenne projects via DI
+* #25 Upgrade for Cayenne 4.0.M4
 * #26 Bad DataSource mapping results in an obscure Cayenne DI NPE
 * #27 Unit tests: add a builder of Table objects based on DbEntity
 * #28 Extend TestDataManager for Cayenne

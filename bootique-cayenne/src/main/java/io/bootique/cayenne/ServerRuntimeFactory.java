@@ -3,7 +3,7 @@ package io.bootique.cayenne;
 import io.bootique.jdbc.DataSourceFactory;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.access.dbsync.CreateIfNoSchemaStrategy;
-import org.apache.cayenne.access.dbsync.SchemaUpdateStrategy;
+import org.apache.cayenne.access.dbsync.SchemaUpdateStrategyFactory;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
 import org.apache.cayenne.di.Key;
@@ -69,7 +69,7 @@ public class ServerRuntimeFactory {
 
             // provide schema creation hook
             if (createSchema) {
-                binder.bind(SchemaUpdateStrategy.class).to(CreateIfNoSchemaStrategy.class);
+                binder.bind(SchemaUpdateStrategyFactory.class).toInstance(descriptor -> new CreateIfNoSchemaStrategy());
             }
 
             DefaultDataSourceName defaultDataSourceName = defaultDataSourceName(dataSourceFactory);
