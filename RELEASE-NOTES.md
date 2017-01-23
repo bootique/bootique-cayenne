@@ -10,6 +10,7 @@
 * #31 New module: bootique-cayenne-jcache
 * #32 bootique-cayenne-jcache: enable cache refresh on commit
 * #33 Remove 'cayenne.config' configuration deprecated in 0.14 
+* #34 Annotate module and factories with documentation
 
 ## 0.17
 

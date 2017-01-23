@@ -1,5 +1,7 @@
 package io.bootique.cayenne;
 
+import io.bootique.annotation.BQConfig;
+import io.bootique.annotation.BQConfigProperty;
 import io.bootique.jdbc.DataSourceFactory;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.access.dbsync.CreateIfNoSchemaStrategy;
@@ -9,8 +11,6 @@ import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
 import org.apache.cayenne.di.Key;
 import org.apache.cayenne.di.ListBuilder;
 import org.apache.cayenne.di.Module;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,11 +19,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.function.Function;
 
+@BQConfig("Configures Cayenne stack, providing injectable ServerRuntime.")
 public class ServerRuntimeFactory {
 
     static final String DATAMAP_CONFIGS_LIST = "cayenne.bq.datamap_locations";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServerRuntimeFactory.class);
     private static final String DEFAULT_CONFIG = "cayenne-project.xml";
 
     private String name;
@@ -123,6 +123,8 @@ public class ServerRuntimeFactory {
      * @param configs a collection of Cayenne config XML files.
      * @since 0.14
      */
+    @BQConfigProperty("An optional collection of Cayenne projects to load in runtime. If missing, will try to locate a " +
+            "file 'cayenne-project.xml' on classpath.")
     public void setConfigs(Collection<String> configs) {
         this.configs = configs;
     }
@@ -131,30 +133,35 @@ public class ServerRuntimeFactory {
      * @param maps list of DataMap configs
      * @since 0.18
      */
+    @BQConfigProperty
     public void setMaps(List<DataMapConfig> maps) {
         this.maps = maps;
     }
 
     /**
-     * Sets an optional name of the Cayenne stack to be created. It is
-     * occasionally useful to name Cayenne stacks.
+     * Sets an optional name of the Cayenne stack to be created. It is occasionally useful to name Cayenne stacks.
      *
      * @param name a name of Cayenne stack created by the factory.
      * @since 0.9
      */
+    @BQConfigProperty
     public void setName(String name) {
         this.name = name;
     }
 
+    @BQConfigProperty("An optional name of the DataSource to use in Cayenne. A DataSource with the matching name " +
+            "must be defined in 'bootique-jdbc' configuration. If missing, a DataSource from Cayenne project or a " +
+            "default DataSource from 'bootique-jdbc' is used.")
     public void setDatasource(String datasource) {
         this.datasource = datasource;
     }
 
     /**
-     * @param createSchema if true, Cayenne will attempt to create database schema if it
-     *                     is missing.
+     * @param createSchema if true, Cayenne will attempt to create database schema if it is missing.
      * @since 0.11
      */
+    @BQConfigProperty("Whether to attempt creation of the DB schema on startup based on Cayenne mapping. The default is " +
+            "'false'. Automatic schema creation is often used in unit tests.")
     public void setCreateSchema(boolean createSchema) {
         this.createSchema = createSchema;
     }
