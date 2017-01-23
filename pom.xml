@@ -19,7 +19,7 @@
 
     <modules>
         <module>bootique-cayenne</module>
-        <module>bootique-cayenne-ehcache</module>
+        <module>bootique-cayenne-jcache</module>
         <module>bootique-cayenne-default-it</module>
         <module>bootique-cayenne-test</module>
     </modules>
@@ -28,7 +28,8 @@
         <cayenne-version>4.0.M4</cayenne-version>
         <bootique-version>0.21-SNAPSHOT</bootique-version>
         <bootique-jdbc-version>0.13-SNAPSHOT</bootique-jdbc-version>
-        <bootique-ehcache-version>0.1-SNAPSHOT</bootique-ehcache-version>
+        <bootique-jcache-version>0.1-SNAPSHOT</bootique-jcache-version>
+        <ehcache-version>3.1.3</ehcache-version>
     </properties>
 
     <scm>
@@ -63,9 +64,14 @@
                 <version>${bootique-jdbc-version}</version>
             </dependency>
             <dependency>
-                <groupId>io.bootique.ehcache</groupId>
-                <artifactId>bootique-ehcache</artifactId>
-                <version>${bootique-ehcache-version}</version>
+                <groupId>io.bootique.jcache</groupId>
+                <artifactId>bootique-jcache</artifactId>
+                <version>${bootique-jcache-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>${ehcache-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.cayenne</groupId>
