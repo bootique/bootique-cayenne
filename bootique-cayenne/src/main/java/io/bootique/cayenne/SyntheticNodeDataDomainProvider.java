@@ -1,6 +1,5 @@
 package io.bootique.cayenne;
 
-import io.bootique.resource.ResourceFactory;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.access.DataNode;
 import org.apache.cayenne.configuration.DataChannelDescriptor;
@@ -51,7 +50,7 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
 
                 for (DataMapConfig config : configs) {
 
-                    URL url = new ResourceFactory(config.getLocation()).getUrl();
+                    URL url = config.getLocation().getUrl();
                     String dataMapName = config.getName();
                     if (dataMapName == null) {
                         dataMapName = url.toExternalForm();

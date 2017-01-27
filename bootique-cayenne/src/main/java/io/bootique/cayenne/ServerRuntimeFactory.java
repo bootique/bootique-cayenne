@@ -120,6 +120,9 @@ public class ServerRuntimeFactory {
     }
 
     /**
+     * Sets an optional collection of Cayenne projects to load in runtime. If missing, will try to locate a file
+     * 'cayenne-project.xml' on classpath.
+     *
      * @param configs a collection of Cayenne config XML files.
      * @since 0.14
      */
@@ -130,21 +133,26 @@ public class ServerRuntimeFactory {
     }
 
     /**
+     * Sets a list of DataMaps that are included in the app runtime without an explicit refrence in  'cayenne-project.xml'.
+     *
      * @param maps list of DataMap configs
      * @since 0.18
      */
-    @BQConfigProperty
+    @BQConfigProperty("A list of DataMaps that are included in the app runtime without an explicit refrence in " +
+            "'cayenne-project.xml'.")
     public void setMaps(List<DataMapConfig> maps) {
         this.maps = maps;
     }
 
     /**
-     * Sets an optional name of the Cayenne stack to be created. It is occasionally useful to name Cayenne stacks.
+     * Sets an optional name of the Cayenne stack we are created. This will be the name assigned to Cayenne DataDomain and
+     * used in event dispatches, etc.
      *
      * @param name a name of Cayenne stack created by the factory.
      * @since 0.9
      */
-    @BQConfigProperty
+    @BQConfigProperty("An optional name of the Cayenne stack we are created. This will be the name assigned to Cayenne" +
+            " DataDomain and used in event dispatches, etc.")
     public void setName(String name) {
         this.name = name;
     }
@@ -157,6 +165,9 @@ public class ServerRuntimeFactory {
     }
 
     /**
+     * Sets a flag that defines whether to attempt creation of the DB schema on startup based on Cayenne mapping. The
+     * default is 'false'. Automatic schema creation is often used in unit tests.
+     *
      * @param createSchema if true, Cayenne will attempt to create database schema if it is missing.
      * @since 0.11
      */
