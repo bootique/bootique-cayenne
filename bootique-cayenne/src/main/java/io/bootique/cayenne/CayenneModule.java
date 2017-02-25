@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
+
 public class CayenneModule extends ConfigModule {
 
     public CayenneModule() {
@@ -33,12 +34,24 @@ public class CayenneModule extends ConfigModule {
     }
 
     /**
+     * @param binder DI binder passed to the Module that invokes this method.
+     * @return an instance of {@link CayenneModuleExtender} that can be used to load Cayenne custom extensions.
+     * @since 0.19
+     */
+    public static CayenneModuleExtender extend(Binder binder) {
+        return new CayenneModuleExtender(binder);
+    }
+
+    /**
      * Returns a Guice {@link Multibinder} to add Cayenne DataChannelFilters.
      *
      * @param binder DI binder passed to the Module that invokes this method.
      * @return returns a {@link Multibinder} for Cayenne DataChannelFilters
      * @since 0.13
+     * @deprecated since 0.19 call {@link #extend(Binder)} and then call
+     * {@link CayenneModuleExtender#addFilter(Class)} or similar methods.
      */
+    @Deprecated
     public static Multibinder<DataChannelFilter> contributeFilters(Binder binder) {
         return Multibinder.newSetBinder(binder, DataChannelFilter.class);
     }
@@ -48,31 +61,24 @@ public class CayenneModule extends ConfigModule {
      *
      * @param binder DI binder passed to the Module that invokes this method.
      * @return returns a {@link Multibinder} for Cayenne annotated listeners.
-     * @since 0.13
+     * @deprecated since 0.19 call {@link #extend(Binder)} and then call
+     * {@link CayenneModuleExtender#addListener(Class)} or similar methods.
      */
+    @Deprecated
     public static Multibinder<Object> contributeListeners(Binder binder) {
         return Multibinder.newSetBinder(binder, Object.class, CayenneListener.class);
     }
 
     /**
-     * Returns a Guice {@link Multibinder} to add custom Cayenne DI modules.
-     *
-     * @param binder DI binder passed to the Module that invokes this method.
-     * @return returns a {@link Multibinder} for Cayenne DI modules.
-     * @since 0.16
-     * @deprecated since 0.17. There's a typo in the name. Use {@link #contributeModules(Binder)} instead.
-     */
-    @Deprecated
-    public static Multibinder<Module> contribueModules(Binder binder) {
-        return contributeModules(binder);
-    }
-
-    /**
      * Returns a Guice {@link Multibinder} to add Cayenne project configs.
+     *
      * @param binder DI binder passed to the Module that invokes this method.
      * @return returns a {@link Multibinder} for Cayenne project configs.
      * @since 0.18
+     * @deprecated since 0.19 call {@link #extend(Binder)} and then call
+     * {@link CayenneModuleExtender#addProject(String)}.
      */
+    @Deprecated
     public static Multibinder<String> contributeProjects(Binder binder) {
         return Multibinder.newSetBinder(binder, String.class, CayenneConfigs.class);
     }
@@ -83,18 +89,17 @@ public class CayenneModule extends ConfigModule {
      * @param binder DI binder passed to the Module that invokes this method.
      * @return returns a {@link Multibinder} for Cayenne DI modules.
      * @since 0.17
+     * @deprecated since 0.19 call {@link #extend(Binder)} and then call
+     * {@link CayenneModuleExtender#addModule(Class)} or similar methods.
      */
+    @Deprecated
     public static Multibinder<Module> contributeModules(Binder binder) {
         return Multibinder.newSetBinder(binder, Module.class);
     }
 
     @Override
     public void configure(Binder binder) {
-        // trigger extension points creation
-        CayenneModule.contributeListeners(binder);
-        CayenneModule.contributeFilters(binder);
-        CayenneModule.contributeModules(binder);
-        CayenneModule.contributeProjects(binder);
+        extend(binder).initAllExtensions();
     }
 
     @Provides
@@ -129,7 +134,7 @@ public class CayenneModule extends ConfigModule {
         // just like filters...
         if (!listeners.isEmpty()) {
             DataDomain domain = runtime.getDataDomain();
-            listeners.forEach(l -> domain.addListener(l));
+            listeners.forEach(domain::addListener);
         }
 
         return runtime;
@@ -144,7 +149,7 @@ public class CayenneModule extends ConfigModule {
             extras.add(cayenneBinder -> {
                 ListBuilder<DataChannelFilter> listBinder = cayenneBinder
                         .bindList(Constants.SERVER_DOMAIN_FILTERS_LIST);
-                filters.forEach(f -> listBinder.add(f));
+                filters.forEach(listBinder::add);
             });
         }
 

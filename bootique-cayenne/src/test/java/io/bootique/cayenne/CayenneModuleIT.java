@@ -150,10 +150,8 @@ public class CayenneModuleIT {
     public void testContributeModules() {
 
         Module guiceModule = b -> {
-            org.apache.cayenne.di.Module cayenneModule = (cb) -> {
-                cb.bind(CayenneModuleIT.class).toInstance(this);
-            };
-            CayenneModule.contributeModules(b).addBinding().toInstance(cayenneModule);
+            org.apache.cayenne.di.Module cayenneModule = (cb) -> cb.bind(CayenneModuleIT.class).toInstance(this);
+            CayenneModule.extend(b).addModule(cayenneModule);
         };
 
         ServerRuntime runtime = testFactory.app("--config=classpath:fullconfig.yml")
@@ -168,8 +166,7 @@ public class CayenneModuleIT {
     @Test
     public void testMergeConfigs() {
 
-        Module cayenneProjectModule = binder -> CayenneModule.contributeProjects(binder)
-                .addBinding().toInstance("cayenne-project2.xml");
+        Module cayenneProjectModule = binder -> CayenneModule.extend(binder).addProject("cayenne-project2.xml");
 
         ServerRuntime runtime = testFactory.app("--config=classpath:noconfig.yml")
                 .modules(JdbcModule.class, CayenneModule.class)

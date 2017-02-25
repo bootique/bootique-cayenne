@@ -1,3 +1,7 @@
+## 0.19
+
+* #35 Upgrade to bootique 0.22, other fresh dependencies, create extender
+
 ## 0.18
 
 * #15 Pure Bootique bootstrap of Cayenne projects

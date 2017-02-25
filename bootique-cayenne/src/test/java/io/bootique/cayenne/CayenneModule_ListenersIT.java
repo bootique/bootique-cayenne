@@ -34,9 +34,8 @@ public class CayenneModule_ListenersIT {
     private ServerRuntime runtimeWithListeners(Object... listeners) {
 
         Module listenersModule = (binder) -> {
-
-            Multibinder<Object> listenersBinder = CayenneModule.contributeListeners(binder);
-            Arrays.asList(listeners).forEach(l -> listenersBinder.addBinding().toInstance(l));
+            CayenneModuleExtender extender = CayenneModule.extend(binder);
+            Arrays.asList(listeners).forEach(extender::addListener);
         };
 
         return testFactory.app("--config=classpath:genericconfig.yml")
@@ -50,8 +49,8 @@ public class CayenneModule_ListenersIT {
 
         Module filtersModule = (binder) -> {
 
-            Multibinder<DataChannelFilter> filterBinder = CayenneModule.contributeFilters(binder);
-            Arrays.asList(filters).forEach(f -> filterBinder.addBinding().toInstance(f));
+            CayenneModuleExtender extender = CayenneModule.extend(binder);
+            Arrays.asList(filters).forEach(extender::addFilter);
         };
 
         return testFactory.app("--config=classpath:genericconfig.yml")

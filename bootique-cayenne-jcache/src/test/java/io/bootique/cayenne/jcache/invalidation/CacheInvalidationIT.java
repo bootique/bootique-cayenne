@@ -37,7 +37,7 @@ public class CacheInvalidationIT {
     public static void beforeClass() {
         TEST_RUNTIME = TEST_FACTORY.app("-c", "classpath:bq1.yml")
                 .autoLoadModules()
-                .module(b -> CayenneJCacheModule.contributeInvalidationHandler(b).addBinding().to(G1InvalidationHandler.class))
+                .module(b -> CayenneJCacheModule.extend(b).addInvalidationHandler(G1InvalidationHandler.class))
                 .createRuntime();
         SERVER_RUNTIME = TEST_RUNTIME.getRuntime().getInstance(ServerRuntime.class);
     }
