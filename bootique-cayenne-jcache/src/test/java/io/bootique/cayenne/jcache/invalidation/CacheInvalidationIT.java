@@ -10,16 +10,15 @@ import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.Persistent;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.lifecycle.cache.CacheGroups;
+import org.apache.cayenne.lifecycle.cache.InvalidationFunction;
+import org.apache.cayenne.lifecycle.cache.InvalidationHandler;
 import org.apache.cayenne.query.ObjectSelect;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Optional;
-import java.util.function.Function;
 
 import static org.junit.Assert.assertEquals;
 
@@ -113,14 +112,16 @@ public class CacheInvalidationIT {
     }
 
     static class G1InvalidationHandler implements InvalidationHandler {
+
+
         @Override
-        public Optional<Function<Persistent, Collection<String>>> canHandle(Class<? extends Persistent> type) {
+        public InvalidationFunction canHandle(Class<? extends Persistent> type) {
 
             if(type.getAnnotation(CacheGroups.class) != null) {
-                return Optional.empty();
+                return null;
             }
 
-            return Optional.of(p -> Collections.singleton("g1"));
+            return p -> Collections.singleton("g1");
         }
     }
 }

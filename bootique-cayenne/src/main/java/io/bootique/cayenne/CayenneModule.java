@@ -5,19 +5,18 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
 import io.bootique.ConfigModule;
-import io.bootique.cayenne.annotation.CayenneListener;
 import io.bootique.cayenne.annotation.CayenneConfigs;
+import io.bootique.cayenne.annotation.CayenneListener;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.jdbc.DataSourceFactory;
 import io.bootique.log.BootLogger;
 import io.bootique.shutdown.ShutdownManager;
 import org.apache.cayenne.DataChannelFilter;
 import org.apache.cayenne.access.DataDomain;
-import org.apache.cayenne.configuration.Constants;
+import org.apache.cayenne.configuration.server.ServerModule;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.di.ListBuilder;
 import org.apache.cayenne.di.Module;
-import org.apache.cayenne.java8.CayenneJava8Module;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -142,13 +141,11 @@ public class CayenneModule extends ConfigModule {
 
     protected Collection<Module> extraCayenneModules(Set<Module> customModules, Set<DataChannelFilter> filters) {
         Collection<Module> extras = new ArrayList<>();
-        extras.add(new CayenneJava8Module());
         extras.addAll(customModules);
 
         if (!filters.isEmpty()) {
             extras.add(cayenneBinder -> {
-                ListBuilder<DataChannelFilter> listBinder = cayenneBinder
-                        .bindList(Constants.SERVER_DOMAIN_FILTERS_LIST);
+                ListBuilder<DataChannelFilter> listBinder = ServerModule.contributeDomainFilters(cayenneBinder);
                 filters.forEach(listBinder::add);
             });
         }

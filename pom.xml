@@ -25,7 +25,7 @@
     </modules>
 
     <properties>
-        <cayenne-version>4.0.M4</cayenne-version>
+        <cayenne-version>4.0.M5</cayenne-version>
         <bootique-version>0.22-SNAPSHOT</bootique-version>
         <bootique-jdbc-version>0.14-SNAPSHOT</bootique-jdbc-version>
         <bootique-jcache-version>0.2-SNAPSHOT</bootique-jcache-version>
@@ -94,6 +94,11 @@
                         <groupId>commons-logging</groupId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cayenne</groupId>
+                <artifactId>cayenne-jcache</artifactId>
+                <version>${cayenne-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.cayenne</groupId>

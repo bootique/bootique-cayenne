@@ -1,22 +1,25 @@
 package io.bootique.cayenne.jcache;
 
 import com.google.inject.Binder;
+import com.google.inject.BindingAnnotation;
+import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.multibindings.Multibinder;
 import io.bootique.cayenne.CayenneModule;
-import io.bootique.cayenne.jcache.invalidation.CacheGroupsHandler;
-import io.bootique.cayenne.jcache.invalidation.InvalidationHandler;
 import io.bootique.jcache.JCacheModule;
+import org.apache.cayenne.jcache.JCacheConstants;
+import org.apache.cayenne.lifecycle.cache.CacheInvalidationModuleBuilder;
+import org.apache.cayenne.lifecycle.cache.InvalidationHandler;
 
 import javax.cache.CacheManager;
 import javax.cache.configuration.Configuration;
-import javax.cache.configuration.MutableConfiguration;
-import javax.cache.expiry.CreatedExpiryPolicy;
-import javax.cache.expiry.Duration;
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.Set;
 
 /**
@@ -38,51 +41,47 @@ public class CayenneJCacheModule implements Module {
 
     /**
      * @param binder DI binder passed to the Module that invokes this method.
-     * @return a {@link Multibinder} for invalidation handlers.
-     * @deprecated since 0.19 call {@link #extend(Binder)} and then call
-     * {@link CayenneJCacheModuleExtender#addInvalidationHandler(Class)} or similar methods.
-     */
-    @Deprecated
-    public static Multibinder<InvalidationHandler> contributeInvalidationHandler(Binder binder) {
-        return Multibinder.newSetBinder(binder, InvalidationHandler.class);
-    }
-
-    /**
-     * @param binder DI binder passed to the Module that invokes this method.
      * @return a {@link Multibinder} for cache configurations.
      * @deprecated since 0.19 call {@link #extend(Binder)} and then call
      * {@link CayenneJCacheModuleExtender#setDefaultCacheConfiguration(Configuration)}.
      */
     @Deprecated
     public static LinkedBindingBuilder<Configuration<?, ?>> contributeDefaultCacheConfiguration(Binder binder) {
-        return JCacheModule.contributeConfiguration(binder).addBinding(JCacheQueryCache.DEFAULT_CACHE_NAME);
+        return JCacheModule.contributeConfiguration(binder).addBinding(JCacheConstants.DEFAULT_CACHE_NAME);
     }
 
     @Override
     public void configure(Binder binder) {
-        CayenneJCacheModule.extend(binder).initAllExtensions()
-                // always support a handler for @CacheGroups annotation.
-                .addInvalidationHandler(CacheGroupsHandler.class);
+        extend(binder).initAllExtensions();
 
-        CayenneModule.extend(binder).addModule(CayenneDIJCacheModule.class);
+        CayenneModule.extend(binder).addModule(Key.get(org.apache.cayenne.di.Module.class, DefinedInCayenneJCache.class));
     }
 
     @Singleton
     @Provides
-    CayenneDIJCacheModule provideDiEhCacheModule(JCacheQueryCache queryCache, Set<InvalidationHandler> invalidationHandlers) {
-        return new CayenneDIJCacheModule(queryCache, invalidationHandlers);
+    @DefinedInCayenneJCache
+    org.apache.cayenne.di.Module provideDiJCacheModule(CacheManager cacheManager, Set<InvalidationHandler> invalidationHandlers) {
+        // return module composition
+        return b -> {
+            createInvalidationModule(invalidationHandlers).configure(b);
+            createOverridesModule(cacheManager).configure(b);
+        };
     }
 
-    @Singleton
-    @Provides
-    JCacheQueryCache provideQueryCache(CacheManager cacheManager) {
-
-        MutableConfiguration<String, List> configuration =
-                new MutableConfiguration<String, List>()
-                        .setTypes(String.class, List.class)
-                        .setStoreByValue(false)
-                        .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(Duration.TEN_MINUTES));
-
-        return new JCacheQueryCache(cacheManager, configuration);
+    protected org.apache.cayenne.di.Module createInvalidationModule(Set<InvalidationHandler> invalidationHandlers) {
+        CacheInvalidationModuleBuilder builder = CacheInvalidationModuleBuilder.builder();
+        invalidationHandlers.forEach(builder::invalidationHandler);
+        return builder.build();
     }
+
+    protected org.apache.cayenne.di.Module createOverridesModule(CacheManager cacheManager) {
+        return b -> b.bind(CacheManager.class).toInstance(cacheManager);
+    }
+
+    @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @BindingAnnotation
+    @interface DefinedInCayenneJCache {
+    }
+
 }

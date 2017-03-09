@@ -58,10 +58,9 @@ public class ServerRuntimeFactory {
      * subclasses.
      */
     protected ServerRuntimeBuilder cayenneBuilder(DataSourceFactory dataSourceFactory) {
-        ServerRuntimeBuilder builder = ServerRuntimeBuilder.builder(name);
 
         // building our own Cayenne extensions module...
-        builder.addModule(binder -> {
+        return ServerRuntime.builder(name).addModule(binder -> {
 
             // provide schema creation hook
             if (createSchema) {
@@ -83,8 +82,6 @@ public class ServerRuntimeFactory {
                     new BQCayenneDataSourceFactory(dataSourceFactory, datasource, maps);
             binder.bind(org.apache.cayenne.configuration.server.DataSourceFactory.class).toInstance(bqCayenneDSFactory);
         });
-
-        return builder;
     }
 
     Collection<String> configs() {

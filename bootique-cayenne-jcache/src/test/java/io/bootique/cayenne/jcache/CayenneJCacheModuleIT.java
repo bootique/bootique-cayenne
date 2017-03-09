@@ -5,7 +5,9 @@ import io.bootique.cayenne.test.CayenneTestDataManager;
 import io.bootique.test.BQTestRuntime;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.ObjectContext;
+import org.apache.cayenne.cache.QueryCache;
 import org.apache.cayenne.configuration.server.ServerRuntime;
+import org.apache.cayenne.jcache.JCacheQueryCache;
 import org.apache.cayenne.query.ObjectSelect;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -13,6 +15,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CayenneJCacheModuleIT {
 
@@ -33,6 +36,11 @@ public class CayenneJCacheModuleIT {
         RUNTIME = TEST_RUNTIME.getRuntime().getInstance(ServerRuntime.class);
     }
 
+    @Test
+    public void testCacheProvider() {
+        QueryCache cache = RUNTIME.getInjector().getInstance(QueryCache.class);
+        assertTrue("Unexpected cache type: " + cache.getClass().getName(), cache instanceof JCacheQueryCache);
+    }
 
     @Test
     public void testCachedQueries() {

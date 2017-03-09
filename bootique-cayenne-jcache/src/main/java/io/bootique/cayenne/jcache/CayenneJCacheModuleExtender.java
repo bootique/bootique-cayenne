@@ -3,8 +3,9 @@ package io.bootique.cayenne.jcache;
 import com.google.inject.Binder;
 import com.google.inject.multibindings.Multibinder;
 import io.bootique.ModuleExtender;
-import io.bootique.cayenne.jcache.invalidation.InvalidationHandler;
 import io.bootique.jcache.JCacheModule;
+import org.apache.cayenne.jcache.JCacheConstants;
+import org.apache.cayenne.lifecycle.cache.InvalidationHandler;
 
 import javax.cache.configuration.Configuration;
 
@@ -35,7 +36,7 @@ public class CayenneJCacheModuleExtender extends ModuleExtender<CayenneJCacheMod
 
     // TODO: we actually know key and value types for Cayenne QueryCache config
     public CayenneJCacheModuleExtender setDefaultCacheConfiguration(Configuration<?, ?> config) {
-        JCacheModule.extend(binder).setConfiguration(JCacheQueryCache.DEFAULT_CACHE_NAME, config);
+        JCacheModule.extend(binder).setConfiguration(JCacheConstants.DEFAULT_CACHE_NAME, config);
         return this;
     }
 

@@ -1,6 +1,7 @@
 ## 0.19
 
 * #35 Upgrade to bootique 0.22, other fresh dependencies, create extender
+* #36 Upgrade to Cayenne 4.0.M5
 
 ## 0.18
 

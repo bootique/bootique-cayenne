@@ -1,6 +1,7 @@
 package io.bootique.cayenne;
 
 import com.google.inject.Binder;
+import com.google.inject.Key;
 import com.google.inject.multibindings.Multibinder;
 import io.bootique.ModuleExtender;
 import io.bootique.cayenne.annotation.CayenneConfigs;
@@ -63,6 +64,11 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
 
     public CayenneModuleExtender addModule(Class<? extends Module> moduleType) {
         contributeModules().addBinding().to(moduleType);
+        return this;
+    }
+
+    public CayenneModuleExtender addModule(Key<? extends Module> moduleKey) {
+        contributeModules().addBinding().to(moduleKey);
         return this;
     }
 
