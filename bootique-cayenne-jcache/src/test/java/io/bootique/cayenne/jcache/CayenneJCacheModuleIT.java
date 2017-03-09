@@ -14,7 +14,10 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import javax.cache.CacheManager;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 public class CayenneJCacheModuleIT {
@@ -40,6 +43,16 @@ public class CayenneJCacheModuleIT {
     public void testCacheProvider() {
         QueryCache cache = RUNTIME.getInjector().getInstance(QueryCache.class);
         assertTrue("Unexpected cache type: " + cache.getClass().getName(), cache instanceof JCacheQueryCache);
+    }
+
+    @Test
+    public void testCacheManager() {
+        CacheManager cacheManager = RUNTIME.getInjector().getInstance(CacheManager.class);
+        assertTrue("Unexpected cache type: " + cacheManager.getClass().getName(),
+                cacheManager.getClass().getName().startsWith("org.ehcache.jsr107"));
+
+        CacheManager expectedCacheManager = TEST_RUNTIME.getRuntime().getInstance(CacheManager.class);
+        assertSame(expectedCacheManager, cacheManager);
     }
 
     @Test
