@@ -7,10 +7,8 @@ import io.bootique.cayenne.test.CayenneTestDataManager;
 import io.bootique.test.BQTestRuntime;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.ObjectContext;
-import org.apache.cayenne.Persistent;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.lifecycle.cache.CacheGroups;
-import org.apache.cayenne.lifecycle.cache.InvalidationFunction;
 import org.apache.cayenne.lifecycle.cache.InvalidationHandler;
 import org.apache.cayenne.query.ObjectSelect;
 import org.junit.BeforeClass;
@@ -18,8 +16,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.util.Collections;
-
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 public class CacheInvalidationIT {
@@ -34,9 +31,18 @@ public class CacheInvalidationIT {
 
     @BeforeClass
     public static void beforeClass() {
+
+        InvalidationHandler invalidationHandler = type -> {
+            if(type.getAnnotation(CacheGroups.class) != null) {
+                return null;
+            }
+
+            return p -> asList("cayenne1");
+        };
+
         TEST_RUNTIME = TEST_FACTORY.app("-c", "classpath:bq1.yml")
                 .autoLoadModules()
-                .module(b -> CayenneJCacheModule.extend(b).addInvalidationHandler(G1InvalidationHandler.class))
+                .module(b -> CayenneJCacheModule.extend(b).addInvalidationHandler(invalidationHandler))
                 .createRuntime();
         SERVER_RUNTIME = TEST_RUNTIME.getRuntime().getInstance(ServerRuntime.class);
     }
@@ -47,8 +53,8 @@ public class CacheInvalidationIT {
         ObjectContext context = SERVER_RUNTIME.newContext();
         // no explicit cache group must still work - it lands inside default cache called 'cayenne.default.cache'
         ObjectSelect<Table1> g0 = ObjectSelect.query(Table1.class).localCache();
-        ObjectSelect<Table1> g1 = ObjectSelect.query(Table1.class).localCache("g1");
-        ObjectSelect<Table1> g2 = ObjectSelect.query(Table1.class).localCache("g2");
+        ObjectSelect<Table1> g1 = ObjectSelect.query(Table1.class).localCache("cayenne1");
+        ObjectSelect<Table1> g2 = ObjectSelect.query(Table1.class).localCache("cayenne2");
 
         assertEquals(0, g0.select(context).size());
         assertEquals(0, g1.select(context).size());
@@ -84,8 +90,8 @@ public class CacheInvalidationIT {
     public void testInvalidate_CacheGroup() {
 
         ObjectContext context = SERVER_RUNTIME.newContext();
-        ObjectSelect<Table2> g3 = ObjectSelect.query(Table2.class).localCache("g3");
-        ObjectSelect<Table2> g4 = ObjectSelect.query(Table2.class).localCache("g4");
+        ObjectSelect<Table2> g3 = ObjectSelect.query(Table2.class).localCache("cayenne3");
+        ObjectSelect<Table2> g4 = ObjectSelect.query(Table2.class).localCache("cayenne4");
 
         assertEquals(0, g3.select(context).size());
         assertEquals(0, g4.select(context).size());
@@ -109,19 +115,5 @@ public class CacheInvalidationIT {
         // deleted via Cayenne... "g1" should get auto refreshed
         assertEquals(1, g3.select(context).size());
         assertEquals(0, g4.select(context).size());
-    }
-
-    static class G1InvalidationHandler implements InvalidationHandler {
-
-
-        @Override
-        public InvalidationFunction canHandle(Class<? extends Persistent> type) {
-
-            if(type.getAnnotation(CacheGroups.class) != null) {
-                return null;
-            }
-
-            return p -> Collections.singleton("g1");
-        }
     }
 }
