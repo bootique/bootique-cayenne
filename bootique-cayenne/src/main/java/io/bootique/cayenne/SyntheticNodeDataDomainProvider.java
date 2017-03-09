@@ -139,12 +139,7 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
                 datasource = defaultDatasource.getOptionalName();
             }
 
-            Collection<DataMapConfig> configs = result.get(datasource);
-            if (configs == null) {
-                configs = new ArrayList<>();
-                result.put(datasource, configs);
-            }
-            configs.add(dataMapConfig);
+            result.computeIfAbsent(datasource, k -> new ArrayList<>()).add(dataMapConfig);
         }
 
         return result;
