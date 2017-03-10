@@ -16,8 +16,12 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import javax.cache.Cache;
+import javax.cache.CacheManager;
+
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class CacheInvalidationIT {
 
@@ -27,17 +31,19 @@ public class CacheInvalidationIT {
     private static ServerRuntime SERVER_RUNTIME;
 
     @Rule
-    public CayenneTestDataManager dataManager = new CayenneTestDataManager(TEST_RUNTIME, true, Table1.class, Table2.class);
+    public CayenneTestDataManager dataManager = new CayenneTestDataManager(TEST_RUNTIME, true,
+            Table1.class,
+            Table2.class);
 
     @BeforeClass
     public static void beforeClass() {
 
         InvalidationHandler invalidationHandler = type -> {
-            if(type.getAnnotation(CacheGroups.class) != null) {
+            if (type.getAnnotation(CacheGroups.class) != null) {
                 return null;
             }
 
-            return p -> asList("cayenne1");
+            return p -> asList("cayenne1", "nocayenne1");
         };
 
         TEST_RUNTIME = TEST_FACTORY.app("-c", "classpath:bq1.yml")
@@ -48,7 +54,7 @@ public class CacheInvalidationIT {
     }
 
     @Test
-    public void testInvalidate_Custom() {
+    public void testInvalidate_CustomHandler() {
 
         ObjectContext context = SERVER_RUNTIME.newContext();
         // no explicit cache group must still work - it lands inside default cache called 'cayenne.default.cache'
@@ -115,5 +121,30 @@ public class CacheInvalidationIT {
         // deleted via Cayenne... "g1" should get auto refreshed
         assertEquals(1, g3.select(context).size());
         assertEquals(0, g4.select(context).size());
+    }
+
+    @Test
+    public void testInvalidate_CustomData() {
+
+        ObjectContext context = SERVER_RUNTIME.newContext();
+
+        // make sure Cayenne-specific caches are created...
+        ObjectSelect<Table1> g1 = ObjectSelect.query(Table1.class).localCache("cayenne1");
+        assertEquals(0, g1.select(context).size());
+
+        // add custom data
+        CacheManager cacheManager = TEST_RUNTIME.getRuntime().getInstance(CacheManager.class);
+        Cache<String, String> cache = cacheManager.getCache("cayenne1");
+        cache.put("a", "b");
+
+        assertEquals("b", cache.get("a"));
+
+
+        // generate commit event
+        context.newObject(Table1.class);
+        context.commitChanges();
+
+        // custom cache entries must expire
+        assertNull(cache.get("a"));
     }
 }

@@ -2,6 +2,7 @@
 
 * #35 Upgrade to bootique 0.22, other fresh dependencies, create extender
 * #36 Upgrade to Cayenne 4.0.M5
+* #37 Temp solution for the inability of Cayenne to invalidate non-Cayenne JCache caches
 
 ## 0.18
 
