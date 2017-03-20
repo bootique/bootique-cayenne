@@ -95,6 +95,7 @@ public class CayenneTestDataManager extends TestDataManager {
 
         return Table.builder(channel, dbEntity.getFullyQualifiedName())
                 .columns(columns)
+                .quoteSqlIdentifiers(dbEntity.getDataMap().isQuotingSQLIdentifiers())
                 .build();
     }
 
