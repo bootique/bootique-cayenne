@@ -15,8 +15,8 @@ public abstract class _Table1 extends CayenneDataObject {
 
     public static final String ID_PK_COLUMN = "id";
 
-    public static final Property<Long> A = new Property<Long>("a");
-    public static final Property<Long> B = new Property<Long>("b");
+    public static final Property<Long> A = Property.create("a", Long.class);
+    public static final Property<Long> B = Property.create("b", Long.class);
 
     public void setA(Long a) {
         writeProperty("a", a);
