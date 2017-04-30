@@ -1,10 +1,10 @@
 package io.bootique.cayenne.jcache.invalidation;
 
+import io.bootique.BQRuntime;
 import io.bootique.cayenne.jcache.CayenneJCacheModule;
 import io.bootique.cayenne.jcache.persistent.Table1;
 import io.bootique.cayenne.jcache.persistent.Table2;
 import io.bootique.cayenne.test.CayenneTestDataManager;
-import io.bootique.test.BQTestRuntime;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.configuration.server.ServerRuntime;
@@ -27,7 +27,7 @@ public class CacheInvalidationIT {
 
     @ClassRule
     public static BQTestFactory TEST_FACTORY = new BQTestFactory();
-    private static BQTestRuntime TEST_RUNTIME;
+    private static BQRuntime TEST_RUNTIME;
     private static ServerRuntime SERVER_RUNTIME;
 
     @Rule
@@ -50,7 +50,7 @@ public class CacheInvalidationIT {
                 .autoLoadModules()
                 .module(b -> CayenneJCacheModule.extend(b).addInvalidationHandler(invalidationHandler))
                 .createRuntime();
-        SERVER_RUNTIME = TEST_RUNTIME.getRuntime().getInstance(ServerRuntime.class);
+        SERVER_RUNTIME = TEST_RUNTIME.getInstance(ServerRuntime.class);
     }
 
     @Test
@@ -133,7 +133,7 @@ public class CacheInvalidationIT {
         assertEquals(0, g1.select(context).size());
 
         // add custom data
-        CacheManager cacheManager = TEST_RUNTIME.getRuntime().getInstance(CacheManager.class);
+        CacheManager cacheManager = TEST_RUNTIME.getInstance(CacheManager.class);
         Cache<String, String> cache = cacheManager.getCache("cayenne1");
         cache.put("a", "b");
 

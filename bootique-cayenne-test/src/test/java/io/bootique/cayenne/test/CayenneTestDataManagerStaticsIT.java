@@ -1,8 +1,8 @@
 package io.bootique.cayenne.test;
 
+import io.bootique.BQRuntime;
 import io.bootique.jdbc.test.Column;
 import io.bootique.jdbc.test.Table;
-import io.bootique.test.BQTestRuntime;
 import io.bootique.test.junit.BQTestFactory;
 import org.junit.Rule;
 import org.junit.Test;
@@ -19,11 +19,11 @@ public class CayenneTestDataManagerStaticsIT {
 
     @Test
     public void testCreateTableModel() {
-        BQTestRuntime testRuntime = testFactory.app("-c", "classpath:config1.yml")
+        BQRuntime runtime = testFactory.app("-c", "classpath:config1.yml")
                 .autoLoadModules()
                 .createRuntime();
 
-        Table t1 = CayenneTestDataManager.createTableModel(testRuntime, "db_entity");
+        Table t1 = CayenneTestDataManager.createTableModel(runtime, "db_entity");
 
         assertNotNull(t1);
 

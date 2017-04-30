@@ -32,7 +32,6 @@ public class CayenneModuleIT {
         ServerRuntime runtime = testFactory.app("--config=classpath:fullconfig.yml")
                 .modules(JdbcModule.class, CayenneModule.class)
                 .createRuntime()
-                .getRuntime()
                 .getInstance(ServerRuntime.class);
 
         DataDomain domain = runtime.getDataDomain();
@@ -48,7 +47,6 @@ public class CayenneModuleIT {
         ServerRuntime runtime = testFactory.app("--config=classpath:config_explicit_maps.yml")
                 .modules(JdbcModule.class, CayenneModule.class)
                 .createRuntime()
-                .getRuntime()
                 .getInstance(ServerRuntime.class);
 
         DataDomain domain = runtime.getDataDomain();
@@ -66,7 +64,6 @@ public class CayenneModuleIT {
         ServerRuntime runtime = testFactory.app("--config=classpath:config_explicit_maps_2.yml")
                 .modules(JdbcModule.class, CayenneModule.class)
                 .createRuntime()
-                .getRuntime()
                 .getInstance(ServerRuntime.class);
 
         DataDomain domain = runtime.getDataDomain();
@@ -84,7 +81,6 @@ public class CayenneModuleIT {
         ServerRuntime runtime = testFactory.app("--config=classpath:noconfig.yml")
                 .modules(JdbcModule.class, CayenneModule.class)
                 .createRuntime()
-                .getRuntime()
                 .getInstance(ServerRuntime.class);
 
         DataDomain domain = runtime.getDataDomain();
@@ -102,7 +98,6 @@ public class CayenneModuleIT {
         ServerRuntime runtime = testFactory.app("--config=classpath:noconfig_2ds.yml")
                 .modules(JdbcModule.class, CayenneModule.class)
                 .createRuntime()
-                .getRuntime()
                 .getInstance(ServerRuntime.class);
 
         try {
@@ -120,7 +115,6 @@ public class CayenneModuleIT {
         ServerRuntime runtime = testFactory.app("--config=classpath:noconfig_2ds_unmatched.yml")
                 .modules(JdbcModule.class, CayenneModule.class)
                 .createRuntime()
-                .getRuntime()
                 .getInstance(ServerRuntime.class);
 
         try {
@@ -139,7 +133,6 @@ public class CayenneModuleIT {
         ServerRuntime runtime = testFactory.app("--config=classpath:noconfig.yml")
                 .modules(JdbcModule.class, CayenneModule.class)
                 .createRuntime()
-                .getRuntime()
                 .getInstance(ServerRuntime.class);
 
         DataDomain domain = runtime.getDataDomain();
@@ -157,7 +150,6 @@ public class CayenneModuleIT {
         ServerRuntime runtime = testFactory.app("--config=classpath:fullconfig.yml")
                 .modules(JdbcModule.class, CayenneModule.class).module(guiceModule)
                 .createRuntime()
-                .getRuntime()
                 .getInstance(ServerRuntime.class);
 
         assertSame(this, runtime.getInjector().getInstance(CayenneModuleIT.class));
@@ -172,7 +164,6 @@ public class CayenneModuleIT {
                 .modules(JdbcModule.class, CayenneModule.class)
                 .module(cayenneProjectModule)
                 .createRuntime()
-                .getRuntime()
                 .getInstance(ServerRuntime.class);
 
         DataDomain domain = runtime.getDataDomain();

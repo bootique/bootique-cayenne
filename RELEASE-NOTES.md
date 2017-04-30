@@ -1,3 +1,7 @@
+## 0.20
+
+* #39 Upgrade to BQ 0.23 and update test API to match the new Bootique test API
+
 ## 0.19
 
 * #29 bootique-cayenne-test: Derby schema generation requires quotationst com

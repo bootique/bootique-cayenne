@@ -1,9 +1,9 @@
 package io.bootique.cayenne.test;
 
+import io.bootique.BQRuntime;
 import io.bootique.cayenne.test.persistence.Table1;
 import io.bootique.cayenne.test.persistence.Table2;
 import io.bootique.jdbc.test.Table;
-import io.bootique.test.BQTestRuntime;
 import io.bootique.test.junit.BQTestFactory;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -16,7 +16,7 @@ public class CayenneTestDataManagerIT {
 
     @ClassRule
     public static BQTestFactory TEST_FACTORY = new BQTestFactory();
-    private static BQTestRuntime TEST_RUNTIME;
+    private static BQRuntime TEST_RUNTIME;
 
     @Rule
     public CayenneTestDataManager dataManager = new CayenneTestDataManager(TEST_RUNTIME, true, Table1.class, Table2.class);

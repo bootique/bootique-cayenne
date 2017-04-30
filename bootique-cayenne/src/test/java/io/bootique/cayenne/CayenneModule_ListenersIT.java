@@ -1,7 +1,6 @@
 package io.bootique.cayenne;
 
 import com.google.inject.Module;
-import com.google.inject.multibindings.Multibinder;
 import io.bootique.jdbc.JdbcModule;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.CayenneDataObject;
@@ -22,9 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class CayenneModule_ListenersIT {
 
@@ -41,7 +38,6 @@ public class CayenneModule_ListenersIT {
         return testFactory.app("--config=classpath:genericconfig.yml")
                 .modules(JdbcModule.class, CayenneModule.class).module(listenersModule)
                 .createRuntime()
-                .getRuntime()
                 .getInstance(ServerRuntime.class);
     }
 
@@ -56,7 +52,6 @@ public class CayenneModule_ListenersIT {
         return testFactory.app("--config=classpath:genericconfig.yml")
                 .modules(JdbcModule.class, CayenneModule.class).module(filtersModule)
                 .createRuntime()
-                .getRuntime()
                 .getInstance(ServerRuntime.class);
     }
 

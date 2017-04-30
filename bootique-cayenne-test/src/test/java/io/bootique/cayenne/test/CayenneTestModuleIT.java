@@ -1,6 +1,5 @@
 package io.bootique.cayenne.test;
 
-import io.bootique.test.BQTestRuntime;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.map.DataMap;
 import org.junit.Rule;
@@ -20,7 +19,7 @@ public class CayenneTestModuleIT {
 
         SchemaListener listener = mock(SchemaListener.class);
 
-        BQTestRuntime testRuntime = testFactory.app("-c", "classpath:config2.yml")
+        testFactory.app("-c", "classpath:config2.yml")
                 .autoLoadModules()
                 .module(b -> {
                     CayenneTestModule.contributeSchemaListener(b).addBinding().toInstance(listener);

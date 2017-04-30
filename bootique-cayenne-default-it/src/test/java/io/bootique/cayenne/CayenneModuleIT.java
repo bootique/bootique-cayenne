@@ -21,7 +21,6 @@ public class CayenneModuleIT {
         ServerRuntime runtime = testFactory.app("--config=classpath:defaultconfig.yml")
                 .modules(JdbcModule.class, CayenneModule.class)
                 .createRuntime()
-                .getRuntime()
                 .getInstance(ServerRuntime.class);
 
         DataDomain domain = runtime.getDataDomain();

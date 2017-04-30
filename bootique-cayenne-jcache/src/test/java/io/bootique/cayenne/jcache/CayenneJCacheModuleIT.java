@@ -1,9 +1,9 @@
 package io.bootique.cayenne.jcache;
 
+import io.bootique.BQRuntime;
 import io.bootique.cayenne.jcache.cache.TempJCacheQueryCache;
 import io.bootique.cayenne.jcache.persistent.Table1;
 import io.bootique.cayenne.test.CayenneTestDataManager;
-import io.bootique.test.BQTestRuntime;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.cache.QueryCache;
@@ -22,7 +22,7 @@ public class CayenneJCacheModuleIT {
 
     @ClassRule
     public static BQTestFactory TEST_FACTORY = new BQTestFactory();
-    private static BQTestRuntime TEST_RUNTIME;
+    private static BQRuntime TEST_RUNTIME;
     private static ServerRuntime RUNTIME;
 
     @Rule
@@ -34,7 +34,7 @@ public class CayenneJCacheModuleIT {
                 .autoLoadModules()
                 .createRuntime();
 
-        RUNTIME = TEST_RUNTIME.getRuntime().getInstance(ServerRuntime.class);
+        RUNTIME = TEST_RUNTIME.getInstance(ServerRuntime.class);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class CayenneJCacheModuleIT {
         assertTrue("Unexpected cache type: " + cacheManager.getClass().getName(),
                 cacheManager.getClass().getName().startsWith("org.ehcache.jsr107"));
 
-        CacheManager expectedCacheManager = TEST_RUNTIME.getRuntime().getInstance(CacheManager.class);
+        CacheManager expectedCacheManager = TEST_RUNTIME.getInstance(CacheManager.class);
         assertSame(expectedCacheManager, cacheManager);
     }
 

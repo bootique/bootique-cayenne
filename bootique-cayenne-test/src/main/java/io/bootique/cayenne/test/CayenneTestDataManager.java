@@ -1,10 +1,10 @@
 package io.bootique.cayenne.test;
 
+import io.bootique.BQRuntime;
 import io.bootique.jdbc.test.Column;
 import io.bootique.jdbc.test.DatabaseChannel;
 import io.bootique.jdbc.test.Table;
 import io.bootique.jdbc.test.TestDataManager;
-import io.bootique.test.BQTestRuntime;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.map.DbAttribute;
 import org.apache.cayenne.map.DbEntity;
@@ -24,14 +24,14 @@ public class CayenneTestDataManager extends TestDataManager {
 
     private CayenneTableManager tableManager;
 
-    public CayenneTestDataManager(BQTestRuntime runtime, boolean deleteData, Class<?>... entityTypes) {
+    public CayenneTestDataManager(BQRuntime runtime, boolean deleteData, Class<?>... entityTypes) {
         super(deleteData, tablesInInsertOrder(runtime, entityTypes));
-        this.tableManager = runtime.getRuntime().getInstance(CayenneTableManager.class);
+        this.tableManager = runtime.getInstance(CayenneTableManager.class);
     }
 
-    private static Table[] tablesInInsertOrder(BQTestRuntime runtime, Class<?>... entityTypes) {
+    private static Table[] tablesInInsertOrder(BQRuntime runtime, Class<?>... entityTypes) {
 
-        ServerRuntime serverRuntime = runtime.getRuntime().getInstance(ServerRuntime.class);
+        ServerRuntime serverRuntime = runtime.getInstance(ServerRuntime.class);
         EntityResolver resolver = serverRuntime.getDataDomain().getEntityResolver();
 
         // note: do not obtain sorter from Cayenne DI. It is not a singleton and will come
@@ -56,13 +56,13 @@ public class CayenneTestDataManager extends TestDataManager {
         return tables;
     }
 
-    public static Table createTableModel(BQTestRuntime runtime, Class<?> entityType) {
-        ServerRuntime serverRuntime = runtime.getRuntime().getInstance(ServerRuntime.class);
+    public static Table createTableModel(BQRuntime runtime, Class<?> entityType) {
+        ServerRuntime serverRuntime = runtime.getInstance(ServerRuntime.class);
         return createTableModel(DatabaseChannel.get(runtime), getDbEntity(serverRuntime, entityType));
     }
 
-    public static Table createTableModel(BQTestRuntime runtime, String tableName) {
-        ServerRuntime serverRuntime = runtime.getRuntime().getInstance(ServerRuntime.class);
+    public static Table createTableModel(BQRuntime runtime, String tableName) {
+        ServerRuntime serverRuntime = runtime.getInstance(ServerRuntime.class);
         DbEntity dbEntity = serverRuntime.getDataDomain().getEntityResolver().getDbEntity(tableName);
         Objects.requireNonNull(dbEntity);
         return createTableModel(DatabaseChannel.get(runtime), dbEntity);
