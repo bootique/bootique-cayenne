@@ -1,6 +1,7 @@
 ## 0.20
 
 * #39 Upgrade to BQ 0.23 and update test API to match the new Bootique test API
+* #40 Upgrade to Cayenne 4.0.B1
 
 ## 0.19
 

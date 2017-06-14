@@ -25,7 +25,7 @@
     </modules>
 
     <properties>
-        <cayenne-version>4.0.M5</cayenne-version>
+        <cayenne-version>4.0.B1</cayenne-version>
         <bootique-version>0.23-SNAPSHOT</bootique-version>
         <bootique-jdbc-version>0.15-SNAPSHOT</bootique-jdbc-version>
         <bootique-jcache-version>0.2</bootique-jcache-version>
@@ -79,26 +79,10 @@
                 <version>${cayenne-version}</version>
                 <exclusions>
                     <exclusion>
-                        <artifactId>commons-logging</artifactId>
-                        <groupId>commons-logging</groupId>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cayenne</groupId>
-                <artifactId>cayenne-lifecycle</artifactId>
-                <version>${cayenne-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>commons-logging</artifactId>
-                        <groupId>commons-logging</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cayenne</groupId>
-                <artifactId>cayenne-jcache</artifactId>
-                <version>${cayenne-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.cayenne</groupId>
@@ -106,15 +90,14 @@
                 <version>${cayenne-version}</version>
             </dependency>
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>1.7.13</version>
+                <groupId>org.apache.cayenne</groupId>
+                <artifactId>cayenne-jcache</artifactId>
+                <version>${cayenne-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
-                <artifactId>jcl-over-slf4j</artifactId>
-                <!-- Should match the SLF version coming from Logback -->
-                <version>1.7.7</version>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.derby</groupId>
