@@ -1,13 +1,13 @@
 package io.bootique.cayenne.jcache;
 
 import io.bootique.BQRuntime;
-import io.bootique.cayenne.jcache.cache.TempJCacheQueryCache;
 import io.bootique.cayenne.jcache.persistent.Table1;
 import io.bootique.cayenne.test.CayenneTestDataManager;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.cache.QueryCache;
 import org.apache.cayenne.configuration.server.ServerRuntime;
+import org.apache.cayenne.jcache.JCacheQueryCache;
 import org.apache.cayenne.query.ObjectSelect;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -40,8 +40,7 @@ public class CayenneJCacheModuleIT {
     @Test
     public void testCacheProvider() {
         QueryCache cache = RUNTIME.getInjector().getInstance(QueryCache.class);
-        // TODO: this should be replaced with JCacheQueryCache once TempJCacheQueryCache is removed
-        assertTrue("Unexpected cache type: " + cache.getClass().getName(), cache instanceof TempJCacheQueryCache);
+        assertTrue("Unexpected cache type: " + cache.getClass().getName(), cache instanceof JCacheQueryCache);
     }
 
     @Test

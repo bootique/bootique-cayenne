@@ -4,8 +4,8 @@ import com.google.inject.Binder;
 import com.google.inject.multibindings.Multibinder;
 import io.bootique.ModuleExtender;
 import io.bootique.jcache.JCacheModule;
+import org.apache.cayenne.cache.invalidation.InvalidationHandler;
 import org.apache.cayenne.jcache.JCacheConstants;
-import org.apache.cayenne.lifecycle.cache.InvalidationHandler;
 
 import javax.cache.configuration.Configuration;
 

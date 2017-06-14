@@ -7,9 +7,10 @@ import io.bootique.cayenne.jcache.persistent.Table2;
 import io.bootique.cayenne.test.CayenneTestDataManager;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.ObjectContext;
+import org.apache.cayenne.cache.invalidation.CacheGroupDescriptor;
+import org.apache.cayenne.cache.invalidation.CacheGroups;
+import org.apache.cayenne.cache.invalidation.InvalidationHandler;
 import org.apache.cayenne.configuration.server.ServerRuntime;
-import org.apache.cayenne.lifecycle.cache.CacheGroups;
-import org.apache.cayenne.lifecycle.cache.InvalidationHandler;
 import org.apache.cayenne.query.ObjectSelect;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -43,7 +44,7 @@ public class CacheInvalidationIT {
                 return null;
             }
 
-            return p -> asList("cayenne1", "nocayenne1");
+            return p -> asList(new CacheGroupDescriptor("cayenne1"), new CacheGroupDescriptor("nocayenne1"));
         };
 
         TEST_RUNTIME = TEST_FACTORY.app("-c", "classpath:bq1.yml")

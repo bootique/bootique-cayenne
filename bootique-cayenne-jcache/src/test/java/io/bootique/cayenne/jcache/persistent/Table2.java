@@ -1,7 +1,7 @@
 package io.bootique.cayenne.jcache.persistent;
 
 import io.bootique.cayenne.jcache.persistent.auto._Table2;
-import org.apache.cayenne.lifecycle.cache.CacheGroups;
+import org.apache.cayenne.cache.invalidation.CacheGroups;
 
 @CacheGroups("cayenne3")
 public class Table2 extends _Table2 {

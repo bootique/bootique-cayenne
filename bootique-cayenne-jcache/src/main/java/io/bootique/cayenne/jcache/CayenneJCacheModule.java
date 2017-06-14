@@ -9,13 +9,11 @@ import com.google.inject.Singleton;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.multibindings.Multibinder;
 import io.bootique.cayenne.CayenneModule;
-import io.bootique.cayenne.jcache.cache.TempJCacheConfigurationFactory;
-import io.bootique.cayenne.jcache.cache.TempJCacheQueryCache;
 import io.bootique.jcache.JCacheModule;
-import org.apache.cayenne.cache.QueryCache;
+import org.apache.cayenne.cache.invalidation.CacheInvalidationModule;
+import org.apache.cayenne.cache.invalidation.CacheInvalidationModuleExtender;
+import org.apache.cayenne.cache.invalidation.InvalidationHandler;
 import org.apache.cayenne.jcache.JCacheConstants;
-import org.apache.cayenne.lifecycle.cache.CacheInvalidationModuleBuilder;
-import org.apache.cayenne.lifecycle.cache.InvalidationHandler;
 
 import javax.cache.CacheManager;
 import javax.cache.configuration.Configuration;
@@ -72,21 +70,13 @@ public class CayenneJCacheModule implements Module {
     }
 
     protected org.apache.cayenne.di.Module createInvalidationModule(Set<InvalidationHandler> invalidationHandlers) {
-        CacheInvalidationModuleBuilder builder = CacheInvalidationModuleBuilder.builder();
-        invalidationHandlers.forEach(builder::invalidationHandler);
-        return builder.build();
+        CacheInvalidationModuleExtender extender = CacheInvalidationModule.extend();
+        invalidationHandlers.forEach(extender::addHandler);
+        return extender.module();
     }
 
     protected org.apache.cayenne.di.Module createOverridesModule(CacheManager cacheManager) {
-        return b -> {
-            b.bind(CacheManager.class).toInstance(cacheManager);
-
-            // TODO: remove this once Cayenne M6 fixes a few issues:
-            // 1. ordering of JCacheModule auto-loading
-            // 2. support for untyped caches per CAY-2259
-            b.bind(QueryCache.class).to(TempJCacheQueryCache.class);
-            b.bind(TempJCacheConfigurationFactory.class).to(TempJCacheConfigurationFactory.class);
-        };
+        return b -> b.bind(CacheManager.class).toInstance(cacheManager);
     }
 
     @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
