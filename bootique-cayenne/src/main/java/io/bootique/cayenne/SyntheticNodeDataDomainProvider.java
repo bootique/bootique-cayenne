@@ -25,7 +25,7 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
 
     static final String DEFAULT_NAME = "cayenne";
 
-    @Inject(ServerRuntimeFactory.DATAMAP_CONFIGS_LIST)
+    @Inject
     private List<DataMapConfig> dataMapConfigs;
 
     @Inject

@@ -9,7 +9,6 @@ import org.apache.cayenne.access.dbsync.SchemaUpdateStrategyFactory;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
 import org.apache.cayenne.di.Key;
-import org.apache.cayenne.di.ListBuilder;
 import org.apache.cayenne.di.Module;
 
 import java.util.ArrayList;
@@ -21,8 +20,6 @@ import java.util.function.Function;
 
 @BQConfig("Configures Cayenne stack, providing injectable ServerRuntime.")
 public class ServerRuntimeFactory {
-
-    static final String DATAMAP_CONFIGS_LIST = "cayenne.bq.datamap_locations";
 
     private static final String DEFAULT_CONFIG = "cayenne-project.xml";
 
@@ -69,8 +66,7 @@ public class ServerRuntimeFactory {
 
             DefaultDataSourceName defaultDataSourceName = defaultDataSourceName(dataSourceFactory);
             binder.bind(Key.get(DefaultDataSourceName.class)).toInstance(defaultDataSourceName);
-            ListBuilder<DataMapConfig> datamapLocations = binder.bindList(DATAMAP_CONFIGS_LIST);
-            maps.forEach(datamapLocations::add);
+            binder.bindList(DataMapConfig.class).addAll(maps);
 
             // provide default DataNode
             // TODO: copied from Cayenne, as the corresponding provider is not public or rather
