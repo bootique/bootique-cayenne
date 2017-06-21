@@ -2,6 +2,7 @@
 
 * #39 Upgrade to BQ 0.23 and update test API to match the new Bootique test API
 * #40 Upgrade to Cayenne 4.0.B1
+* #41 Provide details on startup failure when Cayenne project has non default name 
 
 ## 0.19
 

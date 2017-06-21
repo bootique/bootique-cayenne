@@ -47,12 +47,17 @@ public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
         }
 
         // 4. throw
-        return throwOnNoDataSource();
+        return throwOnNoDataSource(nodeDescriptor);
     }
 
-    protected DataSource throwOnNoDataSource() {
+    protected DataSource throwOnNoDataSource(DataNodeDescriptor nodeDescriptor) {
         Collection<String> names = bqDataSourceFactory.allNames();
         if (names.isEmpty()) {
+            if (nodeDescriptor.getConfigurationSource() == null) {
+                throw new IllegalArgumentException("No DataSources are available for Cayenne. " +
+                        "Default configuration resource \"cayenne-project.xml\" is not found or doesn't contain DataSource. " +
+                        "Resource with non-default name isn't contributed into CayenneModule via extender." );
+            }
             throw new IllegalStateException("No DataSources are available for Cayenne. " +
                     "Add a DataSource via 'bootique-jdbc' or map it in Cayenne project.");
         }
