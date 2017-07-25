@@ -2,6 +2,7 @@ package io.bootique.cayenne.test;
 
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.map.DataMap;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -15,6 +16,7 @@ public class CayenneTestModuleIT {
     public BQTestFactory testFactory = new BQTestFactory();
 
     @Test
+    @Ignore
     public void testSchemaListeners() {
 
         SchemaListener listener = mock(SchemaListener.class);

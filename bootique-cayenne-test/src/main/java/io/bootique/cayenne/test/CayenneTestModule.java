@@ -1,7 +1,6 @@
 package io.bootique.cayenne.test;
 
 import com.google.inject.Binder;
-import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -25,13 +24,9 @@ public class CayenneTestModule implements Module {
 
     @Override
     public void configure(Binder binder) {
-
         CayenneTestModule.contributeSchemaListener(binder);
 
         JdbcTestModule.contributeDataSourceListeners(binder).addBinding().to(SchemaCreationListener.class);
-
-        // this will trigger eager Cayenne startup and subsequent schema loading in the test DB
-        binder.bind(SchemaLoader.class).asEagerSingleton();
     }
 
     @Provides
@@ -45,13 +40,5 @@ public class CayenneTestModule implements Module {
     @Singleton
     SchemaCreationListener provideSchemaCreationListener(Set<SchemaListener> schemaListeners) {
         return new SchemaCreationListener(schemaListeners);
-    }
-
-    static class SchemaLoader {
-
-        @Inject
-        public SchemaLoader(SchemaCreationListener schemaCreationListener, ServerRuntime runtime) {
-            schemaCreationListener.createSchemas(runtime);
-        }
     }
 }
