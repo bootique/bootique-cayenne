@@ -9,7 +9,7 @@
 
     <groupId>io.bootique.cayenne</groupId>
     <artifactId>bootique-cayenne-parent</artifactId>
-    <version>0.21-SNAPSHOT</version>
+    <version>0.24-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>bootique-cayenne-parent: parent of Bootique/Cayenne integration modules</name>
