@@ -116,20 +116,20 @@ public class CayenneTestDataManager extends TestDataManager {
         return entity.getDbEntity();
     }
 
-    private static Stream<DbEntity> getJoinDbEntities(EntityResolver resolver, Class<?> entityType, Property<?> flattenedRelationship) {
+    private static Stream<DbEntity> getRelatedDbEntities(EntityResolver resolver, Class<?> entityType, Property<?> relationship) {
         ObjEntity entity = resolver.getObjEntity(entityType);
 
         if (entity == null) {
             throw new IllegalArgumentException("Not a Cayenne entity class: " + entityType.getName());
         }
 
-        ObjRelationship flattened = entity.getRelationship(flattenedRelationship.getName());
+        ObjRelationship objRelationship = entity.getRelationship(relationship.getName());
 
-        if (flattened == null) {
-            throw new IllegalArgumentException("No relationship '" + flattenedRelationship.getName() + "' in entity " + entityType.getName());
+        if (objRelationship == null) {
+            throw new IllegalArgumentException("No relationship '" + relationship.getName() + "' in entity " + entityType.getName());
         }
 
-        List<DbRelationship> path = flattened.getDbRelationships();
+        List<DbRelationship> path = objRelationship.getDbRelationships();
         if (path.size() < 2) {
             return Stream.empty();
         }
@@ -222,8 +222,8 @@ public class CayenneTestDataManager extends TestDataManager {
             return this;
         }
 
-        public Builder joinTables(Class<?> entityType, Property<?> flattenedRelationship) {
-            getJoinDbEntities(resolver, entityType, flattenedRelationship).forEach(entities::add);
+        public Builder relatedTables(Class<?> entityType, Property<?> relationship) {
+            getRelatedDbEntities(resolver, entityType, relationship).forEach(entities::add);
             return this;
         }
 
