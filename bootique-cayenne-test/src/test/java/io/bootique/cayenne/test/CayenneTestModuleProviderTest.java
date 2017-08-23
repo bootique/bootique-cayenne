@@ -9,4 +9,9 @@ public class CayenneTestModuleProviderTest {
     public void testPresentInJar() {
         BQModuleProviderChecker.testPresentInJar(CayenneTestModuleProvider.class);
     }
+
+    @Test
+    public void testMetaData() {
+        BQModuleProviderChecker.testMetadata(CayenneTestModuleProvider.class);
+    }
 }

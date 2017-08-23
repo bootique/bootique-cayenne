@@ -24,6 +24,7 @@ public class SchemaCreationListener implements DataSourceListener {
 
     private List<Consumer<Collection<DataNode>>> schemaGenerators;
     private Set<SchemaListener> schemaListeners;
+    private boolean schemasCreated = false;
 
     public SchemaCreationListener(Set<SchemaListener> schemaListeners) {
         this.schemaGenerators = new ArrayList<>();
@@ -38,6 +39,9 @@ public class SchemaCreationListener implements DataSourceListener {
      */
     public void createSchemas(ServerRuntime runtime) {
 
+        if (schemasCreated) {
+            return;
+        }
         // this line may trigger DataSource resolution for each node, inflating 'schemaGenerators' collection.
         // (i.e. using Consumer<ServerRuntime> instead of Consumer<Collection<DataNode>> will not work,
         // as 'schemaGenerators' will be empty
@@ -45,6 +49,7 @@ public class SchemaCreationListener implements DataSourceListener {
 
         // run in parallel? I guess most tests will have just one schema, so this would be moot...
         schemaGenerators.forEach(g -> g.accept(nodes));
+        schemasCreated = true;
     }
 
     @Override

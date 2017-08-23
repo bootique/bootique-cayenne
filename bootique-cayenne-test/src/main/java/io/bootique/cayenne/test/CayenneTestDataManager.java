@@ -8,7 +8,6 @@ import io.bootique.jdbc.test.TestDataManager;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.map.DbAttribute;
 import org.apache.cayenne.map.DbEntity;
-import org.apache.cayenne.map.EntityResolver;
 import org.apache.cayenne.map.EntitySorter;
 import org.apache.cayenne.map.ObjEntity;
 
@@ -26,18 +25,20 @@ public class CayenneTestDataManager extends TestDataManager {
 
     public CayenneTestDataManager(BQRuntime runtime, boolean deleteData, Class<?>... entityTypes) {
         super(deleteData, tablesInInsertOrder(runtime, entityTypes));
+
+        //create schemas once per test runner
+        runtime.getInstance(SchemaCreationListener.class).createSchemas(runtime.getInstance(ServerRuntime.class));
+
         this.tableManager = runtime.getInstance(CayenneTableManager.class);
     }
 
     private static Table[] tablesInInsertOrder(BQRuntime runtime, Class<?>... entityTypes) {
 
         ServerRuntime serverRuntime = runtime.getInstance(ServerRuntime.class);
-        EntityResolver resolver = serverRuntime.getDataDomain().getEntityResolver();
 
         // note: do not obtain sorter from Cayenne DI. It is not a singleton and will come
         // uninitialized
         EntitySorter sorter = serverRuntime.getDataDomain().getEntitySorter();
-
 
         List<DbEntity> dbEntities = new ArrayList<>();
 
