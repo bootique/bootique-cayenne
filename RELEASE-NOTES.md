@@ -1,3 +1,7 @@
+## 0.24
+
+* #45 Support for join tables in CayenneTestDataManager
+
 ## 0.20
 
 * #39 Upgrade to BQ 0.23 and update test API to match the new Bootique test API

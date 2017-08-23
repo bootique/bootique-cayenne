@@ -6,16 +6,20 @@ import io.bootique.jdbc.test.DatabaseChannel;
 import io.bootique.jdbc.test.Table;
 import io.bootique.jdbc.test.TestDataManager;
 import org.apache.cayenne.configuration.server.ServerRuntime;
+import org.apache.cayenne.exp.Property;
 import org.apache.cayenne.map.DbAttribute;
 import org.apache.cayenne.map.DbEntity;
+import org.apache.cayenne.map.DbRelationship;
 import org.apache.cayenne.map.EntityResolver;
 import org.apache.cayenne.map.EntitySorter;
 import org.apache.cayenne.map.ObjEntity;
+import org.apache.cayenne.map.ObjRelationship;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * @since 0.18
@@ -25,7 +29,8 @@ public class CayenneTestDataManager extends TestDataManager {
     private CayenneTableManager tableManager;
 
     /**
-     * Creates a builder of CayenneTestDataManager
+     * Creates a builder of CayenneTestDataManager. This is a longer, but more flexible way to create a data manager
+     * compared to {@link #CayenneTestDataManager(BQRuntime, boolean, Class[])} constructor.
      *
      * @param runtime {@link BQRuntime} used in the test.
      * @return a new instance of CayenneTestDataManager builder.
@@ -35,13 +40,6 @@ public class CayenneTestDataManager extends TestDataManager {
         return new Builder(runtime);
     }
 
-    /**
-     * @param runtime
-     * @param deleteData
-     * @param entityTypes
-     * @deprecated since 0.24 use {@link #builder(BQRuntime)} to create the data manager.
-     */
-    @Deprecated
     public CayenneTestDataManager(BQRuntime runtime, boolean deleteData, Class<?>... entityTypes) {
         super(deleteData, tablesInInsertOrder(runtime, entityTypes));
         this.tableManager = runtime.getInstance(CayenneTableManager.class);
@@ -118,6 +116,27 @@ public class CayenneTestDataManager extends TestDataManager {
         return entity.getDbEntity();
     }
 
+    private static Stream<DbEntity> getJoinDbEntities(EntityResolver resolver, Class<?> entityType, Property<?> flattenedRelationship) {
+        ObjEntity entity = resolver.getObjEntity(entityType);
+
+        if (entity == null) {
+            throw new IllegalArgumentException("Not a Cayenne entity class: " + entityType.getName());
+        }
+
+        ObjRelationship flattened = entity.getRelationship(flattenedRelationship.getName());
+
+        if (flattened == null) {
+            throw new IllegalArgumentException("No relationship '" + flattenedRelationship.getName() + "' in entity " + entityType.getName());
+        }
+
+        List<DbRelationship> path = flattened.getDbRelationships();
+        if (path.size() < 2) {
+            return Stream.empty();
+        }
+
+        return path.subList(1, path.size()).stream().map(DbRelationship::getSourceEntity);
+    }
+
     static Table createTableModel(DatabaseChannel channel, DbEntity dbEntity) {
 
         Column[] columns = new Column[dbEntity.getAttributes().size()];
@@ -137,6 +156,31 @@ public class CayenneTestDataManager extends TestDataManager {
 
     public Table getTable(Class<?> entityType) {
         return tableManager.getTable(entityType);
+    }
+
+    /**
+     * Returns a Table related to a given entity via the specified relationship. Useful for navigation to join tables
+     * that are not directly mapped to Java classes.
+     *
+     * @param entityType
+     * @param relationship
+     * @param tableIndex   An index in a list of tables spanned by 'relationship'. Index of 0 corresponds to the target
+     *                     DbEntity of the first object in a chain of DbRelationships for a given ObjRelationship.
+     * @return a Table related to a given entity via the specified relationship.
+     * @since 0.24
+     */
+    public Table getRelatedTable(Class<?> entityType, Property<?> relationship, int tableIndex) {
+        return tableManager.getRelatedTable(entityType, relationship, tableIndex);
+    }
+
+    /**
+     * @param entityType
+     * @param relationship
+     * @return a Table related to a given entity via the specified relationship.
+     * @since 0.24
+     */
+    public Table getRelatedTable(Class<?> entityType, Property<?> relationship) {
+        return tableManager.getRelatedTable(entityType, relationship, 0);
     }
 
     public static class Builder {
@@ -164,12 +208,40 @@ public class CayenneTestDataManager extends TestDataManager {
             return this;
         }
 
+        public Builder entity(Class<?> entityType) {
+            return entities(entityType);
+        }
+
         public Builder entities(Class<?>... entityTypes) {
 
-            if (entityTypes != null) {
-                for (Class<?> type : entityTypes) {
-                    entities.add(getDbEntity(resolver, type));
+            Objects.requireNonNull(entityTypes);
+            for (Class<?> type : entityTypes) {
+                entities.add(getDbEntity(resolver, type));
+            }
+
+            return this;
+        }
+
+        public Builder joinTables(Class<?> entityType, Property<?> flattenedRelationship) {
+            getJoinDbEntities(resolver, entityType, flattenedRelationship).forEach(entities::add);
+            return this;
+        }
+
+        public Builder tableName(String tableName) {
+            return tableNames(tableName);
+        }
+
+        public Builder tableNames(String... tableNames) {
+
+            Objects.requireNonNull(tableNames);
+            for (String table : tableNames) {
+
+                DbEntity entity = resolver.getDbEntity(table);
+                if (entity == null) {
+                    throw new IllegalArgumentException("Not a Cayenne-managed table: " + table);
                 }
+
+                entities.add(entity);
             }
 
             return this;
