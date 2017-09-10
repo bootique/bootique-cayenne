@@ -1,6 +1,7 @@
 ## 0.24
 
 * #45 Support for join tables in CayenneTestDataManager
+* #48 CayenneTestModule - replace 'contributeSchemaListeners' with an extender
 
 ## 0.20
 

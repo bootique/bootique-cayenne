@@ -19,15 +19,28 @@ import java.util.Set;
  */
 public class CayenneTestModule implements Module {
 
+    /**
+     * @param binder Guice DI binder
+     * @return multibinder for SchemaListeners.
+     * @deprecated since 0.24 in favor of {@link #extend(Binder)}.
+     */
+    @Deprecated
     public static Multibinder<SchemaListener> contributeSchemaListener(Binder binder) {
         return Multibinder.newSetBinder(binder, SchemaListener.class);
     }
 
+    /**
+     * @param binder Guice DI binder
+     * @return a new extender instance.
+     * @since 0.24
+     */
+    public static CayenneTestModuleExtender extend(Binder binder) {
+        return new CayenneTestModuleExtender(binder);
+    }
+
     @Override
     public void configure(Binder binder) {
-
-        CayenneTestModule.contributeSchemaListener(binder);
-
+        CayenneTestModule.extend(binder).initAllExtensions();
         JdbcTestModule.extend(binder).addDataSourceListener(SchemaCreationListener.class);
 
         // this will trigger eager Cayenne startup and subsequent schema loading in the test DB

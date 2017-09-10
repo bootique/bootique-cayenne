@@ -21,13 +21,9 @@ public class CayenneTestModuleIT {
 
         testFactory.app("-c", "classpath:config2.yml")
                 .autoLoadModules()
-                .module(b -> {
-                    CayenneTestModule.contributeSchemaListener(b).addBinding().toInstance(listener);
-                })
+                .module(b -> CayenneTestModule.extend(b).addSchemaListener(listener))
                 .createRuntime();
-
 
         verify(listener).afterSchemaCreated(any(DataMap.class));
     }
-
 }
