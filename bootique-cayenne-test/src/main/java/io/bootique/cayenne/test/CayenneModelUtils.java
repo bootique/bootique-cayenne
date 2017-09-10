@@ -16,6 +16,7 @@ import org.apache.cayenne.map.ObjRelationship;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -67,20 +68,21 @@ class CayenneModelUtils {
         return tablesInInsertOrder(runtime, dbEntities);
     }
 
-    static Table[] tablesInInsertOrder(BQRuntime runtime, List<DbEntity> dbEntities) {
+    static Table[] tablesInInsertOrder(BQRuntime runtime, Collection<DbEntity> dbEntities) {
 
         // note: do not obtain sorter from Cayenne DI. It is not a singleton and will come
         // uninitialized
         ServerRuntime serverRuntime = runtime.getInstance(ServerRuntime.class);
         EntitySorter sorter = serverRuntime.getDataDomain().getEntitySorter();
 
-        sorter.sortDbEntities(dbEntities, false);
+        List<DbEntity> list = new ArrayList<>(dbEntities);
+        sorter.sortDbEntities(list, false);
 
         DatabaseChannel channel = DatabaseChannel.get(runtime);
 
-        Table[] tables = new Table[dbEntities.size()];
+        Table[] tables = new Table[list.size()];
         for (int i = 0; i < tables.length; i++) {
-            tables[i] = createTableModel(channel, dbEntities.get(i));
+            tables[i] = createTableModel(channel, list.get(i));
         }
         return tables;
     }
@@ -97,6 +99,15 @@ class CayenneModelUtils {
         }
 
         return entity.getDbEntity();
+    }
+
+    static DbEntity getDbEntity(EntityResolver resolver, String tableName) {
+        DbEntity entity = resolver.getDbEntity(tableName);
+        if (entity == null) {
+            throw new IllegalArgumentException("Not a Cayenne-managed table: " + tableName);
+        }
+
+        return entity;
     }
 
     static Stream<DbEntity> getRelatedDbEntities(EntityResolver resolver, Class<?> entityType, Property<?> relationship) {

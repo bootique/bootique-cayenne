@@ -85,6 +85,5 @@ public class CayenneTableManager {
 
             return CayenneModelUtils.createTableModel(channel, entity);
         });
-
     }
 }

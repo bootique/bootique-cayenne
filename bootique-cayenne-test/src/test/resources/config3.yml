@@ -1,0 +1,9 @@
+jdbc:
+  ds:
+    url: jdbc:derby:target/derby/derby3;create=true
+    initialSize: 1
+
+cayenne:
+  datasource: ds
+  configs:
+    - cayenne-project3.xml

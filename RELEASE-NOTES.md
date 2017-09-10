@@ -1,6 +1,7 @@
 ## 0.24
 
 * #45 Support for join tables in CayenneTestDataManager
+* #46 Test API: smart DB cleanup - handle dependent tables
 * #47 Test API: an option to clear Cayenne caches after deleting test data
 * #48 CayenneTestModule - replace 'contributeSchemaListeners' with an extender
 
