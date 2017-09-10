@@ -28,7 +28,7 @@ public class CayenneTestModule implements Module {
 
         CayenneTestModule.contributeSchemaListener(binder);
 
-        JdbcTestModule.contributeDataSourceListeners(binder).addBinding().to(SchemaCreationListener.class);
+        JdbcTestModule.extend(binder).addDataSourceListener(SchemaCreationListener.class);
 
         // this will trigger eager Cayenne startup and subsequent schema loading in the test DB
         binder.bind(SchemaLoader.class).asEagerSingleton();
