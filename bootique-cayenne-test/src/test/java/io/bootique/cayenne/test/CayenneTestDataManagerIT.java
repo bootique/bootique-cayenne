@@ -19,7 +19,9 @@ public class CayenneTestDataManagerIT {
     private static BQRuntime TEST_RUNTIME;
 
     @Rule
-    public CayenneTestDataManager dataManager = new CayenneTestDataManager(TEST_RUNTIME, true, Table1.class, Table2.class);
+    public CayenneTestDataManager dataManager = CayenneTestDataManager.builder(TEST_RUNTIME)
+            .entities(Table1.class, Table2.class)
+            .build();
 
     @BeforeClass
     public static void beforeClass() {
@@ -64,6 +66,4 @@ public class CayenneTestDataManagerIT {
         assertEquals(1, t1.getRowCount());
         assertEquals(1, t2.getRowCount());
     }
-
-
 }

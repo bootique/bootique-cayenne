@@ -32,9 +32,9 @@ public class CacheInvalidationIT {
     private static ServerRuntime SERVER_RUNTIME;
 
     @Rule
-    public CayenneTestDataManager dataManager = new CayenneTestDataManager(TEST_RUNTIME, true,
-            Table1.class,
-            Table2.class);
+    public CayenneTestDataManager dataManager = CayenneTestDataManager.builder(TEST_RUNTIME)
+            .entities(Table1.class, Table2.class)
+            .build();
 
     @BeforeClass
     public static void beforeClass() {

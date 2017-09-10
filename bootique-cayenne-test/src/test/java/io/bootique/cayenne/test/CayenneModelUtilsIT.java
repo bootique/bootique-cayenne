@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class CayenneTestDataManagerStaticsIT {
+public class CayenneModelUtilsIT {
 
     @Rule
     public BQTestFactory testFactory = new BQTestFactory();
@@ -23,7 +23,7 @@ public class CayenneTestDataManagerStaticsIT {
                 .autoLoadModules()
                 .createRuntime();
 
-        Table t1 = CayenneTestDataManager.createTableModel(runtime, "db_entity");
+        Table t1 = CayenneModelUtils.createTableModel(runtime, "db_entity");
 
         assertNotNull(t1);
 

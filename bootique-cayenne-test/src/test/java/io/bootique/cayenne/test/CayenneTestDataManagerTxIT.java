@@ -24,7 +24,11 @@ public class CayenneTestDataManagerTxIT {
                 .autoLoadModules()
                 .createRuntime();
 
-        CayenneTestDataManager dataManager = new CayenneTestDataManager(runtime, false, Table1.class);
+        CayenneTestDataManager dataManager = CayenneTestDataManager.builder(runtime)
+                .doNotDeleteData()
+                .entities(Table1.class)
+                .build();
+
         Table t1 = dataManager.getTable(Table1.class);
 
         assertEquals(0, t1.getRowCount());

@@ -26,7 +26,9 @@ public class CayenneJCacheModuleIT {
     private static ServerRuntime RUNTIME;
 
     @Rule
-    public CayenneTestDataManager dataManager = new CayenneTestDataManager(TEST_RUNTIME, true, Table1.class);
+    public CayenneTestDataManager dataManager = CayenneTestDataManager.builder(TEST_RUNTIME)
+            .entities(Table1.class)
+            .build();
 
     @BeforeClass
     public static void setupRuntime() {

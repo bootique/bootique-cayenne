@@ -83,7 +83,7 @@ public class CayenneTableManager {
                 throw new IllegalArgumentException("Unknown DbEntity: " + n);
             }
 
-            return CayenneTestDataManager.createTableModel(channel, entity);
+            return CayenneModelUtils.createTableModel(channel, entity);
         });
 
     }
