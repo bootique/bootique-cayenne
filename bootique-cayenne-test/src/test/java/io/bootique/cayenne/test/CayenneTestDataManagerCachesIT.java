@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class CayenneTestDatamanagerCachesIT {
+public class CayenneTestDataManagerCachesIT {
 
     @ClassRule
     public static BQTestFactory TEST_FACTORY = new BQTestFactory();
