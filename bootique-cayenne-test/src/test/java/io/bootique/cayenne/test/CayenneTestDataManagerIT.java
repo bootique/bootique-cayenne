@@ -10,8 +10,6 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
 public class CayenneTestDataManagerIT {
 
     @ClassRule
@@ -41,14 +39,14 @@ public class CayenneTestDataManagerIT {
         Table t1 = dataManager.getTable(Table1.class);
         Table t2 = dataManager.getTable(Table2.class);
 
-        assertEquals(0, t1.getRowCount());
-        assertEquals(0, t2.getRowCount());
+        t1.matcher().assertNoMatches();
+        t2.matcher().assertNoMatches();
 
         t1.insert(1, 2, 3);
         t2.insert(5, "x");
 
-        assertEquals(1, t1.getRowCount());
-        assertEquals(1, t2.getRowCount());
+        t1.matcher().assertOneMatch();
+        t2.matcher().assertOneMatch();
     }
 
     @Test
@@ -57,13 +55,13 @@ public class CayenneTestDataManagerIT {
         Table t1 = dataManager.getTable(Table1.class);
         Table t2 = dataManager.getTable(Table2.class);
 
-        assertEquals(0, t1.getRowCount());
-        assertEquals(0, t2.getRowCount());
+        t1.matcher().assertNoMatches();
+        t2.matcher().assertNoMatches();
 
         t1.insert(4, 5, 6);
         t2.insert(7, "y");
 
-        assertEquals(1, t1.getRowCount());
-        assertEquals(1, t2.getRowCount());
+        t1.matcher().assertOneMatch();
+        t2.matcher().assertOneMatch();
     }
 }

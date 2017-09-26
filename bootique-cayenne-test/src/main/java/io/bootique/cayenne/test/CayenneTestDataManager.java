@@ -107,7 +107,8 @@ public class CayenneTestDataManager extends TestDataManager {
         return tableManager.getRelatedTable(entityType, relationship, 0);
     }
 
-    protected void refreshCayenneCaches() {
+    // TODO: how do we also flush per-context caches?
+    public void refreshCayenneCaches() {
         if (dataDomain.getSharedSnapshotCache() != null) {
             dataDomain.getSharedSnapshotCache().clear();
         }
