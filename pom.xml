@@ -25,7 +25,7 @@
     </modules>
 
     <properties>
-        <cayenne-version>4.0.B1</cayenne-version>
+        <cayenne-version>4.0.B2</cayenne-version>
         <bootique-version>${project.version}</bootique-version>
         <bootique-jdbc-version>${project.version}</bootique-jdbc-version>
         <bootique-jcache-version>${project.version}</bootique-jcache-version>
