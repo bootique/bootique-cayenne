@@ -20,7 +20,7 @@
             <groupId>io.bootique.cayenne</groupId>
             <artifactId>bootique-cayenne</artifactId>
             <scope>compile</scope>
-            <version>${project.version}</version>
+            <version>${bootique-version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.cayenne</groupId>
@@ -73,7 +73,7 @@
             <groupId>io.bootique.cayenne</groupId>
             <artifactId>bootique-cayenne-test</artifactId>
             <scope>test</scope>
-            <version>${project.version}</version>
+            <version>${bootique-version}</version>
         </dependency>
     </dependencies>
 
