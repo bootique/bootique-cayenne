@@ -1,6 +1,5 @@
 package io.bootique.cayenne;
 
-import io.bootique.jdbc.JdbcModule;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.ServerRuntime;
@@ -19,7 +18,7 @@ public class CayenneModuleIT {
     public void testDefaultConfig() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:defaultconfig.yml")
-                .modules(JdbcModule.class, CayenneModule.class)
+                .autoLoadModules()
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
 

@@ -41,6 +41,11 @@
 			<artifactId>slf4j-simple</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.bootique.jdbc</groupId>
+			<artifactId>bootique-jdbc-tomcat</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Provided dependencies -->
 		<dependency>

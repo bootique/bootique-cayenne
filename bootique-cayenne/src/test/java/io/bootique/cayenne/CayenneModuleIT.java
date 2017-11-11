@@ -1,7 +1,6 @@
 package io.bootique.cayenne;
 
 import com.google.inject.Module;
-import io.bootique.jdbc.JdbcModule;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.DataDomainLoadException;
@@ -30,7 +29,7 @@ public class CayenneModuleIT {
     public void testFullConfig() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:fullconfig.yml")
-                .modules(JdbcModule.class, CayenneModule.class)
+                .autoLoadModules()
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
 
@@ -45,7 +44,7 @@ public class CayenneModuleIT {
     public void testConfig_ExplicitMaps_SharedDatasource() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:config_explicit_maps.yml")
-                .modules(JdbcModule.class, CayenneModule.class)
+                .autoLoadModules()
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
 
@@ -62,7 +61,7 @@ public class CayenneModuleIT {
     public void testConfig_ExplicitMaps_DifferentDatasources() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:config_explicit_maps_2.yml")
-                .modules(JdbcModule.class, CayenneModule.class)
+                .autoLoadModules()
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
 
@@ -79,7 +78,7 @@ public class CayenneModuleIT {
     public void testDefaultDataSource() throws SQLException {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:noconfig.yml")
-                .modules(JdbcModule.class, CayenneModule.class)
+                .autoLoadModules()
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
 
@@ -96,7 +95,7 @@ public class CayenneModuleIT {
     public void testUndefinedDataSource() throws SQLException {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:noconfig_2ds.yml")
-                .modules(JdbcModule.class, CayenneModule.class)
+                .autoLoadModules()
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
 
@@ -113,7 +112,7 @@ public class CayenneModuleIT {
     public void testUnmatchedDataSource() throws SQLException {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:noconfig_2ds_unmatched.yml")
-                .modules(JdbcModule.class, CayenneModule.class)
+                .autoLoadModules()
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
 
@@ -131,7 +130,7 @@ public class CayenneModuleIT {
     public void testNoConfig() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:noconfig.yml")
-                .modules(JdbcModule.class, CayenneModule.class)
+                .autoLoadModules()
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
 
@@ -148,7 +147,8 @@ public class CayenneModuleIT {
         };
 
         ServerRuntime runtime = testFactory.app("--config=classpath:fullconfig.yml")
-                .modules(JdbcModule.class, CayenneModule.class).module(guiceModule)
+                .autoLoadModules()
+                .module(guiceModule)
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
 
@@ -161,7 +161,7 @@ public class CayenneModuleIT {
         Module cayenneProjectModule = binder -> CayenneModule.extend(binder).addProject("cayenne-project2.xml");
 
         ServerRuntime runtime = testFactory.app("--config=classpath:noconfig.yml")
-                .modules(JdbcModule.class, CayenneModule.class)
+                .autoLoadModules()
                 .module(cayenneProjectModule)
                 .createRuntime()
                 .getInstance(ServerRuntime.class);

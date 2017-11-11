@@ -1,7 +1,6 @@
 package io.bootique.cayenne;
 
 import com.google.inject.Module;
-import io.bootique.jdbc.JdbcModule;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.CayenneDataObject;
 import org.apache.cayenne.DataChannelFilter;
@@ -21,7 +20,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class CayenneModule_ListenersIT {
 
@@ -36,7 +37,8 @@ public class CayenneModule_ListenersIT {
         };
 
         return testFactory.app("--config=classpath:genericconfig.yml")
-                .modules(JdbcModule.class, CayenneModule.class).module(listenersModule)
+                .autoLoadModules()
+                .module(listenersModule)
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
     }
@@ -50,7 +52,8 @@ public class CayenneModule_ListenersIT {
         };
 
         return testFactory.app("--config=classpath:genericconfig.yml")
-                .modules(JdbcModule.class, CayenneModule.class).module(filtersModule)
+                .autoLoadModules()
+                .module(filtersModule)
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
     }

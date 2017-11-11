@@ -75,6 +75,11 @@
             <scope>test</scope>
             <version>${bootique-version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.bootique.jdbc</groupId>
+            <artifactId>bootique-jdbc-tomcat</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <!-- Optional profile used to sign artifacts -->
