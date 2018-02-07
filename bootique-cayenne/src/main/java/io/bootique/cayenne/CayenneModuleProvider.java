@@ -3,8 +3,10 @@ package io.bootique.cayenne;
 import com.google.inject.Module;
 import io.bootique.BQModule;
 import io.bootique.BQModuleProvider;
+import io.bootique.jdbc.JdbcModuleProvider;
 
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
@@ -27,5 +29,10 @@ public class CayenneModuleProvider implements BQModuleProvider {
 		return BQModuleProvider.super
 				.moduleBuilder()
 				.description("Provides integration with Apache Cayenne.");
+	}
+
+	@Override
+	public Collection<BQModuleProvider> dependencies() {
+		return Collections.singletonList(new JdbcModuleProvider());
 	}
 }
