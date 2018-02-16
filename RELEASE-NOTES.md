@@ -5,6 +5,7 @@
 * #47 Test API: an option to clear Cayenne caches after deleting test data
 * #48 CayenneTestModule - replace 'contributeSchemaListeners' with an extender
 * #49 Upgrade to Cayenne 4.0.B2
+* #50 Java 9 support
 
 ## 0.20
 
