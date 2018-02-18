@@ -6,11 +6,10 @@ import io.bootique.jdbc.JdbcModule;
 import io.bootique.jdbc.test.JdbcTestModule;
 import io.bootique.jdbc.tomcat.TomcatJdbcModuleProvider;
 import io.bootique.test.junit.BQModuleProviderChecker;
+import io.bootique.test.junit.BQRuntimeChecker;
 import io.bootique.test.junit.BQTestFactory;
 import org.junit.Rule;
 import org.junit.Test;
-
-import static com.google.common.collect.ImmutableList.of;
 
 public class CayenneTestModuleProviderTest {
 
@@ -32,11 +31,11 @@ public class CayenneTestModuleProviderTest {
                 .module(new CayenneTestModuleProvider())
                 .createRuntime();
 
-        BQModuleProviderChecker.testModulesLoaded(bqRuntime, of(
+        BQRuntimeChecker.testModulesLoaded(bqRuntime,
                 JdbcModule.class,
                 JdbcTestModule.class,
                 CayenneModule.class,
                 CayenneTestModule.class
-        ));
+        );
     }
 }
