@@ -18,7 +18,7 @@ public class CayenneJCacheModuleProviderTest {
 
     @Test
     public void testAutoLoadable() {
-        BQModuleProviderChecker.testPresentInJar(CayenneJCacheModuleProvider.class);
+        BQModuleProviderChecker.testAutoLoadable(CayenneJCacheModuleProvider.class);
     }
 
     @Test

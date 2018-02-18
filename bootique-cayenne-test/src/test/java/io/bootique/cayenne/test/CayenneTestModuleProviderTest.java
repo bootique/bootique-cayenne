@@ -17,8 +17,8 @@ public class CayenneTestModuleProviderTest {
     public BQTestFactory testFactory = new BQTestFactory();
 
     @Test
-    public void testPresentInJar() {
-        BQModuleProviderChecker.testPresentInJar(CayenneTestModuleProvider.class);
+    public void testAutoLoadable() {
+        BQModuleProviderChecker.testAutoLoadable(CayenneTestModuleProvider.class);
     }
 
     @Test
