@@ -1,3 +1,8 @@
+## 0.25
+
+* #50 Java 9 support
+* #51 Upgrade to bootique-modules-parent 0.8
+
 ## 0.24
 
 * #45 Support for join tables in CayenneTestDataManager
@@ -5,8 +10,6 @@
 * #47 Test API: an option to clear Cayenne caches after deleting test data
 * #48 CayenneTestModule - replace 'contributeSchemaListeners' with an extender
 * #49 Upgrade to Cayenne 4.0.B2
-* #50 Java 9 support
-* #51 Upgrade to bootique-modules-parent 0.8
 
 ## 0.20
 
