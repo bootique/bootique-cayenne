@@ -3,7 +3,6 @@ package io.bootique.cayenne;
 import com.google.inject.Binder;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.multibindings.Multibinder;
 import io.bootique.ConfigModule;
 import io.bootique.cayenne.annotation.CayenneConfigs;
 import io.bootique.cayenne.annotation.CayenneListener;
@@ -39,61 +38,6 @@ public class CayenneModule extends ConfigModule {
      */
     public static CayenneModuleExtender extend(Binder binder) {
         return new CayenneModuleExtender(binder);
-    }
-
-    /**
-     * Returns a Guice {@link Multibinder} to add Cayenne DataChannelFilters.
-     *
-     * @param binder DI binder passed to the Module that invokes this method.
-     * @return returns a {@link Multibinder} for Cayenne DataChannelFilters
-     * @since 0.13
-     * @deprecated since 0.19 call {@link #extend(Binder)} and then call
-     * {@link CayenneModuleExtender#addFilter(Class)} or similar methods.
-     */
-    @Deprecated
-    public static Multibinder<DataChannelFilter> contributeFilters(Binder binder) {
-        return Multibinder.newSetBinder(binder, DataChannelFilter.class);
-    }
-
-    /**
-     * Returns a Guice {@link Multibinder} to add Cayenne annotated listeners.
-     *
-     * @param binder DI binder passed to the Module that invokes this method.
-     * @return returns a {@link Multibinder} for Cayenne annotated listeners.
-     * @deprecated since 0.19 call {@link #extend(Binder)} and then call
-     * {@link CayenneModuleExtender#addListener(Class)} or similar methods.
-     */
-    @Deprecated
-    public static Multibinder<Object> contributeListeners(Binder binder) {
-        return Multibinder.newSetBinder(binder, Object.class, CayenneListener.class);
-    }
-
-    /**
-     * Returns a Guice {@link Multibinder} to add Cayenne project configs.
-     *
-     * @param binder DI binder passed to the Module that invokes this method.
-     * @return returns a {@link Multibinder} for Cayenne project configs.
-     * @since 0.18
-     * @deprecated since 0.19 call {@link #extend(Binder)} and then call
-     * {@link CayenneModuleExtender#addProject(String)}.
-     */
-    @Deprecated
-    public static Multibinder<String> contributeProjects(Binder binder) {
-        return Multibinder.newSetBinder(binder, String.class, CayenneConfigs.class);
-    }
-
-    /**
-     * Returns a Guice {@link Multibinder} to add custom Cayenne DI modules.
-     *
-     * @param binder DI binder passed to the Module that invokes this method.
-     * @return returns a {@link Multibinder} for Cayenne DI modules.
-     * @since 0.17
-     * @deprecated since 0.19 call {@link #extend(Binder)} and then call
-     * {@link CayenneModuleExtender#addModule(Class)} or similar methods.
-     */
-    @Deprecated
-    public static Multibinder<Module> contributeModules(Binder binder) {
-        return Multibinder.newSetBinder(binder, Module.class);
     }
 
     @Override

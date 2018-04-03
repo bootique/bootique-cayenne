@@ -5,8 +5,7 @@ import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.multibindings.Multibinder;
-import io.bootique.jdbc.test.JdbcTestModule;
+import io.bootique.jdbc.JdbcModule;
 import io.bootique.jdbc.test.runtime.DatabaseChannelFactory;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 
@@ -21,16 +20,6 @@ public class CayenneTestModule implements Module {
 
     /**
      * @param binder Guice DI binder
-     * @return multibinder for SchemaListeners.
-     * @deprecated since 0.24 in favor of {@link #extend(Binder)}.
-     */
-    @Deprecated
-    public static Multibinder<SchemaListener> contributeSchemaListener(Binder binder) {
-        return Multibinder.newSetBinder(binder, SchemaListener.class);
-    }
-
-    /**
-     * @param binder Guice DI binder
      * @return a new extender instance.
      * @since 0.24
      */
@@ -41,7 +30,7 @@ public class CayenneTestModule implements Module {
     @Override
     public void configure(Binder binder) {
         CayenneTestModule.extend(binder).initAllExtensions();
-        JdbcTestModule.extend(binder).addDataSourceListener(SchemaCreationListener.class);
+        JdbcModule.extend(binder).addDataSourceListener(SchemaCreationListener.class);
 
         // this will trigger eager Cayenne startup and subsequent schema loading in the test DB
         binder.bind(SchemaLoader.class).asEagerSingleton();

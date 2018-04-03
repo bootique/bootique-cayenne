@@ -1,3 +1,8 @@
+## 0.26
+
+* #44 bootique-cayenne-test: test tables are not committed with rollbackOnReturn=true and defaultAutoCommit=false
+* #52 Cleaning up APIs deprecated since <= 0.25 
+
 ## 0.25
 
 * #50 Java 9 support

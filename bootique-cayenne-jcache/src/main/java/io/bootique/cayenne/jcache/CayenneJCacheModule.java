@@ -6,17 +6,12 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.binder.LinkedBindingBuilder;
-import com.google.inject.multibindings.Multibinder;
 import io.bootique.cayenne.CayenneModule;
-import io.bootique.jcache.JCacheModule;
 import org.apache.cayenne.cache.invalidation.CacheInvalidationModule;
 import org.apache.cayenne.cache.invalidation.CacheInvalidationModuleExtender;
 import org.apache.cayenne.cache.invalidation.InvalidationHandler;
-import org.apache.cayenne.jcache.JCacheConstants;
 
 import javax.cache.CacheManager;
-import javax.cache.configuration.Configuration;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -38,17 +33,6 @@ public class CayenneJCacheModule implements Module {
      */
     public static CayenneJCacheModuleExtender extend(Binder binder) {
         return new CayenneJCacheModuleExtender(binder);
-    }
-
-    /**
-     * @param binder DI binder passed to the Module that invokes this method.
-     * @return a {@link Multibinder} for cache configurations.
-     * @deprecated since 0.19 call {@link #extend(Binder)} and then call
-     * {@link CayenneJCacheModuleExtender#setDefaultCacheConfiguration(Configuration)}.
-     */
-    @Deprecated
-    public static LinkedBindingBuilder<Configuration<?, ?>> contributeDefaultCacheConfiguration(Binder binder) {
-        return JCacheModule.contributeConfiguration(binder).addBinding(JCacheConstants.DEFAULT_CACHE_NAME);
     }
 
     @Override

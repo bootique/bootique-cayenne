@@ -4,7 +4,6 @@ import io.bootique.BQRuntime;
 import io.bootique.jdbc.test.Table;
 import io.bootique.jdbc.test.TestDataManager;
 import org.apache.cayenne.access.DataDomain;
-import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.exp.Property;
 
 /**
@@ -34,21 +33,6 @@ public class CayenneTestDataManager extends TestDataManager {
     private CayenneTableManager tableManager;
     private DataDomain dataDomain;
     private boolean refreshCayenneCaches;
-
-    /**
-     * @param runtime
-     * @param deleteData
-     * @param entityTypes
-     * @deprecated since 0.24 in favor of {@link CayenneTestDataManager#builder(BQRuntime)}.
-     */
-    @Deprecated
-    public CayenneTestDataManager(BQRuntime runtime, boolean deleteData, Class<?>... entityTypes) {
-        this(runtime.getInstance(ServerRuntime.class).getDataDomain(),
-                runtime.getInstance(CayenneTableManager.class),
-                deleteData,
-                false,
-                CayenneModelUtils.tablesInInsertOrder(runtime, entityTypes));
-    }
 
     /**
      * @param deleteData          whether all managed tables should be deleted before each test.

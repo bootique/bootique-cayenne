@@ -1,6 +1,6 @@
 package io.bootique.cayenne.test;
 
-import io.bootique.jdbc.test.runtime.DataSourceListener;
+import io.bootique.jdbc.DataSourceListener;
 import org.apache.cayenne.access.DataNode;
 import org.apache.cayenne.access.DbGenerator;
 import org.apache.cayenne.configuration.server.ServerRuntime;
@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -47,19 +46,9 @@ public class SchemaCreationListener implements DataSourceListener {
         schemaGenerators.forEach(g -> g.accept(nodes));
     }
 
-    @Override
-    public void beforeStartup(String name, Optional<String> jdbcUrl) {
-        // ignore
-    }
 
     @Override
-    public void afterShutdown(String name, Optional<String> jdbcUrl) {
-        // ignore
-    }
-
-    @Override
-    public void afterStartup(String name, Optional<String> jdbcUrl, DataSource dataSource) {
-
+    public void afterStartup(String name, String jdbcUrl, DataSource dataSource) {
         // defer schema creation until Cayenne is fully loaded...
         schemaGenerators.add(nodes -> matchingDataNodes(nodes, dataSource).forEach(this::createSchema));
     }
