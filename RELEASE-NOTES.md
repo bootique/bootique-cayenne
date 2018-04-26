@@ -2,6 +2,7 @@
 
 * #44 bootique-cayenne-test: test tables are not committed with rollbackOnReturn=true and defaultAutoCommit=false
 * #52 Cleaning up APIs deprecated since <= 0.25 
+* #53 Upgrade to Cayenne 4.0.RC1
 
 ## 0.25
 
