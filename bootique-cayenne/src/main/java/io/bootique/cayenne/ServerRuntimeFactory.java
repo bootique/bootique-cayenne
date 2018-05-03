@@ -95,6 +95,13 @@ public class ServerRuntimeFactory {
     }
 
     Collection<String> defaultConfigs() {
+
+        // #54: if "maps" are specified explicitly, default config should be ignored
+
+        if (maps != null && !maps.isEmpty()) {
+            return Collections.emptySet();
+        }
+
         return getClass().getClassLoader().getResource(DEFAULT_CONFIG) != null
                 ? Collections.singleton(DEFAULT_CONFIG)
                 : Collections.emptySet();
