@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-map xmlns="http://cayenne.apache.org/schema/9/modelMap"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://cayenne.apache.org/schema/9/modelMap http://cayenne.apache.org/schema/9/modelMap.xsd"
+	 project-version="9">
+	<property name="defaultPackage" value="io.bootique.cayenne.dm2"/>
+	<db-entity name="db_entity2">
+		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isMandatory="true"/>
+	</db-entity>
+	<obj-entity name="Entity2" className="io.bootique.cayenne.dm2.Entity2" dbEntityName="db_entity2">
+	</obj-entity>
+</data-map>
