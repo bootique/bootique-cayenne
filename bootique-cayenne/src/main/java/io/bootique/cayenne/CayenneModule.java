@@ -64,9 +64,12 @@ public class CayenneModule extends ConfigModule {
                                                  @CayenneConfigs Set<String> injectedCayenneConfigs) {
 
         Collection<Module> extras = extraCayenneModules(customModules, filters);
-        ServerRuntime runtime = configFactory.config(ServerRuntimeFactory.class, configPrefix)
-                .createCayenneRuntime(dataSourceFactory, extras,
-                        cayenneConfigs -> configMerger.merge(cayenneConfigs, injectedCayenneConfigs));
+        ServerRuntime runtime = configFactory
+                .config(ServerRuntimeFactory.class, configPrefix)
+                .createCayenneRuntime(dataSourceFactory,
+                        configMerger,
+                        extras,
+                        injectedCayenneConfigs);
 
         shutdownManager.addShutdownHook(() -> {
             bootLogger.trace(() -> "shutting down Cayenne...");

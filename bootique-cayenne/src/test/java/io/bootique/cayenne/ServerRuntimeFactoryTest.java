@@ -20,11 +20,14 @@ import static org.mockito.Mockito.when;
 public class ServerRuntimeFactoryTest {
 
 	private DataSourceFactory mockDSFactory;
+	private CayenneConfigMerger configMerger;
 
 	@Before
 	public void before() {
 		this.mockDSFactory = mock(DataSourceFactory.class);
 		when(mockDSFactory.forName(anyString())).thenReturn(mock(DataSource.class));
+
+		this.configMerger = new CayenneConfigMerger();
 	}
 
 	@Test
@@ -32,7 +35,11 @@ public class ServerRuntimeFactoryTest {
 		ServerRuntimeFactory factory = new ServerRuntimeFactory();
 		factory.setDatasource("ds1");
 
-		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory, Collections.emptyList());
+		ServerRuntime runtime = factory.createCayenneRuntime(
+				mockDSFactory,
+                configMerger,
+				Collections.emptyList(),
+				Collections.emptyList());
 		try {
 			DataDomain domain = runtime.getDataDomain();
 			assertEquals("cayenne", domain.getName());
@@ -53,7 +60,11 @@ public class ServerRuntimeFactoryTest {
 		factory.setDatasource("ds1");
 		factory.setName("me");
 
-		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory, Collections.emptyList());
+		ServerRuntime runtime = factory.createCayenneRuntime(
+				mockDSFactory,
+                configMerger,
+				Collections.emptyList(),
+				Collections.emptyList());
 		try {
 
 			DataDomain domain = runtime.getDataDomain();
@@ -74,7 +85,11 @@ public class ServerRuntimeFactoryTest {
 		factory.setDatasource("ds1");
 		factory.setConfigs(asList("cayenne-project2.xml", "cayenne-project1.xml"));
 
-		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory, Collections.emptyList());
+		ServerRuntime runtime = factory.createCayenneRuntime(
+				mockDSFactory,
+                configMerger,
+				Collections.emptyList(),
+				Collections.emptyList());
 		try {
 
 			DataDomain domain = runtime.getDataDomain();
@@ -91,7 +106,11 @@ public class ServerRuntimeFactoryTest {
 		ServerRuntimeFactory factory = new ServerRuntimeFactory();
 		factory.setDatasource("ds1");
 
-		ServerRuntime runtime = factory.createCayenneRuntime(mockDSFactory, Collections.emptyList());
+		ServerRuntime runtime = factory.createCayenneRuntime(
+				mockDSFactory,
+                configMerger,
+				Collections.emptyList(),
+				Collections.emptyList());
 		try {
 
 			DataDomain domain = runtime.getDataDomain();

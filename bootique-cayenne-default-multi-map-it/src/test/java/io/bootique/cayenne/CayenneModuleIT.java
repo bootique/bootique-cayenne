@@ -22,7 +22,7 @@ public class CayenneModuleIT {
 
     @Rule
     public BQTestFactory testFactory = new BQTestFactory();
-    
+
     @Test
     public void testExplicitMapping() {
 

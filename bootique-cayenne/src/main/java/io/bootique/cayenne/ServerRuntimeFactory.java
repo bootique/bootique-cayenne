@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.function.Function;
 
 @BQConfig("Configures Cayenne stack, providing injectable ServerRuntime.")
 public class ServerRuntimeFactory {
@@ -34,15 +33,18 @@ public class ServerRuntimeFactory {
         this.maps = new ArrayList<>();
     }
 
-    public ServerRuntime createCayenneRuntime(DataSourceFactory dataSourceFactory, Collection<Module> extraModules) {
-        return createCayenneRuntime(dataSourceFactory, extraModules, __ -> configs());
-    }
+    public ServerRuntime createCayenneRuntime(
+            DataSourceFactory dataSourceFactory,
+            CayenneConfigMerger configMerger,
+            Collection<Module> extraModules,
+            Collection<String> extraConfigs) {
 
-    public ServerRuntime createCayenneRuntime(DataSourceFactory dataSourceFactory, Collection<Module> extraModules,
-                                              Function<Collection<String>, Collection<String>> configMerger) {
+        Collection<String> factoryConfigs = configs();
+
         return cayenneBuilder(dataSourceFactory)
-                .addConfigs(configMerger.apply(configs()))
-                .addModules(extraModules).build();
+                .addConfigs(configMerger.merge(factoryConfigs, extraConfigs))
+                .addModules(extraModules)
+                .build();
     }
 
     /**
