@@ -31,7 +31,6 @@ import org.junit.Test;
 
 public class CayenneJCacheModuleProviderTest {
 
-
     @Rule
     public BQTestFactory testFactory = new BQTestFactory();
 

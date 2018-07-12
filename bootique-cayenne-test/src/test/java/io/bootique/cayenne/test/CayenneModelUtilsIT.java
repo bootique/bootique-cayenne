@@ -22,6 +22,7 @@ package io.bootique.cayenne.test;
 import io.bootique.BQRuntime;
 import io.bootique.jdbc.test.Column;
 import io.bootique.jdbc.test.Table;
+import io.bootique.jdbc.tomcat.JdbcTomcatModuleProvider;
 import io.bootique.test.junit.BQTestFactory;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,9 +38,30 @@ public class CayenneModelUtilsIT {
     public BQTestFactory testFactory = new BQTestFactory();
 
     @Test
-    public void testCreateTableModel() {
+    public void testCreateTableModel40() {
         BQRuntime runtime = testFactory.app("-c", "classpath:config1.yml")
-                .autoLoadModules()
+                .module(new io.bootique.cayenne.v40.CayenneDomainModuleProvider())
+                .module(new JdbcTomcatModuleProvider())
+                .module(new CayenneTestModuleProvider())
+                .createRuntime();
+
+        Table t1 = CayenneModelUtils.createTableModel(runtime, "db_entity");
+
+        assertNotNull(t1);
+
+        List<Column> columns = t1.getColumns();
+        assertEquals(3, columns.size());
+        assertEquals("a", columns.get(0).getName());
+        assertEquals("b", columns.get(1).getName());
+        assertEquals("id", columns.get(2).getName());
+    }
+
+    @Test
+    public void testCreateTableModel41() {
+        BQRuntime runtime = testFactory.app("-c", "classpath:config1.yml")
+                .module(new io.bootique.cayenne.v41.CayenneDomainModuleProvider())
+                .module(new JdbcTomcatModuleProvider())
+                .module(new CayenneTestModuleProvider())
                 .createRuntime();
 
         Table t1 = CayenneModelUtils.createTableModel(runtime, "db_entity");

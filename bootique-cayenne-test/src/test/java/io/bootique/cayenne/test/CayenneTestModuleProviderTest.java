@@ -41,11 +41,12 @@ public class CayenneTestModuleProviderTest {
     }
 
     @Test
-    public void testModuleDeclaresDependencies() {
+    public void testModuleDeclaresDependencies4_0() {
         final BQRuntime bqRuntime = testFactory
                 // add arguments and tomcat module,
                 // since DataSource required for CayenneTestModule
                 .app("-c", "classpath:config4.yml")
+                .module(new io.bootique.cayenne.v40.CayenneDomainModuleProvider())
                 .module(new JdbcTomcatModuleProvider())
                 .module(new CayenneTestModuleProvider())
                 .createRuntime();
@@ -56,5 +57,53 @@ public class CayenneTestModuleProviderTest {
                 CayenneModule.class,
                 CayenneTestModule.class
         );
+    }
+
+    @Test
+    public void testModuleDeclaresDependencies4_1() {
+        final BQRuntime bqRuntime = testFactory
+                // add arguments and tomcat module,
+                // since DataSource required for CayenneTestModule
+                .app("-c", "classpath:config4.yml")
+                .module(new io.bootique.cayenne.v41.CayenneDomainModuleProvider())
+                .module(new JdbcTomcatModuleProvider())
+                .module(new CayenneTestModuleProvider())
+                .createRuntime();
+
+        BQRuntimeChecker.testModulesLoaded(bqRuntime,
+                JdbcModule.class,
+                JdbcTestModule.class,
+                CayenneModule.class,
+                CayenneTestModule.class
+        );
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testModuleDeclaresDependenciesNon() {
+        final BQRuntime bqRuntime = testFactory
+                .app()
+                .module(new CayenneTestModuleProvider())
+                .createRuntime();
+
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testModuleDeclaresDependenciesMulti() {
+        testFactory
+                .app()
+                .module(new io.bootique.cayenne.v40.CayenneDomainModuleProvider())
+                .module(new io.bootique.cayenne.v41.CayenneDomainModuleProvider())
+                .module(new CayenneTestModuleProvider())
+                .createRuntime();
+
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testModuleDeclaresDependenciesMultiAutoLoad() {
+         testFactory
+                .app()
+                .autoLoadModules()
+                .createRuntime();
+
     }
 }

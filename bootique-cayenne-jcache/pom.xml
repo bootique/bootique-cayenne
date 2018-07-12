@@ -39,7 +39,16 @@
             <groupId>io.bootique.cayenne</groupId>
             <artifactId>bootique-cayenne</artifactId>
             <scope>compile</scope>
-            <version>${bootique.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.bootique.cayenne</groupId>
+            <artifactId>bootique-cayenne-4.0</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.bootique.cayenne</groupId>
+            <artifactId>bootique-cayenne-4.1</artifactId>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.cayenne</groupId>
@@ -100,6 +109,26 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.bootique.cayenne</groupId>
+                <artifactId>bootique-cayenne</artifactId>
+                <version>${bootique.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.bootique.cayenne</groupId>
+                <artifactId>bootique-cayenne-4.0</artifactId>
+                <version>${bootique.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.bootique.cayenne</groupId>
+                <artifactId>bootique-cayenne-4.1</artifactId>
+                <version>${bootique.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <!-- Optional profile used to sign artifacts -->
     <profiles>

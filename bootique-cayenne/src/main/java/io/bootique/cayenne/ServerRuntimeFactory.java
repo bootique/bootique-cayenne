@@ -25,10 +25,12 @@ import io.bootique.jdbc.DataSourceFactory;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.access.dbsync.CreateIfNoSchemaStrategy;
 import org.apache.cayenne.access.dbsync.SchemaUpdateStrategyFactory;
+import org.apache.cayenne.configuration.server.DataDomainProvider;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
 import org.apache.cayenne.di.Key;
 import org.apache.cayenne.di.Module;
+import org.apache.cayenne.di.Provider;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,13 +56,14 @@ public class ServerRuntimeFactory {
 
     public ServerRuntime createCayenneRuntime(
             DataSourceFactory dataSourceFactory,
+            Class<? extends DataDomainProvider> dataDomainProvider,
             CayenneConfigMerger configMerger,
             Collection<Module> extraModules,
             Collection<String> extraConfigs) {
 
         Collection<String> factoryConfigs = configs();
 
-        return cayenneBuilder(dataSourceFactory)
+        return cayenneBuilder(dataSourceFactory, dataDomainProvider)
                 .addConfigs(configMerger.merge(factoryConfigs, extraConfigs))
                 .addModules(extraModules)
                 .build();
@@ -75,7 +78,7 @@ public class ServerRuntimeFactory {
      * @return a {@link ServerRuntimeBuilder} that can be extended in
      * subclasses.
      */
-    protected ServerRuntimeBuilder cayenneBuilder(DataSourceFactory dataSourceFactory) {
+    protected ServerRuntimeBuilder cayenneBuilder(DataSourceFactory dataSourceFactory, Class<? extends DataDomainProvider> providerClass) {
 
         // building our own Cayenne extensions module...
         return ServerRuntime.builder(name).addModule(binder -> {
@@ -92,7 +95,7 @@ public class ServerRuntimeFactory {
             // provide default DataNode
             // TODO: copied from Cayenne, as the corresponding provider is not public or rather
             // until https://issues.apache.org/jira/browse/CAY-2095 is implemented
-            binder.bind(DataDomain.class).toProvider(SyntheticNodeDataDomainProvider.class);
+            binder.bind(DataDomain.class).toProvider(providerClass);
 
             // Bootique DataSource hooks...
             BQCayenneDataSourceFactory bqCayenneDSFactory =

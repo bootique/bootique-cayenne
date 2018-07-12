@@ -19,6 +19,7 @@
 
 package io.bootique.cayenne;
 
+import io.bootique.jdbc.tomcat.JdbcTomcatModuleProvider;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.ServerRuntime;
@@ -34,10 +35,29 @@ public class CayenneModuleIT {
     public BQTestFactory testFactory = new BQTestFactory();
 
     @Test
-    public void testDefaultConfig() {
+    public void testDefaultConfig40() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:defaultconfig.yml")
-                .autoLoadModules()
+                .module(new CayenneModuleProvider())
+                .module(new io.bootique.cayenne.v40.CayenneDomainModuleProvider())
+                .module(new JdbcTomcatModuleProvider())
+                .createRuntime()
+                .getInstance(ServerRuntime.class);
+
+        DataDomain domain = runtime.getDataDomain();
+        assertNotNull(domain.getEntityResolver().getDbEntity("db_entity"));
+
+        // trigger DB op
+        SQLSelect.dataRowQuery("SELECT * FROM db_entity").select(runtime.newContext());
+    }
+
+    @Test
+    public void testDefaultConfig41() {
+
+        ServerRuntime runtime = testFactory.app("--config=classpath:defaultconfig.yml")
+                .module(new CayenneModuleProvider())
+                .module(new io.bootique.cayenne.v41.CayenneDomainModuleProvider())
+                .module(new JdbcTomcatModuleProvider())
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
 
