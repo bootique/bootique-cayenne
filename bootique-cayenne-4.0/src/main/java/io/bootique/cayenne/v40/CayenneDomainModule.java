@@ -23,6 +23,9 @@ import com.google.inject.Binder;
 import io.bootique.ConfigModule;
 import io.bootique.cayenne.CayenneModule;
 
+/**
+ * @since 0.26
+ */
 public class CayenneDomainModule extends ConfigModule {
 
     public CayenneDomainModule() {

@@ -43,6 +43,9 @@ import java.util.Map;
 
 // TODO: copied from Cayenne, as the corresponding provider is not public or rather
 // until https://issues.apache.org/jira/browse/CAY-2095 is implemented
+/**
+ * @since 0.26
+ */
 public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
 
     static final String DEFAULT_NAME = "cayenne";

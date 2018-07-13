@@ -23,6 +23,9 @@ import com.google.inject.Module;
 import io.bootique.BQModule;
 import io.bootique.BQModuleProvider;
 
+/**
+ * @since 0.26
+ */
 public class CayenneDomainModuleProvider implements BQModuleProvider {
     @Override
     public Module module() {

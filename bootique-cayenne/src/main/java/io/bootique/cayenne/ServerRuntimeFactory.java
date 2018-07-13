@@ -54,6 +54,22 @@ public class ServerRuntimeFactory {
         this.maps = new ArrayList<>();
     }
 
+    /**
+     * @deprecated since 0.26 use {@link #createCayenneRuntime(DataSourceFactory, Class, CayenneConfigMerger, Collection, Collection)}
+     */
+    @Deprecated
+    public ServerRuntime createCayenneRuntime(
+            DataSourceFactory dataSourceFactory,
+            CayenneConfigMerger configMerger,
+            Collection<Module> extraModules,
+            Collection<String> extraConfigs) {
+
+        return createCayenneRuntime(dataSourceFactory, null, configMerger, extraModules,extraConfigs);
+    }
+
+    /**
+     * @since 0.26
+     */
     public ServerRuntime createCayenneRuntime(
             DataSourceFactory dataSourceFactory,
             Class<? extends DataDomainProvider> dataDomainProvider,
@@ -75,6 +91,7 @@ public class ServerRuntimeFactory {
      * to add custom modules, extra projects, etc.
      *
      * @param dataSourceFactory injected Bootique {@link DataSourceFactory}
+     * @param providerClass Cayenne DataDomainProvider class {@link DataDomainProvider}
      * @return a {@link ServerRuntimeBuilder} that can be extended in
      * subclasses.
      */

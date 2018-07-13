@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-
 public class CayenneModule extends ConfigModule {
 
     public CayenneModule() {
@@ -85,10 +84,11 @@ public class CayenneModule extends ConfigModule {
                                                  @CayenneConfigs Set<String> injectedCayenneConfigs) {
 
         if (dataDomainProviders.isEmpty()) {
-            throw new RuntimeException("There is no Cayenne, please add cayenne dependency with version 4.0 or 4.1.");
+            throw new RuntimeException("There is no DataDomainProvider configured, please add bootique-cayenne-4.0 or bootique-cayenne-4.1 dependency.");
         } if (dataDomainProviders.size() > 1) {
-            throw new RuntimeException("It should be no more than one Cayenne dependency configured. " +
-                    "Please remove all extra dependencies of Cayenne");
+            throw new RuntimeException("It should be no more than one DataDomainProvider configured. " +
+                    "Please remove bootique-cayenne-4.0 or bootique-cayenne-4.1 dependency if you are using autoConfiguration mode, " +
+                    "or remove one of CayenneDataDomainModule dependencies from your bootique configuration");
         }
 
         Collection<Module> extras = extraCayenneModules(customModules, filters);
