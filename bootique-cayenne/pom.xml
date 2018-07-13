@@ -46,12 +46,6 @@
 			<artifactId>bootique-jdbc</artifactId>
 			<scope>compile</scope>
 		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>org.apache.cayenne</groupId>-->
-			<!--<artifactId>cayenne-server</artifactId>-->
-			<!--<version>4.1.M1</version>-->
-			<!--<scope>compile</scope>-->
-		<!--</dependency>-->
 		<dependency>
 			<groupId>org.apache.cayenne</groupId>
 			<artifactId>cayenne-java8</artifactId>
