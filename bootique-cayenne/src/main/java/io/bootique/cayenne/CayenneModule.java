@@ -87,7 +87,7 @@ public class CayenneModule extends ConfigModule {
             throw new RuntimeException("There is no DataDomainProvider configured, please add bootique-cayenne-4.0 or bootique-cayenne-4.1 dependency.");
         } if (dataDomainProviders.size() > 1) {
             throw new RuntimeException("It should be no more than one DataDomainProvider configured. " +
-                    "Please remove bootique-cayenne-4.0 or bootique-cayenne-4.1 dependency if you are using autoConfiguration mode, " +
+                    "Please remove bootique-cayenne-4.0 or bootique-cayenne-4.1 dependency if you are using autoLoadModules mode, " +
                     "or remove one of CayenneDataDomainModule dependencies from your bootique configuration");
         }
 
