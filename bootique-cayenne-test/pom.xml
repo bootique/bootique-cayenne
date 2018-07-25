@@ -41,6 +41,16 @@
 				<version>${bootique.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>io.bootique.cayenne</groupId>
+				<artifactId>bootique-cayenne-4.0</artifactId>
+				<version>${bootique.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.bootique.cayenne</groupId>
+				<artifactId>bootique-cayenne-4.1</artifactId>
+				<version>${bootique.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>io.bootique.jdbc</groupId>
 				<artifactId>bootique-jdbc-test</artifactId>
 				<version>${bootique.version}</version>
@@ -77,6 +87,16 @@
 		<dependency>
 			<groupId>io.bootique.cayenne</groupId>
 			<artifactId>bootique-cayenne</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.bootique.cayenne</groupId>
+			<artifactId>bootique-cayenne-4.0</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.bootique.cayenne</groupId>
+			<artifactId>bootique-cayenne-4.1</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>

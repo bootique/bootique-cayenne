@@ -21,22 +21,34 @@ package io.bootique.cayenne;
 
 import com.google.inject.Binder;
 import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
 import io.bootique.ModuleExtender;
 import io.bootique.cayenne.annotation.CayenneConfigs;
 import io.bootique.cayenne.annotation.CayenneListener;
+import io.bootique.jdbc.managed.ManagedDataSourceFactory;
 import org.apache.cayenne.DataChannelFilter;
+import org.apache.cayenne.access.DataDomain;
+import org.apache.cayenne.configuration.server.DataDomainProvider;
 import org.apache.cayenne.di.Module;
+import org.apache.cayenne.di.Provider;
+
+import java.lang.reflect.Type;
 
 /**
  * @since 0.19
  */
 public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender> {
 
+    private static final Key<Class<? extends DataDomainProvider>> DOMAIN_PROVIDER = Key
+            .get(new TypeLiteral<Class<? extends DataDomainProvider>>() {
+            });
+
     private Multibinder<DataChannelFilter> filters;
     private Multibinder<Object> listeners;
     private Multibinder<String> projects;
     private Multibinder<Module> modules;
+    private Multibinder<Class<? extends DataDomainProvider>> dataDomainProviders;
 
     public CayenneModuleExtender(Binder binder) {
         super(binder);
@@ -48,6 +60,8 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
         contributeFilters();
         contributeModules();
         contributeProjects();
+        contributeDataDomainProvider();
+
         return this;
     }
 
@@ -91,6 +105,14 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
         return this;
     }
 
+    /**
+     * @since 0.26
+     */
+    public CayenneModuleExtender addDataDomainProvider(Class<? extends DataDomainProvider> providerClass) {
+        contributeDataDomainProvider().addBinding().toInstance(providerClass);
+        return this;
+    }
+
     protected Multibinder<DataChannelFilter> contributeFilters() {
         return filters != null ? filters : (filters = newSet(DataChannelFilter.class));
     }
@@ -105,5 +127,12 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
 
     protected Multibinder<Module> contributeModules() {
         return modules != null ? modules : (modules = newSet(Module.class));
+    }
+
+    /**
+     * @since 0.26
+     */
+    protected Multibinder<Class<? extends DataDomainProvider>> contributeDataDomainProvider() {
+        return dataDomainProviders != null ? dataDomainProviders : (dataDomainProviders = newSet(DOMAIN_PROVIDER));
     }
 }

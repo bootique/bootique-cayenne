@@ -28,6 +28,7 @@ import org.apache.cayenne.ObjectId;
 import org.apache.cayenne.annotation.PostPersist;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.graph.GraphDiff;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -43,6 +44,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@Ignore("Move to versioned modules.")
 public class CayenneModule_ListenersIT {
 
     @Rule

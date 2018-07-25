@@ -31,6 +31,7 @@ import io.bootique.log.BootLogger;
 import io.bootique.shutdown.ShutdownManager;
 import org.apache.cayenne.DataChannelFilter;
 import org.apache.cayenne.access.DataDomain;
+import org.apache.cayenne.configuration.server.DataDomainProvider;
 import org.apache.cayenne.configuration.server.ServerModule;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.di.ListBuilder;
@@ -39,7 +40,6 @@ import org.apache.cayenne.di.Module;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
-
 
 public class CayenneModule extends ConfigModule {
 
@@ -73,6 +73,7 @@ public class CayenneModule extends ConfigModule {
     @Provides
     @Singleton
     protected ServerRuntime createCayenneRuntime(ConfigurationFactory configFactory,
+                                                 Set<Class<? extends DataDomainProvider>> dataDomainProviders,
                                                  DataSourceFactory dataSourceFactory,
                                                  BootLogger bootLogger,
                                                  ShutdownManager shutdownManager,
@@ -82,10 +83,19 @@ public class CayenneModule extends ConfigModule {
                                                  CayenneConfigMerger configMerger,
                                                  @CayenneConfigs Set<String> injectedCayenneConfigs) {
 
+        if (dataDomainProviders.isEmpty()) {
+            throw new RuntimeException("There is no DataDomainProvider configured, please add bootique-cayenne-4.0 or bootique-cayenne-4.1 dependency.");
+        } if (dataDomainProviders.size() > 1) {
+            throw new RuntimeException("It should be no more than one DataDomainProvider configured. " +
+                    "Please remove bootique-cayenne-4.0 or bootique-cayenne-4.1 dependency if you are using autoLoadModules mode, " +
+                    "or remove one of CayenneDataDomainModule dependencies from your bootique configuration");
+        }
+
         Collection<Module> extras = extraCayenneModules(customModules, filters);
         ServerRuntime runtime = configFactory
                 .config(ServerRuntimeFactory.class, configPrefix)
                 .createCayenneRuntime(dataSourceFactory,
+                        dataDomainProviders.iterator().next(),
                         configMerger,
                         extras,
                         injectedCayenneConfigs);

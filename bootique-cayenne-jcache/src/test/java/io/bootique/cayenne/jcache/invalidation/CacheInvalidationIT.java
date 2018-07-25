@@ -20,10 +20,14 @@
 package io.bootique.cayenne.jcache.invalidation;
 
 import io.bootique.BQRuntime;
+import io.bootique.cayenne.v40.CayenneDomainModuleProvider;
 import io.bootique.cayenne.jcache.CayenneJCacheModule;
+import io.bootique.cayenne.jcache.CayenneJCacheModuleProvider;
 import io.bootique.cayenne.jcache.persistent.Table1;
 import io.bootique.cayenne.jcache.persistent.Table2;
 import io.bootique.cayenne.test.CayenneTestDataManager;
+import io.bootique.cayenne.test.CayenneTestModuleProvider;
+import io.bootique.jdbc.tomcat.JdbcTomcatModuleProvider;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.cache.invalidation.CacheGroupDescriptor;
@@ -67,7 +71,10 @@ public class CacheInvalidationIT {
         };
 
         TEST_RUNTIME = TEST_FACTORY.app("-c", "classpath:bq1.yml")
-                .autoLoadModules()
+                .module(new CayenneDomainModuleProvider())
+                .module(new JdbcTomcatModuleProvider())
+                .module(new CayenneTestModuleProvider())
+                .module(new CayenneJCacheModuleProvider())
                 .module(b -> CayenneJCacheModule.extend(b).addInvalidationHandler(invalidationHandler))
                 .createRuntime();
         SERVER_RUNTIME = TEST_RUNTIME.getInstance(ServerRuntime.class);

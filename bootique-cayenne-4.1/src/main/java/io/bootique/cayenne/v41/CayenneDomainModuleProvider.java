@@ -17,32 +17,26 @@
  * under the License.
  */
 
-package io.bootique.cayenne.test;
+package io.bootique.cayenne.v41;
 
-import io.bootique.test.junit.BQTestFactory;
-import org.apache.cayenne.map.DataMap;
-import org.junit.Rule;
-import org.junit.Test;
+import com.google.inject.Module;
+import io.bootique.BQModule;
+import io.bootique.BQModuleProvider;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-public class CayenneTestModuleIT {
-
-    @Rule
-    public BQTestFactory testFactory = new BQTestFactory();
-
-    @Test
-    public void testSchemaListeners() {
-
-        SchemaListener listener = mock(SchemaListener.class);
-
-        testFactory.app("-c", "classpath:config2.yml")
-                .autoLoadModules()
-                .module(b -> CayenneTestModule.extend(b).addSchemaListener(listener))
-                .createRuntime();
-
-        verify(listener).afterSchemaCreated(any(DataMap.class));
+/**
+ * @since 0.26
+ */
+public class CayenneDomainModuleProvider implements BQModuleProvider {
+    @Override
+    public Module module() {
+        return new CayenneDomainModule();
     }
+
+    @Override
+    public BQModule.Builder moduleBuilder() {
+        return BQModuleProvider.super
+                .moduleBuilder()
+                .description("Integrates Cayenne implementation.");
+    }
+
 }

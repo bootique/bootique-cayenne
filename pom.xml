@@ -42,6 +42,8 @@
         <module>bootique-cayenne-default-it</module>
         <module>bootique-cayenne-default-multi-map-it</module>
         <module>bootique-cayenne-test</module>
+        <module>bootique-cayenne-4.0</module>
+        <module>bootique-cayenne-4.1</module>
     </modules>
 
     <properties>

@@ -17,15 +17,18 @@
  * under the License.
  */
 
-package io.bootique.cayenne;
+package io.bootique.cayenne.v41;
 
+import io.bootique.cayenne.DataMapConfig;
+import io.bootique.cayenne.DefaultDataSourceName;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.access.DataNode;
 import org.apache.cayenne.configuration.DataChannelDescriptor;
+import org.apache.cayenne.configuration.DataMapLoader;
 import org.apache.cayenne.configuration.DataNodeDescriptor;
-import org.apache.cayenne.configuration.XMLDataMapLoader;
 import org.apache.cayenne.configuration.server.DataDomainProvider;
 import org.apache.cayenne.di.Inject;
+import org.apache.cayenne.di.Provider;
 import org.apache.cayenne.map.DataMap;
 import org.apache.cayenne.resource.Resource;
 import org.apache.cayenne.resource.URLResource;
@@ -40,12 +43,18 @@ import java.util.Map;
 
 // TODO: copied from Cayenne, as the corresponding provider is not public or rather
 // until https://issues.apache.org/jira/browse/CAY-2095 is implemented
+/**
+ * @since 0.26
+ */
 public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
 
     static final String DEFAULT_NAME = "cayenne";
 
     @Inject
     private List<DataMapConfig> dataMapConfigs;
+
+    @Inject
+    protected Provider<DataMapLoader> xmlDataMapLoaderProvider;
 
     @Inject
     private DefaultDataSourceName defaultDatasource;
@@ -61,7 +70,7 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
         Map<String, Collection<DataMapConfig>> explicitConfigs = getDataMapConfigs();
         if (!explicitConfigs.isEmpty()) {
 
-            XMLDataMapLoader dataMapLoader = new XMLDataMapLoader();
+            DataMapLoader dataMapLoader = xmlDataMapLoaderProvider.get();
             explicitConfigs.forEach((datasource, configs) -> {
 
                 DataNodeDescriptor nodeDescriptor = new DataNodeDescriptor(createSyntheticDataNodeName(datasource));

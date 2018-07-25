@@ -17,13 +17,17 @@
  * under the License.
  */
 
-package io.bootique.cayenne.test;
+package io.bootique.cayenne.test.v41;
 
 import io.bootique.BQRuntime;
+import io.bootique.cayenne.test.CayenneTestDataManager;
+import io.bootique.cayenne.test.CayenneTestModuleProvider;
 import io.bootique.cayenne.test.persistence3.P3T1;
 import io.bootique.cayenne.test.persistence3.P3T3;
 import io.bootique.cayenne.test.persistence3.P3T4;
+import io.bootique.cayenne.v41.CayenneDomainModuleProvider;
 import io.bootique.jdbc.test.Table;
+import io.bootique.jdbc.tomcat.JdbcTomcatModuleProvider;
 import io.bootique.test.junit.BQTestFactory;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -45,7 +49,9 @@ public class CayenneTestDataManagerBuilder_DependenciesIT {
     @BeforeClass
     public static void beforeClass() {
         TEST_RUNTIME = TEST_FACTORY.app("-c", "classpath:config3.yml")
-                .autoLoadModules()
+                .module(new CayenneDomainModuleProvider())
+                .module(new JdbcTomcatModuleProvider())
+                .module(new CayenneTestModuleProvider())
                 .createRuntime();
     }
 

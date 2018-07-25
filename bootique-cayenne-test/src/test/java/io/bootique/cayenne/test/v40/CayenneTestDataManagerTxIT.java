@@ -17,11 +17,15 @@
  * under the License.
  */
 
-package io.bootique.cayenne.test;
+package io.bootique.cayenne.test.v40;
 
 import io.bootique.BQRuntime;
+import io.bootique.cayenne.test.CayenneTestDataManager;
+import io.bootique.cayenne.test.CayenneTestModuleProvider;
 import io.bootique.cayenne.test.persistence.Table1;
+import io.bootique.cayenne.v40.CayenneDomainModuleProvider;
 import io.bootique.jdbc.test.Table;
+import io.bootique.jdbc.tomcat.JdbcTomcatModuleProvider;
 import io.bootique.test.junit.BQTestFactory;
 import org.junit.Rule;
 import org.junit.Test;
@@ -35,7 +39,9 @@ public class CayenneTestDataManagerTxIT {
     public void testDataSourceDoesNotAutocommit() {
 
         BQRuntime runtime = testFactory.app("-c", "classpath:config-noautocommit.yml")
-                .autoLoadModules()
+                .module(new CayenneDomainModuleProvider())
+                .module(new JdbcTomcatModuleProvider())
+                .module(new CayenneTestModuleProvider())
                 .createRuntime();
 
         CayenneTestDataManager dataManager = CayenneTestDataManager.builder(runtime)

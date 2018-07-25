@@ -20,8 +20,12 @@
 package io.bootique.cayenne.jcache;
 
 import io.bootique.BQRuntime;
+import io.bootique.cayenne.v40.CayenneDomainModuleProvider;
 import io.bootique.cayenne.jcache.persistent.Table1;
 import io.bootique.cayenne.test.CayenneTestDataManager;
+import io.bootique.cayenne.test.CayenneTestModuleProvider;
+import io.bootique.jcache.JCacheModuleProvider;
+import io.bootique.jdbc.tomcat.JdbcTomcatModuleProvider;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.cache.QueryCache;
@@ -37,7 +41,7 @@ import javax.cache.CacheManager;
 
 import static org.junit.Assert.*;
 
-public class CayenneJCacheModuleIT {
+public class CayenneJCacheModule40IT {
 
     @ClassRule
     public static BQTestFactory TEST_FACTORY = new BQTestFactory();
@@ -52,7 +56,10 @@ public class CayenneJCacheModuleIT {
     @BeforeClass
     public static void setupRuntime() {
         TEST_RUNTIME = TEST_FACTORY.app("-c", "classpath:bq1.yml")
-                .autoLoadModules()
+                .module(new CayenneDomainModuleProvider())
+                .module(new JCacheModuleProvider())
+                .module(new JdbcTomcatModuleProvider())
+                .module(new CayenneTestModuleProvider())
                 .createRuntime();
 
         RUNTIME = TEST_RUNTIME.getInstance(ServerRuntime.class);
