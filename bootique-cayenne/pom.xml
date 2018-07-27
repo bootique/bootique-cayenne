@@ -33,6 +33,10 @@
 	<name>bootique-cayenne: Cayenne Integration Bundle for Bootique</name>
 	<description>Provides Apache Cayenne integration with Bootique</description>
 
+	<properties>
+		<cayenne.version>4.0.RC1</cayenne.version>
+	</properties>
+
 	<dependencies>
 
 		<!-- Compile dependencies -->
@@ -93,6 +97,27 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.cayenne</groupId>
+				<artifactId>cayenne-server</artifactId>
+				<version>${cayenne.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-api</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cayenne</groupId>
+				<artifactId>cayenne-java8</artifactId>
+				<version>${cayenne.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<!-- Optional profile used to sign artifacts -->
 	<profiles>

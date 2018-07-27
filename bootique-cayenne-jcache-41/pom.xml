@@ -27,14 +27,14 @@
         <version>0.26-SNAPSHOT</version>
     </parent>
 
-    <artifactId>bootique-cayenne-jcache</artifactId>
+    <artifactId>bootique-cayenne-jcache-41</artifactId>
     <packaging>jar</packaging>
 
-    <name>bootique-cayenne-jcache: Integrates bootique-cayenne with bootique-jcache</name>
+    <name>bootique-cayenne-jcache-41: Integrates bootique-cayenne with bootique-jcache</name>
     <description>Integrates bootique-cayenne with bootique-jcache.</description>
 
     <properties>
-        <cayenne.version>4.0.RC1</cayenne.version>
+        <cayenne.version>4.1.M2</cayenne.version>
     </properties>
 
 
@@ -42,7 +42,7 @@
         <!-- Compile dependencies -->
         <dependency>
             <groupId>io.bootique.cayenne</groupId>
-            <artifactId>bootique-cayenne</artifactId>
+            <artifactId>bootique-cayenne-41</artifactId>
             <scope>compile</scope>
             <version>${bootique.version}</version>
         </dependency>
@@ -95,7 +95,13 @@
         </dependency>
         <dependency>
             <groupId>io.bootique.cayenne</groupId>
-            <artifactId>bootique-cayenne-test</artifactId>
+            <artifactId>bootique-cayenne-41-test</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.cayenne</groupId>
+                    <artifactId>cayenne-java8</artifactId>
+                </exclusion>
+            </exclusions>
             <scope>test</scope>
             <version>${bootique.version}</version>
         </dependency>

@@ -21,11 +21,11 @@ package io.bootique.cayenne.test.persistence3.auto;
 
 import java.util.List;
 
+import io.bootique.cayenne.test.persistence3.P3T2;
+import io.bootique.cayenne.test.persistence3.P3T3;
 import org.apache.cayenne.CayenneDataObject;
 import org.apache.cayenne.exp.Property;
 
-import io.bootique.cayenne.test.persistence3.P3T2;
-import io.bootique.cayenne.test.persistence3.P3T3;
 import io.bootique.cayenne.test.persistence3.P3T4;
 
 /**
