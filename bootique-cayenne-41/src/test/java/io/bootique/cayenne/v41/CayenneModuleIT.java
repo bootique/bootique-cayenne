@@ -17,10 +17,9 @@
  * under the License.
  */
 
-package io.bootique.cayenne.v41.jcache;
+package io.bootique.cayenne.v41;
 
 import com.google.inject.Module;
-import io.bootique.cayenne.v41.CayenneModule;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.DataDomainLoadException;

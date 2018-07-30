@@ -17,13 +17,15 @@
  * under the License.
  */
 
-package io.bootique.cayenne.v41.jcache;
+package io.bootique.cayenne.v41;
 
 import com.google.inject.Module;
-import io.bootique.cayenne.v41.CayenneModule;
-import io.bootique.cayenne.v41.CayenneModuleExtender;
 import io.bootique.test.junit.BQTestFactory;
-import org.apache.cayenne.*;
+import org.apache.cayenne.CayenneDataObject;
+import org.apache.cayenne.DataChannelFilter;
+import org.apache.cayenne.DataChannelSyncFilterChain;
+import org.apache.cayenne.ObjectContext;
+import org.apache.cayenne.ObjectId;
 import org.apache.cayenne.annotation.PostPersist;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.graph.GraphDiff;

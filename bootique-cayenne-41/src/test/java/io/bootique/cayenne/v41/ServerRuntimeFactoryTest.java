@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package io.bootique.cayenne.v41.jcache;
+package io.bootique.cayenne.v41;
 
 import io.bootique.cayenne.v41.CayenneConfigMerger;
 import io.bootique.cayenne.v41.ServerRuntimeFactory;

@@ -43,7 +43,7 @@
         <module>bootique-cayenne-default-it</module>
         <module>bootique-cayenne-default-multi-map-it</module>
         <module>bootique-cayenne-test</module>
-        <module>bootique-cayenne-jcache-41</module>
+        <module>bootique-cayenne-41-jcache</module>
         <module>bootique-cayenne-41-test</module>
     </modules>
 

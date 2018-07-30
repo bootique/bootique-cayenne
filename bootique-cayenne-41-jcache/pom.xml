@@ -27,7 +27,7 @@
         <version>0.26-SNAPSHOT</version>
     </parent>
 
-    <artifactId>bootique-cayenne-jcache-41</artifactId>
+    <artifactId>bootique-cayenne-41-jcache</artifactId>
     <packaging>jar</packaging>
 
     <name>bootique-cayenne-jcache-41: Integrates bootique-cayenne with bootique-jcache</name>
@@ -43,8 +43,8 @@
         <dependency>
             <groupId>io.bootique.cayenne</groupId>
             <artifactId>bootique-cayenne-41</artifactId>
-            <scope>compile</scope>
             <version>${bootique.version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.cayenne</groupId>
