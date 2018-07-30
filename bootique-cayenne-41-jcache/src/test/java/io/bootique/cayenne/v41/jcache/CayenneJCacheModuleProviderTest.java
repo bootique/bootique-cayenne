@@ -29,6 +29,9 @@ import io.bootique.test.junit.BQTestFactory;
 import org.junit.Rule;
 import org.junit.Test;
 
+/**
+ * @since 0.26
+ */
 public class CayenneJCacheModuleProviderTest {
 
 

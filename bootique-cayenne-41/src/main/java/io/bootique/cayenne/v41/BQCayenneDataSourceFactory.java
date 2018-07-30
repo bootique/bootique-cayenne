@@ -27,6 +27,9 @@ import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * @since 0.26
+ */
 public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
 
     private DataSourceFactory bqDataSourceFactory;

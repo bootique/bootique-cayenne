@@ -39,6 +39,9 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+/**
+ * @since 0.26
+ */
 public class CayenneModuleIT {
 
     @Rule

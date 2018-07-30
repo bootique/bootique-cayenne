@@ -22,7 +22,11 @@ package io.bootique.cayenne.v41.test;
 import io.bootique.jdbc.test.DatabaseChannel;
 import io.bootique.jdbc.test.Table;
 import org.apache.cayenne.exp.Property;
-import org.apache.cayenne.map.*;
+import org.apache.cayenne.map.DbEntity;
+import org.apache.cayenne.map.DbRelationship;
+import org.apache.cayenne.map.EntityResolver;
+import org.apache.cayenne.map.ObjEntity;
+import org.apache.cayenne.map.ObjRelationship;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Manages a map of {@link Table} objects matching each Cayenne DbEntity.
  *
- * @since 0.18
+ * @since 0.26
  */
 public class CayenneTableManager {
 
@@ -54,7 +58,6 @@ public class CayenneTableManager {
      * @param tableIndex   An index in a list of tables spanned by 'relationship'. Index of 0 corresponds to the target
      *                     DbEntity of the first object in a chain of DbRelationships for a given ObjRelationship.
      * @return a Table related to a given entity via the specified relationship.
-     * @since 0.24
      */
     public Table getRelatedTable(Class<?> entityType, Property<?> relationship, int tableIndex) {
         ObjEntity entity = resolver.getObjEntity(entityType);

@@ -32,6 +32,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * @since 0.26
+ */
 public class CayenneTestDataManagerCachesIT {
 
     @ClassRule

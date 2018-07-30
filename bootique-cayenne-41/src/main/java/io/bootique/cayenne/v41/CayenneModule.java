@@ -40,7 +40,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-
+/**
+ * @since 0.26
+ */
 public class CayenneModule extends ConfigModule {
 
     public CayenneModule() {

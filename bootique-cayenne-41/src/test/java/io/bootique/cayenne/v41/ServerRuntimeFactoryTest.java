@@ -19,8 +19,6 @@
 
 package io.bootique.cayenne.v41;
 
-import io.bootique.cayenne.v41.CayenneConfigMerger;
-import io.bootique.cayenne.v41.ServerRuntimeFactory;
 import io.bootique.jdbc.DataSourceFactory;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.ServerRuntime;
@@ -38,6 +36,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * @since 0.26
+ */
 public class ServerRuntimeFactoryTest {
 
 	private DataSourceFactory mockDSFactory;

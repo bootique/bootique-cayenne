@@ -28,6 +28,9 @@ import java.util.Collection;
 
 import static java.util.Arrays.asList;
 
+/**
+ * @since 0.26
+ */
 public class CayenneJCacheModuleProvider implements BQModuleProvider {
 
     @Override

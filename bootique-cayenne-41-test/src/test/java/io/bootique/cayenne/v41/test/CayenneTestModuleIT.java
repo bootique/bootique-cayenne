@@ -28,6 +28,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+/**
+ * @since 0.26
+ */
 public class CayenneTestModuleIT {
 
     @Rule

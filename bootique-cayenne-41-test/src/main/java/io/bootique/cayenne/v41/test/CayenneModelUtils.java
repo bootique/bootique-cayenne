@@ -25,11 +25,20 @@ import io.bootique.jdbc.test.DatabaseChannel;
 import io.bootique.jdbc.test.Table;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.exp.Property;
-import org.apache.cayenne.map.*;
+import org.apache.cayenne.map.DbAttribute;
+import org.apache.cayenne.map.DbEntity;
+import org.apache.cayenne.map.DbRelationship;
+import org.apache.cayenne.map.EntityResolver;
+import org.apache.cayenne.map.EntitySorter;
+import org.apache.cayenne.map.ObjEntity;
+import org.apache.cayenne.map.ObjRelationship;
 
 import java.util.*;
 import java.util.stream.Stream;
 
+/**
+ * @since 0.26
+ */
 class CayenneModelUtils {
 
     static Table createTableModel(BQRuntime runtime, Class<?> entityType) {

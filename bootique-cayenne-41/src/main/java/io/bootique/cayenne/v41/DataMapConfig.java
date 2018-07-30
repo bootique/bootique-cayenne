@@ -23,6 +23,9 @@ import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
 import io.bootique.resource.ResourceFactory;
 
+/**
+ * @since 0.26
+ */
 @BQConfig("Includes a DataMap in the runtime directly, bypassing declaration in 'cayenne-project.xml'.")
 public class DataMapConfig {
 

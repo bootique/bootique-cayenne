@@ -24,7 +24,7 @@ import com.google.inject.multibindings.Multibinder;
 import io.bootique.ModuleExtender;
 
 /**
- * @since 0.24
+ * @since 0.26
  */
 public class CayenneTestModuleExtender extends ModuleExtender<CayenneTestModuleExtender> {
 

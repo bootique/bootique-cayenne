@@ -36,6 +36,9 @@ import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * @since 0.26
+ */
 public class CayenneTestDataManagerBuilder_DependenciesIT {
 
     @ClassRule

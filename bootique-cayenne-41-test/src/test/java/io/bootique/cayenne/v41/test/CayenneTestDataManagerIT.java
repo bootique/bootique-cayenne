@@ -29,6 +29,9 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+/**
+ * @since 0.26
+ */
 public class CayenneTestDataManagerIT {
 
     @ClassRule

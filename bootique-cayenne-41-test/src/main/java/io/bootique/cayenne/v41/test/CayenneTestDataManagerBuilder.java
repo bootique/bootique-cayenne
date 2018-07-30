@@ -30,7 +30,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * @since 0.24
+ * @since 0.26
  */
 public class CayenneTestDataManagerBuilder {
 

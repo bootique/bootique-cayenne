@@ -29,7 +29,7 @@ import org.apache.cayenne.DataChannelFilter;
 import org.apache.cayenne.di.Module;
 
 /**
- * @since 0.19
+ * @since 0.26
  */
 public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender> {
 

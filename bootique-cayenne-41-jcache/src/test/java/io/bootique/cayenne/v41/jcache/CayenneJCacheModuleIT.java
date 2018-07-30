@@ -37,6 +37,9 @@ import javax.cache.CacheManager;
 
 import static org.junit.Assert.*;
 
+/**
+ * @since 0.26
+ */
 public class CayenneJCacheModuleIT {
 
     @ClassRule

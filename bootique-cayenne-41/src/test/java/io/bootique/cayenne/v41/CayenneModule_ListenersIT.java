@@ -44,6 +44,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/**
+ * @since 0.26
+ */
 public class CayenneModule_ListenersIT {
 
     @Rule

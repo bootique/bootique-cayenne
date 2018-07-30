@@ -20,7 +20,6 @@
 package io.bootique.cayenne.v41;
 
 import io.bootique.BQRuntime;
-import io.bootique.cayenne.v41.CayenneModuleProvider;
 import io.bootique.jdbc.JdbcModule;
 import io.bootique.test.junit.BQModuleProviderChecker;
 import io.bootique.test.junit.BQRuntimeChecker;
@@ -28,6 +27,9 @@ import io.bootique.test.junit.BQTestFactory;
 import org.junit.Rule;
 import org.junit.Test;
 
+/**
+ * @since 0.26
+ */
 public class CayenneModuleProviderIT {
 
     @Rule

@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 /**
  * Would create DB schema for DataSources matching those of a Cayenne runtime.
  *
- * @since 0.17
+ * @since 0.26
  */
 public class SchemaCreationListener implements DataSourceListener {
 
