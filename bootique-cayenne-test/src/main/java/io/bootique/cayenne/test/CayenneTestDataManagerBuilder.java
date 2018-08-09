@@ -58,7 +58,7 @@ public class CayenneTestDataManagerBuilder {
         Set<DbEntity> mergedEntities = mergeEntities();
 
         return new CayenneTestDataManager(
-                runtime.getInstance(ServerRuntime.class).getDataDomain(),
+                runtime.getInstance(ServerRuntime.class),
                 runtime.getInstance(CayenneTableManager.class),
                 deleteData,
                 refreshCayenneCaches,
