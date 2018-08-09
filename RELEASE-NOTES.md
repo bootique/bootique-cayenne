@@ -4,6 +4,7 @@
 * #52 Cleaning up APIs deprecated since <= 0.25 
 * #53 Upgrade to Cayenne 4.0.RC1
 * #54 Implicit config should not be loaded when there is an explicit Bootique config of maps
+* #59 CayenneTestDataManager - support for loading all entities as Tables 
 
 ## 0.25
 

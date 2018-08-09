@@ -75,6 +75,17 @@ public class CayenneTestDataManagerBuilder {
         return this;
     }
 
+    /**
+     * Creates Tables for all entities present in the runtime.
+     *
+     * @return this builder instance
+     * @since 0.26
+     */
+    public CayenneTestDataManagerBuilder allEntities() {
+        dbEntities.addAll(resolver.getDbEntities());
+        return this;
+    }
+
     public CayenneTestDataManagerBuilder entity(Class<?> entityType) {
         return entities(entityType);
     }
@@ -129,11 +140,11 @@ public class CayenneTestDataManagerBuilder {
     }
 
     private Set<DbEntity> mergeEntities() {
-        if(dbEntityGraphRoots.isEmpty()) {
+        if (dbEntityGraphRoots.isEmpty()) {
             return dbEntities;
         }
 
-        Set<DbEntity> merged  = ModelDependencyResolver.resolve(dbEntityGraphRoots);
+        Set<DbEntity> merged = ModelDependencyResolver.resolve(dbEntityGraphRoots);
         merged.addAll(dbEntities);
         return merged;
     }
