@@ -33,10 +33,6 @@
     <name>bootique-cayenne-41-test: Helper classes for unit tests with Cayenne stack</name>
     <description>Provides helper classes for unit tests with Cayenne stack</description>
 
-    <properties>
-        <cayenne.version>4.1.M2</cayenne.version>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>

@@ -33,11 +33,6 @@
     <name>bootique-cayenne-jcache: Integrates bootique-cayenne with bootique-jcache</name>
     <description>Integrates bootique-cayenne with bootique-jcache.</description>
 
-    <properties>
-        <cayenne.version>4.0.RC1</cayenne.version>
-    </properties>
-
-
     <dependencies>
         <!-- Compile dependencies -->
         <dependency>
@@ -110,30 +105,13 @@
         <dependencies>
             <dependency>
                 <groupId>org.apache.cayenne</groupId>
-                <artifactId>cayenne-server</artifactId>
-                <version>${cayenne.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cayenne</groupId>
-                <artifactId>cayenne-java8</artifactId>
-                <version>${cayenne.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.cayenne</groupId>
                 <artifactId>cayenne-jcache</artifactId>
-                <version>${cayenne.version}</version>
+                <version>${cayenne.4.0.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.cayenne</groupId>
                 <artifactId>cayenne-cache-invalidation</artifactId>
-                <version>${cayenne.version}</version>
+                <version>${cayenne.4.0.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
