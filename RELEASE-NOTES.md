@@ -6,6 +6,7 @@
 * #54 Implicit config should not be loaded when there is an explicit Bootique config of maps
 * #59 CayenneTestDataManager - support for loading all entities as Tables 
 * #60 Provide access to Cayenne ServerRuntime in CayenneTestDataManager
+* #61 Upgrade to Cayenne 4.0 final
 
 ## 0.25
 
