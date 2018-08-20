@@ -23,12 +23,31 @@ import io.bootique.BQRuntime;
 import io.bootique.jdbc.test.Table;
 import io.bootique.jdbc.test.TestDataManager;
 import org.apache.cayenne.access.DataDomain;
+import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.exp.Property;
 
 /**
  * @since 0.18
  */
 public class CayenneTestDataManager extends TestDataManager {
+
+    private CayenneTableManager tableManager;
+    private ServerRuntime runtime;
+    private boolean refreshCayenneCaches;
+
+    protected CayenneTestDataManager(
+            ServerRuntime runtime,
+            CayenneTableManager tableManager,
+            boolean deleteData,
+            boolean refreshCayenneCaches,
+            Table... tablesInInsertOrder) {
+
+        super(deleteData, tablesInInsertOrder);
+
+        this.runtime = runtime;
+        this.tableManager = tableManager;
+        this.refreshCayenneCaches = refreshCayenneCaches;
+    }
 
     /**
      * Creates a builder of CayenneTestDataManager.
@@ -47,29 +66,6 @@ public class CayenneTestDataManager extends TestDataManager {
 
     public static Table createTableModel(BQRuntime runtime, String tableName) {
         return CayenneModelUtils.createTableModel(runtime, tableName);
-    }
-
-    private CayenneTableManager tableManager;
-    private DataDomain dataDomain;
-    private boolean refreshCayenneCaches;
-
-    /**
-     * @param deleteData          whether all managed tables should be deleted before each test.
-     * @param tableManager        an object that maps Cayenne DbEntities to Tables.
-     * @param tablesInInsertOrder a subset of of all tables managed by this object.
-     * @since 0.24
-     */
-    protected CayenneTestDataManager(
-            DataDomain dataDomain,
-            CayenneTableManager tableManager,
-            boolean deleteData,
-            boolean refreshCayenneCaches,
-            Table... tablesInInsertOrder) {
-
-        super(deleteData, tablesInInsertOrder);
-        this.dataDomain = dataDomain;
-        this.tableManager = tableManager;
-        this.refreshCayenneCaches = refreshCayenneCaches;
     }
 
     @Override
@@ -110,14 +106,25 @@ public class CayenneTestDataManager extends TestDataManager {
         return tableManager.getRelatedTable(entityType, relationship, 0);
     }
 
+    /**
+     * @return Cayenne {@link ServerRuntime} underlying this data manager.
+     * @since 0.26
+     */
+    public ServerRuntime getRuntime() {
+        return runtime;
+    }
+
     public void refreshCayenneCaches() {
-        if (dataDomain.getSharedSnapshotCache() != null) {
-            dataDomain.getSharedSnapshotCache().clear();
+
+        DataDomain domain = runtime.getDataDomain();
+
+        if (domain.getSharedSnapshotCache() != null) {
+            domain.getSharedSnapshotCache().clear();
         }
 
-        if (dataDomain.getQueryCache() != null) {
+        if (domain.getQueryCache() != null) {
             // note that this also flushes per-context caches .. at least with JCache implementation
-            dataDomain.getQueryCache().clear();
+            domain.getQueryCache().clear();
         }
     }
 

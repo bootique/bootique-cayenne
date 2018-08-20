@@ -58,7 +58,7 @@ public class CayenneTestDataManagerBuilder {
         Set<DbEntity> mergedEntities = mergeEntities();
 
         return new CayenneTestDataManager(
-                runtime.getInstance(ServerRuntime.class).getDataDomain(),
+                runtime.getInstance(ServerRuntime.class),
                 runtime.getInstance(CayenneTableManager.class),
                 deleteData,
                 refreshCayenneCaches,
@@ -72,6 +72,17 @@ public class CayenneTestDataManagerBuilder {
 
     public CayenneTestDataManagerBuilder doNoRefreshCayenneCaches() {
         this.refreshCayenneCaches = false;
+        return this;
+    }
+
+    /**
+     * Creates Tables for all entities present in the runtime.
+     *
+     * @return this builder instance
+     * @since 0.26
+     */
+    public CayenneTestDataManagerBuilder allEntities() {
+        dbEntities.addAll(resolver.getDbEntities());
         return this;
     }
 
@@ -129,11 +140,11 @@ public class CayenneTestDataManagerBuilder {
     }
 
     private Set<DbEntity> mergeEntities() {
-        if(dbEntityGraphRoots.isEmpty()) {
+        if (dbEntityGraphRoots.isEmpty()) {
             return dbEntities;
         }
 
-        Set<DbEntity> merged  = ModelDependencyResolver.resolve(dbEntityGraphRoots);
+        Set<DbEntity> merged = ModelDependencyResolver.resolve(dbEntityGraphRoots);
         merged.addAll(dbEntities);
         return merged;
     }
