@@ -38,13 +38,13 @@
 
     <modules>
         <module>bootique-cayenne</module>
-        <module>bootique-cayenne-41</module>
         <module>bootique-cayenne-jcache</module>
         <module>bootique-cayenne-default-it</module>
         <module>bootique-cayenne-default-multi-map-it</module>
         <module>bootique-cayenne-test</module>
-        <module>bootique-cayenne-41-jcache</module>
-        <module>bootique-cayenne-41-test</module>
+        <module>bootique-cayenne41</module>
+        <module>bootique-cayenne41-jcache</module>
+        <module>bootique-cayenne41-test</module>
     </modules>
 
     <properties>

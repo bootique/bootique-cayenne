@@ -27,32 +27,55 @@
         <version>0.26-SNAPSHOT</version>
     </parent>
 
-    <artifactId>bootique-cayenne-41-test</artifactId>
+    <artifactId>bootique-cayenne41-jcache</artifactId>
     <packaging>jar</packaging>
 
-    <name>bootique-cayenne-41-test: Helper classes for unit tests with Cayenne stack</name>
-    <description>Provides helper classes for unit tests with Cayenne stack</description>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>io.bootique.cayenne</groupId>
-                <artifactId>bootique-cayenne-41</artifactId>
-                <version>${bootique.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.bootique.jdbc</groupId>
-                <artifactId>bootique-jdbc-test</artifactId>
-                <version>${bootique.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <name>bootique-cayenne-jcache41: Integrates bootique-cayenne with bootique-jcache</name>
+    <description>Integrates bootique-cayenne with bootique-jcache.</description>
 
     <dependencies>
+        <!-- Compile dependencies -->
+        <dependency>
+            <groupId>io.bootique.cayenne</groupId>
+            <artifactId>bootique-cayenne41</artifactId>
+            <version>${bootique.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cayenne</groupId>
+            <artifactId>cayenne-jcache</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.bootique.jcache</groupId>
+            <artifactId>bootique-jcache</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cayenne</groupId>
+            <artifactId>cayenne-cache-invalidation</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- Unit test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -61,30 +84,43 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>io.bootique</groupId>
+            <artifactId>bootique-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.bootique.cayenne</groupId>
+            <artifactId>bootique-cayenne41-test</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.cayenne</groupId>
+                    <artifactId>cayenne-java8</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>test</scope>
+            <version>${bootique.version}</version>
+        </dependency>
+        <dependency>
             <groupId>io.bootique.jdbc</groupId>
             <artifactId>bootique-jdbc-tomcat</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!-- Provided dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Compile dependencies -->
-        <dependency>
-            <groupId>io.bootique.cayenne</groupId>
-            <artifactId>bootique-cayenne-41</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.bootique.jdbc</groupId>
-            <artifactId>bootique-jdbc-test</artifactId>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.cayenne</groupId>
+                <artifactId>cayenne-jcache</artifactId>
+                <version>${cayenne.4.1.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cayenne</groupId>
+                <artifactId>cayenne-cache-invalidation</artifactId>
+                <version>${cayenne.4.1.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <!-- Optional profile used to sign artifacts -->
     <profiles>

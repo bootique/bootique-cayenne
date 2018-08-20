@@ -27,10 +27,10 @@
         <version>0.26-SNAPSHOT</version>
     </parent>
 
-    <artifactId>bootique-cayenne-41</artifactId>
+    <artifactId>bootique-cayenne41</artifactId>
     <packaging>jar</packaging>
 
-    <name>bootique-cayenne-41: Cayenne Integration Bundle for Bootique</name>
+    <name>bootique-cayenne41: Cayenne Integration Bundle for Bootique</name>
     <description>Provides Apache Cayenne integration with Bootique</description>
 
     <dependencies>
