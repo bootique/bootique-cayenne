@@ -28,7 +28,7 @@
 
     <groupId>io.bootique.cayenne</groupId>
     <artifactId>bootique-cayenne-parent</artifactId>
-    <version>0.26-SNAPSHOT</version>
+    <version>1.0.RC1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>bootique-cayenne-parent: parent of Bootique/Cayenne integration modules</name>

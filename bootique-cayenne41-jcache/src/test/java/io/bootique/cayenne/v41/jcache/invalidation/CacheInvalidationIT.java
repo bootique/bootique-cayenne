@@ -44,7 +44,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 /**
- * @since 0.26
+ * @since 1.0.RC1
  */
 public class CacheInvalidationIT {
 

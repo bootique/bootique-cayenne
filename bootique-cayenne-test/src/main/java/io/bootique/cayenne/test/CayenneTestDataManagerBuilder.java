@@ -79,7 +79,7 @@ public class CayenneTestDataManagerBuilder {
      * Creates Tables for all entities present in the runtime.
      *
      * @return this builder instance
-     * @since 0.26
+     * @since 1.0.RC1
      */
     public CayenneTestDataManagerBuilder allEntities() {
         dbEntities.addAll(resolver.getDbEntities());

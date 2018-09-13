@@ -26,7 +26,7 @@ import java.util.Objects;
  * A simple merger that uses "last wins" strategy, returning the last collection passed to the
  * method.
  *
- * @since 0.26
+ * @since 1.0.RC1
  */
 public class CayenneConfigMerger {
 

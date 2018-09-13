@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @since 0.26
+ * @since 1.0.RC1
  */
 public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
 

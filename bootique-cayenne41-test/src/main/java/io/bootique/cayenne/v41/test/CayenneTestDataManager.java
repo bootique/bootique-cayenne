@@ -26,7 +26,7 @@ import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.exp.Property;
 
 /**
- * @since 0.26
+ * @since 1.0.RC1
  */
 public class CayenneTestDataManager extends TestDataManager {
 

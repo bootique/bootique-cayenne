@@ -108,7 +108,7 @@ public class CayenneTestDataManager extends TestDataManager {
 
     /**
      * @return Cayenne {@link ServerRuntime} underlying this data manager.
-     * @since 0.26
+     * @since 1.0.RC1
      */
     public ServerRuntime getRuntime() {
         return runtime;

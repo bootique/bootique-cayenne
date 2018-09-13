@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * @since 0.26
+ * @since 1.0.RC1
  */
 public class CayenneModuleProvider implements BQModuleProvider {
 

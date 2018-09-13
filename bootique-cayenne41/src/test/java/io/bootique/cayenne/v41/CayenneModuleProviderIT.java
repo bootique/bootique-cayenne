@@ -28,7 +28,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 /**
- * @since 0.26
+ * @since 1.0.RC1
  */
 public class CayenneModuleProviderIT {
 

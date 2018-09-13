@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 /**
  * A Guice binding annotation used for objects that are Cayenne project configs.
  * 
- * @since 0.26
+ * @since 1.0.RC1
  */
 @Target({ ElementType.PARAMETER, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)

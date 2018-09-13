@@ -37,7 +37,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 /**
- * @since 0.26
+ * @since 1.0.RC1
  */
 class CayenneModelUtils {
 

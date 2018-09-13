@@ -33,7 +33,7 @@ import java.util.Set;
 /**
  * An auto-loadable module that installs Cayenne schema generation hooks in bootique-jdbc-test.
  *
- * @since 0.26
+ * @since 1.0.RC1
  */
 public class CayenneTestModule implements Module {
 

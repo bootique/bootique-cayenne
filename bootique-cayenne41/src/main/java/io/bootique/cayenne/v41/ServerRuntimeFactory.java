@@ -33,7 +33,7 @@ import org.apache.cayenne.di.Module;
 import java.util.*;
 
 /**
- * @since 0.26
+ * @since 1.0.RC1
  */
 @BQConfig("Configures Cayenne stack, providing injectable ServerRuntime.")
 public class ServerRuntimeFactory {

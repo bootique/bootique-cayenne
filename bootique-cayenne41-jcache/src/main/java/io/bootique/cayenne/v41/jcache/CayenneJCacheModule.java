@@ -40,7 +40,7 @@ import java.util.Set;
 /**
  * Bootique DI module integrating bootique-jcache to Cayenne.
  *
- * @since 0.26
+ * @since 1.0.RC1
  */
 public class CayenneJCacheModule implements Module {
 
