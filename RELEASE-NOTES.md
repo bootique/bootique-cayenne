@@ -1,3 +1,7 @@
+## 1.0.RC2
+
+* #62 Upgrade to Cayenne 4.0.1
+
 ## 1.0.RC1
 
 * #44 bootique-cayenne-test: test tables are not committed with rollbackOnReturn=true and defaultAutoCommit=false
