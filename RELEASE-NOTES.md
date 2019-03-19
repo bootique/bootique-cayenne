@@ -1,6 +1,7 @@
 ## 1.0.RC2
 
 * #62 Upgrade to Cayenne 4.0.1
+* #63 Upgrade bootique-cayenne41 to 4.1.B1
 
 ## 1.0.RC1
 
