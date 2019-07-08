@@ -85,8 +85,7 @@ public class CayenneModule extends ConfigModule {
                                                  @CayenneConfigs Set<String> injectedCayenneConfigs) {
 
         Collection<Module> extras = extraCayenneModules(customModules, filters);
-        ServerRuntime runtime = configFactory
-                .config(ServerRuntimeFactory.class, configPrefix)
+        ServerRuntime runtime = config(ServerRuntimeFactory.class, configFactory)
                 .createCayenneRuntime(dataSourceFactory,
                         configMerger,
                         extras,
