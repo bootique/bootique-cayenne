@@ -105,8 +105,7 @@ public class CayenneModule extends ConfigModule {
     }
 
     protected Collection<Module> extraCayenneModules(Set<Module> customModules, Set<DataChannelFilter> filters) {
-        Collection<Module> extras = new ArrayList<>();
-        extras.addAll(customModules);
+        Collection<Module> extras = new ArrayList<>(customModules);
 
         if (!filters.isEmpty()) {
             extras.add(cayenneBinder -> {
