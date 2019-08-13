@@ -1,5 +1,6 @@
 ## 1.1
 
+* #64 ServerRuntimeFactory hardcoded inside CayenneModule
 * #65 Upgrade Cayenne 4.1 to 4.1.B2
 
 ## 1.0

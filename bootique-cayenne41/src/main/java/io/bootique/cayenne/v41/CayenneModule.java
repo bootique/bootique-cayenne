@@ -74,7 +74,13 @@ public class CayenneModule extends ConfigModule {
 
     @Provides
     @Singleton
-    protected ServerRuntime createCayenneRuntime(ConfigurationFactory configFactory,
+    ServerRuntimeFactory createServerRuntimeFactory(ConfigurationFactory configFactory) {
+        return config(ServerRuntimeFactory.class, configFactory);
+    }
+
+    @Provides
+    @Singleton
+    protected ServerRuntime createCayenneRuntime(ServerRuntimeFactory serverRuntimeFactory,
                                                  DataSourceFactory dataSourceFactory,
                                                  BootLogger bootLogger,
                                                  ShutdownManager shutdownManager,
@@ -85,7 +91,7 @@ public class CayenneModule extends ConfigModule {
                                                  @CayenneConfigs Set<String> injectedCayenneConfigs) {
 
         Collection<Module> extras = extraCayenneModules(customModules, filters);
-        ServerRuntime runtime = config(ServerRuntimeFactory.class, configFactory)
+        ServerRuntime runtime = serverRuntimeFactory
                 .createCayenneRuntime(dataSourceFactory,
                         configMerger,
                         extras,
