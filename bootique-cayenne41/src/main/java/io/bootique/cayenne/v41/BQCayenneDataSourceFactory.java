@@ -36,9 +36,10 @@ public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
     private String defaultDataSourceName;
     private List<DataMapConfig> dataMapConfigs;
 
-    public BQCayenneDataSourceFactory(DataSourceFactory bqDataSourceFactory,
-                                      String defaultDataSourceName,
-                                      List<DataMapConfig> dataMapConfigs) {
+    public BQCayenneDataSourceFactory(
+            DataSourceFactory bqDataSourceFactory,
+            String defaultDataSourceName,
+            List<DataMapConfig> dataMapConfigs) {
 
         this.bqDataSourceFactory = bqDataSourceFactory;
         this.defaultDataSourceName = defaultDataSourceName;

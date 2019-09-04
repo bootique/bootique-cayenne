@@ -80,15 +80,16 @@ public class CayenneModule extends ConfigModule {
 
     @Provides
     @Singleton
-    protected ServerRuntime createCayenneRuntime(ServerRuntimeFactory serverRuntimeFactory,
-                                                 DataSourceFactory dataSourceFactory,
-                                                 BootLogger bootLogger,
-                                                 ShutdownManager shutdownManager,
-                                                 Set<Module> customModules,
-                                                 @CayenneListener Set<Object> listeners,
-                                                 Set<DataChannelFilter> filters,
-                                                 CayenneConfigMerger configMerger,
-                                                 @CayenneConfigs Set<String> injectedCayenneConfigs) {
+    protected ServerRuntime createCayenneRuntime(
+            ServerRuntimeFactory serverRuntimeFactory,
+            DataSourceFactory dataSourceFactory,
+            BootLogger bootLogger,
+            ShutdownManager shutdownManager,
+            Set<Module> customModules,
+            @CayenneListener Set<Object> listeners,
+            Set<DataChannelFilter> filters,
+            CayenneConfigMerger configMerger,
+            @CayenneConfigs Set<String> injectedCayenneConfigs) {
 
         Collection<Module> extras = extraCayenneModules(customModules, filters);
         ServerRuntime runtime = serverRuntimeFactory
