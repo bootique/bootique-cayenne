@@ -26,6 +26,8 @@ import io.bootique.ModuleExtender;
 import io.bootique.cayenne.v41.annotation.CayenneConfigs;
 import io.bootique.cayenne.v41.annotation.CayenneListener;
 import org.apache.cayenne.DataChannelFilter;
+import org.apache.cayenne.DataChannelQueryFilter;
+import org.apache.cayenne.DataChannelSyncFilter;
 import org.apache.cayenne.di.Module;
 
 /**
@@ -34,6 +36,8 @@ import org.apache.cayenne.di.Module;
 public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender> {
 
     private Multibinder<DataChannelFilter> filters;
+    private Multibinder<DataChannelSyncFilter> syncFilters;
+    private Multibinder<DataChannelQueryFilter> queryFilters;
     private Multibinder<Object> listeners;
     private Multibinder<String> projects;
     private Multibinder<Module> modules;
@@ -51,11 +55,55 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
         return this;
     }
 
+    /**
+     * @since 1.1
+     */
+    public CayenneModuleExtender addSyncFilter(DataChannelSyncFilter filter) {
+        contributeSyncFilters().addBinding().toInstance(filter);
+        return this;
+    }
+
+    /**
+     * @since 1.1
+     */
+    public CayenneModuleExtender addSyncFilter(Class<? extends DataChannelSyncFilter> filterType) {
+        contributeSyncFilters().addBinding().to(filterType);
+        return this;
+    }
+
+    /**
+     * @since 1.1
+     */
+    public CayenneModuleExtender addQueryFilter(DataChannelQueryFilter filter) {
+        contributeQueryFilters().addBinding().toInstance(filter);
+        return this;
+    }
+
+    /**
+     * @since 1.1
+     */
+    public CayenneModuleExtender addQueryFilter(Class<? extends DataChannelQueryFilter> filterType) {
+        contributeQueryFilters().addBinding().to(filterType);
+        return this;
+    }
+
+    /**
+     * @deprecated since 1.1 as Cayenne DataChannelFilter is deprecated. Consider migrating your filters to
+     * DataChannelSyncFilter and DataChannelQueryFilter and use {@link #addSyncFilter(DataChannelSyncFilter)},
+     * {@link #addQueryFilter(DataChannelQueryFilter)}.
+     */
+    @Deprecated
     public CayenneModuleExtender addFilter(DataChannelFilter filter) {
         contributeFilters().addBinding().toInstance(filter);
         return this;
     }
 
+    /**
+     * @deprecated since 1.1 as Cayenne DataChannelFilter is deprecated. Consider migrating your filters to
+     * DataChannelSyncFilter and DataChannelQueryFilter and use {@link #addSyncFilter(Class)},
+     * {@link #addQueryFilter(Class)}.
+     */
+    @Deprecated
     public CayenneModuleExtender addFilter(Class<? extends DataChannelFilter> filterType) {
         contributeFilters().addBinding().to(filterType);
         return this;
@@ -91,6 +139,15 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
         return this;
     }
 
+    protected Multibinder<DataChannelQueryFilter> contributeQueryFilters() {
+        return queryFilters != null ? queryFilters : (queryFilters = newSet(DataChannelQueryFilter.class));
+    }
+
+    protected Multibinder<DataChannelSyncFilter> contributeSyncFilters() {
+        return syncFilters != null ? syncFilters : (syncFilters = newSet(DataChannelSyncFilter.class));
+    }
+
+    @Deprecated
     protected Multibinder<DataChannelFilter> contributeFilters() {
         return filters != null ? filters : (filters = newSet(DataChannelFilter.class));
     }

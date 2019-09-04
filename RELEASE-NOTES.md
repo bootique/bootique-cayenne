@@ -2,6 +2,7 @@
 
 * #64 ServerRuntimeFactory hardcoded inside CayenneModule
 * #65 Upgrade Cayenne 4.1 to 4.1.B2
+* #73 Cayenne 4.1: contribute DataChannelSyncFilter, DataChannelQueryFilter
 
 ## 1.0
 
