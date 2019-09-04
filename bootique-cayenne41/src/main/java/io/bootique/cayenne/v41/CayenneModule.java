@@ -30,6 +30,8 @@ import io.bootique.jdbc.DataSourceFactory;
 import io.bootique.log.BootLogger;
 import io.bootique.shutdown.ShutdownManager;
 import org.apache.cayenne.DataChannelFilter;
+import org.apache.cayenne.DataChannelQueryFilter;
+import org.apache.cayenne.DataChannelSyncFilter;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.ServerModule;
 import org.apache.cayenne.configuration.server.ServerRuntime;
@@ -88,10 +90,12 @@ public class CayenneModule extends ConfigModule {
             Set<Module> customModules,
             @CayenneListener Set<Object> listeners,
             Set<DataChannelFilter> filters,
+            Set<DataChannelQueryFilter> queryFilters,
+            Set<DataChannelSyncFilter> syncFilters,
             CayenneConfigMerger configMerger,
             @CayenneConfigs Set<String> injectedCayenneConfigs) {
 
-        Collection<Module> extras = extraCayenneModules(customModules, filters);
+        Collection<Module> extras = extraCayenneModules(customModules, filters, queryFilters, syncFilters);
         ServerRuntime runtime = serverRuntimeFactory
                 .createCayenneRuntime(dataSourceFactory,
                         configMerger,
@@ -113,13 +117,32 @@ public class CayenneModule extends ConfigModule {
         return runtime;
     }
 
-    protected Collection<Module> extraCayenneModules(Set<Module> customModules, Set<DataChannelFilter> filters) {
+    protected Collection<Module> extraCayenneModules(
+            Set<Module> customModules,
+            Set<DataChannelFilter> filters,
+            Set<DataChannelQueryFilter> queryFilters,
+            Set<DataChannelSyncFilter> syncFilters) {
+
         Collection<Module> extras = new ArrayList<>(customModules);
 
         if (!filters.isEmpty()) {
             extras.add(cayenneBinder -> {
                 ListBuilder<DataChannelFilter> listBinder = ServerModule.contributeDomainFilters(cayenneBinder);
                 filters.forEach(listBinder::add);
+            });
+        }
+
+        if(!queryFilters.isEmpty()) {
+            extras.add(cayenneBinder -> {
+                ListBuilder<DataChannelQueryFilter> listBinder = ServerModule.contributeDomainQueryFilters(cayenneBinder);
+                queryFilters.forEach(listBinder::add);
+            });
+        }
+
+        if(!syncFilters.isEmpty()) {
+            extras.add(cayenneBinder -> {
+                ListBuilder<DataChannelSyncFilter> listBinder = ServerModule.contributeDomainSyncFilters(cayenneBinder);
+                syncFilters.forEach(listBinder::add);
             });
         }
 

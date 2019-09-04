@@ -50,6 +50,8 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     public CayenneModuleExtender initAllExtensions() {
         contributeListeners();
         contributeFilters();
+        contributeQueryFilters();
+        contributeSyncFilters();
         contributeModules();
         contributeProjects();
         return this;
