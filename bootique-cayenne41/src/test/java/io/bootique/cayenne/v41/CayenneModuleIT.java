@@ -107,14 +107,14 @@ public class CayenneModuleIT {
         DataDomain domain = runtime.getDataDomain();
         assertNotNull(domain.getDataNode("cayenne"));
 
-        try(Connection c = domain.getDataNode("cayenne").getDataSource().getConnection();) {
+        try(Connection c = domain.getDataNode("cayenne").getDataSource().getConnection()) {
             DatabaseMetaData md = c.getMetaData();
             assertEquals("jdbc:derby:target/derby/bqjdbc_noconfig", md.getURL());
         }
     }
 
     @Test
-    public void testUndefinedDataSource() throws SQLException {
+    public void testUndefinedDataSource() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:noconfig_2ds.yml")
                 .autoLoadModules()
@@ -131,7 +131,7 @@ public class CayenneModuleIT {
     }
 
     @Test
-    public void testUnmatchedDataSource() throws SQLException {
+    public void testUnmatchedDataSource() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:noconfig_2ds_unmatched.yml")
                 .autoLoadModules()
