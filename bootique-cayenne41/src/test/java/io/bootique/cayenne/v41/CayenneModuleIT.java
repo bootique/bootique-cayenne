@@ -64,7 +64,7 @@ public class CayenneModuleIT {
     }
 
     @Test
-    public void testConfig_ExplicitMaps_SharedDatasource() {
+    public void testConfig_ExplicitMaps_SharedDataSource() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:config_explicit_maps.yml")
                 .autoLoadModules()
@@ -81,7 +81,7 @@ public class CayenneModuleIT {
     }
 
     @Test
-    public void testConfig_ExplicitMaps_DifferentDatasources() {
+    public void testConfig_ExplicitMaps_DifferentDataSources() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:config_explicit_maps_2.yml")
                 .autoLoadModules()
@@ -108,7 +108,7 @@ public class CayenneModuleIT {
         DataDomain domain = runtime.getDataDomain();
         assertNotNull(domain.getDataNode("cayenne"));
 
-        try(Connection c = domain.getDataNode("cayenne").getDataSource().getConnection()) {
+        try (Connection c = domain.getDataNode("cayenne").getDataSource().getConnection()) {
             DatabaseMetaData md = c.getMetaData();
             assertEquals("jdbc:derby:target/derby/bqjdbc_noconfig", md.getURL());
         }
@@ -124,8 +124,7 @@ public class CayenneModuleIT {
 
         try {
             runtime.getDataDomain();
-        }
-        catch (DataDomainLoadException e) {
+        } catch (DataDomainLoadException e) {
             assertTrue(e.getCause().getMessage()
                     .startsWith("Can't map Cayenne DataSource: 'cayenne.datasource' is missing."));
         }
@@ -142,8 +141,7 @@ public class CayenneModuleIT {
         try {
             runtime.getDataDomain();
             fail();
-        }
-        catch (DataDomainLoadException e) {
+        } catch (DataDomainLoadException e) {
             String message = e.getCause().getMessage();
             assertEquals("No configuration present for DataSource named 'ds3'", message);
         }
@@ -194,5 +192,34 @@ public class CayenneModuleIT {
 
         DataDomain domain = runtime.getDataDomain();
         assertFalse(domain.getEntityResolver().getDbEntities().isEmpty());
+    }
+
+    @Test
+    public void testConfigMaps_Plus_AddProject_DataSourceAssignment() {
+
+        // see https://github.com/bootique/bootique-cayenne/issues/69
+        // module-provided project has no DataNode .. must be assigned the default one
+
+        ServerRuntime runtime = testFactory
+                .app("--config=classpath:ConfigMaps_Plus_AddProject_DataSourceAssignment.yml")
+                .autoLoadModules()
+                .module(b -> CayenneModule.extend(b).addProject("cayenne-project1.xml"))
+                .createRuntime()
+                .getInstance(ServerRuntime.class);
+
+        DataDomain domain = runtime.getDataDomain();
+
+        assertEquals(3, domain.getDataMaps().size());
+        assertNotNull(domain.getDataMap("datamap1"));
+        assertNotNull(domain.getDataMap("map2"));
+        assertNotNull(domain.getDataMap("map3"));
+
+        assertEquals(2, domain.getDataNodes().size());
+        assertNotNull(domain.getDataNode("ds1_node"));
+        assertNotNull(domain.getDataNode("ds2_node"));
+
+        assertSame(domain.getDataNode("ds1_node"), domain.lookupDataNode(domain.getDataMap("datamap1")));
+        assertSame(domain.getDataNode("ds2_node"), domain.lookupDataNode(domain.getDataMap("map2")));
+        assertSame(domain.getDataNode("ds1_node"), domain.lookupDataNode(domain.getDataMap("map3")));
     }
 }

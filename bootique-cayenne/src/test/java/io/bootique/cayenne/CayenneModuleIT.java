@@ -192,4 +192,33 @@ public class CayenneModuleIT {
         DataDomain domain = runtime.getDataDomain();
         assertFalse(domain.getEntityResolver().getDbEntities().isEmpty());
     }
+
+    @Test
+    public void testConfigMaps_Plus_AddProject_DataSourceAssignment() {
+
+        // see https://github.com/bootique/bootique-cayenne/issues/69
+        // module-provided project has no DataNode .. must be assigned the default one
+
+        ServerRuntime runtime = testFactory
+                .app("--config=classpath:ConfigMaps_Plus_AddProject_DataSourceAssignment.yml")
+                .autoLoadModules()
+                .module(b -> CayenneModule.extend(b).addProject("cayenne-project1.xml"))
+                .createRuntime()
+                .getInstance(ServerRuntime.class);
+
+        DataDomain domain = runtime.getDataDomain();
+
+        assertEquals(3, domain.getDataMaps().size());
+        assertNotNull(domain.getDataMap("datamap1"));
+        assertNotNull(domain.getDataMap("map2"));
+        assertNotNull(domain.getDataMap("map3"));
+
+        assertEquals(2, domain.getDataNodes().size());
+        assertNotNull(domain.getDataNode("ds1_node"));
+        assertNotNull(domain.getDataNode("ds2_node"));
+
+        assertSame(domain.getDataNode("ds1_node"), domain.lookupDataNode(domain.getDataMap("datamap1")));
+        assertSame(domain.getDataNode("ds2_node"), domain.lookupDataNode(domain.getDataMap("map2")));
+        assertSame(domain.getDataNode("ds1_node"), domain.lookupDataNode(domain.getDataMap("map3")));
+    }
 }
