@@ -65,53 +65,7 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
         // add DataMaps that were explicitly configured in BQ config
         Map<String, Collection<DataMapConfig>> explicitConfigs = getDataMapConfigs();
         if (!explicitConfigs.isEmpty()) {
-
-            DataMapLoader dataMapLoader = xmlDataMapLoaderProvider.get();
-            explicitConfigs.forEach((datasource, configs) -> {
-
-                DataNodeDescriptor nodeDescriptor = new DataNodeDescriptor(createSyntheticDataNodeName(datasource));
-                List<DataChannelDescriptor> channelDescriptors = new ArrayList<>();
-
-                for (DataMapConfig config : configs) {
-
-                    URL url = config.getLocation().getUrl();
-                    String dataMapName = config.getName();
-                    if (dataMapName == null) {
-                        dataMapName = url.toExternalForm();
-                    }
-
-                    Resource location = new URLResource(url);
-                    DataMap dataMap = dataMapLoader.load(location);
-
-                    config.setName(dataMapName);
-                    dataMap.setName(dataMapName);
-                    dataDomain.addDataMap(dataMap);
-
-                    DataChannelDescriptor channelDescriptor = new DataChannelDescriptor();
-                    channelDescriptor.getDataMaps().add(dataMap);
-                    channelDescriptor.getNodeDescriptors().add(nodeDescriptor);
-                    channelDescriptors.add(channelDescriptor);
-
-                    nodeDescriptor.getDataMapNames().add(dataMapName);
-                }
-
-                if (datasource.equals(defaultDatasource.getOptionalName())
-                        && !defaultNodeDescriptor.getDataMapNames().isEmpty()) {
-                    channelDescriptors.add(defaultNodeDescriptor.getDataChannelDescriptor());
-                    nodeDescriptor.getDataMapNames().addAll(defaultNodeDescriptor.getDataMapNames());
-                }
-
-                nodeDescriptor.setDataChannelDescriptor(descriptorMerger.merge(
-                        channelDescriptors.toArray(new DataChannelDescriptor[channelDescriptors.size()])));
-
-                try {
-                    addDataNode(dataDomain, nodeDescriptor);
-                } catch (Exception e) {
-
-                    // TODO: better exception handling
-                    e.printStackTrace();
-                }
-            });
+            explicitConfigs.forEach((datasource, configs) -> mergeConfigs(dataDomain, datasource, configs, defaultNodeDescriptor));
         } else if (dataDomain.getDataNodes().isEmpty()) {
             // no nodes... add a synthetic node... it will become the default
             DataNode defaultNode = addDataNode(dataDomain, defaultNodeDescriptor);
@@ -119,6 +73,57 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
         }
 
         return dataDomain;
+    }
+
+    private void mergeConfigs(
+            DataDomain dataDomain,
+            String dataSourceName,
+            Collection<DataMapConfig> configs,
+            DataNodeDescriptor defaultNodeDescriptor) {
+
+        DataMapLoader dataMapLoader = xmlDataMapLoaderProvider.get();
+        DataNodeDescriptor nodeDescriptor = new DataNodeDescriptor(createSyntheticDataNodeName(dataSourceName));
+        List<DataChannelDescriptor> channelDescriptors = new ArrayList<>();
+
+        for (DataMapConfig config : configs) {
+
+            URL url = config.getLocation().getUrl();
+            String dataMapName = config.getName();
+            if (dataMapName == null) {
+                dataMapName = url.toExternalForm();
+            }
+
+            Resource location = new URLResource(url);
+            DataMap dataMap = dataMapLoader.load(location);
+
+            config.setName(dataMapName);
+            dataMap.setName(dataMapName);
+            dataDomain.addDataMap(dataMap);
+
+            DataChannelDescriptor channelDescriptor = new DataChannelDescriptor();
+            channelDescriptor.getDataMaps().add(dataMap);
+            channelDescriptor.getNodeDescriptors().add(nodeDescriptor);
+            channelDescriptors.add(channelDescriptor);
+
+            nodeDescriptor.getDataMapNames().add(dataMapName);
+        }
+
+        if (dataSourceName.equals(defaultDatasource.getOptionalName())
+                && !defaultNodeDescriptor.getDataMapNames().isEmpty()) {
+            channelDescriptors.add(defaultNodeDescriptor.getDataChannelDescriptor());
+            nodeDescriptor.getDataMapNames().addAll(defaultNodeDescriptor.getDataMapNames());
+        }
+
+        nodeDescriptor.setDataChannelDescriptor(descriptorMerger.merge(
+                channelDescriptors.toArray(new DataChannelDescriptor[channelDescriptors.size()])));
+
+        try {
+            addDataNode(dataDomain, nodeDescriptor);
+        } catch (Exception e) {
+
+            // TODO: better exception handling
+            e.printStackTrace();
+        }
     }
 
     private DataNodeDescriptor createDefaultNodeDescriptor(DataDomain dataDomain) {
