@@ -24,6 +24,7 @@ import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.DataDomainLoadException;
 import org.apache.cayenne.configuration.server.ServerRuntime;
+import org.apache.cayenne.di.Key;
 import org.apache.cayenne.query.SQLSelect;
 import org.junit.Rule;
 import org.junit.Test;
@@ -163,8 +164,11 @@ public class CayenneModuleIT {
     @Test
     public void testContributeModules() {
 
+        Key<Object> key = Key.get(Object.class, "_test_");
+        Object value = new Object();
+
         Module guiceModule = b -> {
-            org.apache.cayenne.di.Module cayenneModule = (cb) -> cb.bind(CayenneModuleIT.class).toInstance(this);
+            org.apache.cayenne.di.Module cayenneModule = (cb) -> cb.bind(key).toInstance(value);
             CayenneModule.extend(b).addModule(cayenneModule);
         };
 
@@ -174,7 +178,7 @@ public class CayenneModuleIT {
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
 
-        assertSame(this, runtime.getInjector().getInstance(CayenneModuleIT.class));
+        assertSame(value, runtime.getInjector().getInstance(key));
     }
 
     @Test
