@@ -25,21 +25,25 @@ import org.apache.cayenne.configuration.server.DelegatingDataSourceFactory;
 
 import javax.sql.DataSource;
 import java.util.Collection;
-import java.util.List;
 
 public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
 
+    private static final String PARAM_PREFIX = "bqds:";
+
     private DataSourceFactory bqDataSourceFactory;
     private String defaultDataSourceName;
-    private List<DataMapConfig> dataMapConfigs;
 
-    public BQCayenneDataSourceFactory(DataSourceFactory bqDataSourceFactory,
-                                      String defaultDataSourceName,
-                                      List<DataMapConfig> dataMapConfigs) {
-
+    public BQCayenneDataSourceFactory(DataSourceFactory bqDataSourceFactory, String defaultDataSourceName) {
         this.bqDataSourceFactory = bqDataSourceFactory;
         this.defaultDataSourceName = defaultDataSourceName;
-        this.dataMapConfigs = dataMapConfigs;
+    }
+
+    static String encodeDataSourceRef(String bqDataSource) {
+        return PARAM_PREFIX + bqDataSource;
+    }
+
+    static String decodeDataSourceRef(String ref, String defaultName) {
+        return ref != null && ref.startsWith(PARAM_PREFIX) ? ref.substring(PARAM_PREFIX.length()) : defaultName;
     }
 
     @Override
@@ -110,22 +114,7 @@ public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
     }
 
     protected DataSource mappedBootiqueDataSource(DataNodeDescriptor nodeDescriptor) {
-
-        String datasource = null;
-        if (!nodeDescriptor.getDataMapNames().isEmpty()) {
-            String dataMapName = nodeDescriptor.getDataMapNames().iterator().next();
-            for (DataMapConfig dataMapConfig : dataMapConfigs) {
-                if (dataMapName.equals(dataMapConfig.getName())) {
-                    datasource = dataMapConfig.getDatasource();
-                    break;
-                }
-            }
-        }
-
-        if (datasource == null) {
-            datasource = defaultDataSourceName;
-        }
-
+        String datasource = decodeDataSourceRef(nodeDescriptor.getParameters(), defaultDataSourceName);
         return mappedBootiqueDataSource(datasource);
     }
 

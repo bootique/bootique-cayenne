@@ -95,8 +95,7 @@ public class ServerRuntimeFactory {
             binder.bind(DataDomain.class).toProvider(SyntheticNodeDataDomainProvider.class);
 
             // Bootique DataSource hooks...
-            BQCayenneDataSourceFactory bqCayenneDSFactory =
-                    new BQCayenneDataSourceFactory(dataSourceFactory, datasource, maps);
+            BQCayenneDataSourceFactory bqCayenneDSFactory = new BQCayenneDataSourceFactory(dataSourceFactory, datasource);
             binder.bind(org.apache.cayenne.configuration.server.DataSourceFactory.class).toInstance(bqCayenneDSFactory);
         });
     }
