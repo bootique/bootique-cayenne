@@ -66,19 +66,18 @@ public class ServerRuntimeFactory {
     }
 
     /**
-     * Creates and returns a preconfigured {@link ServerRuntimeBuilder} with
-     * Cayenne config, name, Java8 integration module and a DataSource. Override
-     * to add custom modules, extra projects, etc.
+     * Creates and returns a preconfigured {@link ServerRuntimeBuilder} with Cayenne config, name, Java8 integration
+     * module and a DataSource. Override to add custom modules, extra projects, etc.
      *
      * @param dataSourceFactory injected Bootique {@link DataSourceFactory}
-     * @return a {@link ServerRuntimeBuilder} that can be extended in
-     * subclasses.
+     * @return a {@link ServerRuntimeBuilder} that can be extended in subclasses.
      */
     protected ServerRuntimeBuilder cayenneBuilder(DataSourceFactory dataSourceFactory) {
+        return ServerRuntime.builder(name).addModule(factoryModule(dataSourceFactory));
+    }
 
-        // building our own Cayenne extensions module...
-        return ServerRuntime.builder(name).addModule(binder -> {
-
+    protected Module factoryModule(DataSourceFactory dataSourceFactory) {
+        return binder -> {
             // provide schema creation hook
             if (createSchema) {
                 binder.bind(SchemaUpdateStrategyFactory.class).toInstance(descriptor -> new CreateIfNoSchemaStrategy());
@@ -96,7 +95,7 @@ public class ServerRuntimeFactory {
             // Bootique DataSource hooks...
             BQCayenneDataSourceFactory bqCayenneDSFactory = new BQCayenneDataSourceFactory(dataSourceFactory, datasource);
             binder.bind(org.apache.cayenne.configuration.server.DataSourceFactory.class).toInstance(bqCayenneDSFactory);
-        });
+        };
     }
 
     Collection<String> configs() {
