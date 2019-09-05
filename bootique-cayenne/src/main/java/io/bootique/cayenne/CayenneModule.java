@@ -89,20 +89,20 @@ public class CayenneModule extends ConfigModule {
             CayenneConfigMerger configMerger,
             @CayenneConfigs Set<String> injectedCayenneConfigs) {
 
-        Collection<Module> extras = extraCayenneModules(customModules, filters);
-        ServerRuntime runtime = serverRuntimeFactory
-                .createCayenneRuntime(dataSourceFactory,
-                        configMerger,
-                        extras,
-                        injectedCayenneConfigs);
+        Collection<Module> extraModules = extraCayenneModules(customModules, filters);
+
+        ServerRuntime runtime = serverRuntimeFactory.createCayenneRuntime(
+                dataSourceFactory,
+                configMerger,
+                extraModules,
+                injectedCayenneConfigs);
 
         shutdownManager.addShutdownHook(() -> {
             bootLogger.trace(() -> "shutting down Cayenne...");
             runtime.shutdown();
         });
 
-        // TODO: listeners should be really contributable to Cayenne via DI,
-        // just like filters...
+        // TODO: listeners should be really contributable to Cayenne via DI, just like filters...
         if (!listeners.isEmpty()) {
             DataDomain domain = runtime.getDataDomain();
             listeners.forEach(domain::addListener);

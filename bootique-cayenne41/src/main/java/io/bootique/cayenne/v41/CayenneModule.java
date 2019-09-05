@@ -96,19 +96,18 @@ public class CayenneModule extends ConfigModule {
             @CayenneConfigs Set<String> injectedCayenneConfigs) {
 
         Collection<Module> extras = extraCayenneModules(customModules, filters, queryFilters, syncFilters);
-        ServerRuntime runtime = serverRuntimeFactory
-                .createCayenneRuntime(dataSourceFactory,
-                        configMerger,
-                        extras,
-                        injectedCayenneConfigs);
+        ServerRuntime runtime = serverRuntimeFactory.createCayenneRuntime(
+                dataSourceFactory,
+                configMerger,
+                extras,
+                injectedCayenneConfigs);
 
         shutdownManager.addShutdownHook(() -> {
             bootLogger.trace(() -> "shutting down Cayenne...");
             runtime.shutdown();
         });
 
-        // TODO: listeners should be really contributable to Cayenne via DI,
-        // just like filters...
+        // TODO: listeners should be really contributable to Cayenne via DI, just like filters...
         if (!listeners.isEmpty()) {
             DataDomain domain = runtime.getDataDomain();
             listeners.forEach(domain::addListener);
@@ -132,14 +131,14 @@ public class CayenneModule extends ConfigModule {
             });
         }
 
-        if(!queryFilters.isEmpty()) {
+        if (!queryFilters.isEmpty()) {
             extras.add(cayenneBinder -> {
                 ListBuilder<DataChannelQueryFilter> listBinder = ServerModule.contributeDomainQueryFilters(cayenneBinder);
                 queryFilters.forEach(listBinder::add);
             });
         }
 
-        if(!syncFilters.isEmpty()) {
+        if (!syncFilters.isEmpty()) {
             extras.add(cayenneBinder -> {
                 ListBuilder<DataChannelSyncFilter> listBinder = ServerModule.contributeDomainSyncFilters(cayenneBinder);
                 syncFilters.forEach(listBinder::add);
