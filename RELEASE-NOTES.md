@@ -4,6 +4,7 @@
 * #65 Upgrade Cayenne 4.1 to 4.1.B2
 * #72 DataMaps from YAML should be loaded together with other DataMaps 
 * #73 Cayenne 4.1: contribute DataChannelSyncFilter, DataChannelQueryFilter
+* #74 Upgrade to Cayenne 4.1 integration to 4.1.RC1 
 
 ## 1.0
 
