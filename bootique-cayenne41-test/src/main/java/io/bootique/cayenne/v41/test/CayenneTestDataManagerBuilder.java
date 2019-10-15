@@ -75,6 +75,17 @@ public class CayenneTestDataManagerBuilder {
         return this;
     }
 
+    /**
+     * Creates Tables for all entities present in the runtime.
+     *
+     * @return this builder instance
+     * @since 1.1
+     */
+    public CayenneTestDataManagerBuilder allEntities() {
+        dbEntities.addAll(resolver.getDbEntities());
+        return this;
+    }
+
     public CayenneTestDataManagerBuilder entity(Class<?> entityType) {
         return entities(entityType);
     }
