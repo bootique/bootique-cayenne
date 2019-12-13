@@ -19,12 +19,12 @@
 
 package io.bootique.cayenne.v41;
 
-import com.google.inject.Binder;
-import com.google.inject.Key;
-import com.google.inject.multibindings.Multibinder;
 import io.bootique.ModuleExtender;
 import io.bootique.cayenne.v41.annotation.CayenneConfigs;
 import io.bootique.cayenne.v41.annotation.CayenneListener;
+import io.bootique.di.Binder;
+import io.bootique.di.Key;
+import io.bootique.di.SetBuilder;
 import org.apache.cayenne.DataChannelFilter;
 import org.apache.cayenne.DataChannelQueryFilter;
 import org.apache.cayenne.DataChannelSyncFilter;
@@ -35,12 +35,12 @@ import org.apache.cayenne.di.Module;
  */
 public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender> {
 
-    private Multibinder<DataChannelFilter> filters;
-    private Multibinder<DataChannelSyncFilter> syncFilters;
-    private Multibinder<DataChannelQueryFilter> queryFilters;
-    private Multibinder<Object> listeners;
-    private Multibinder<String> projects;
-    private Multibinder<Module> modules;
+    private SetBuilder<DataChannelFilter> filters;
+    private SetBuilder<DataChannelSyncFilter> syncFilters;
+    private SetBuilder<DataChannelQueryFilter> queryFilters;
+    private SetBuilder<Object> listeners;
+    private SetBuilder<String> projects;
+    private SetBuilder<Module> modules;
 
     public CayenneModuleExtender(Binder binder) {
         super(binder);
@@ -61,7 +61,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
      * @since 1.1
      */
     public CayenneModuleExtender addSyncFilter(DataChannelSyncFilter filter) {
-        contributeSyncFilters().addBinding().toInstance(filter);
+        contributeSyncFilters().add(filter);
         return this;
     }
 
@@ -69,7 +69,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
      * @since 1.1
      */
     public CayenneModuleExtender addSyncFilter(Class<? extends DataChannelSyncFilter> filterType) {
-        contributeSyncFilters().addBinding().to(filterType);
+        contributeSyncFilters().add(filterType);
         return this;
     }
 
@@ -77,7 +77,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
      * @since 1.1
      */
     public CayenneModuleExtender addQueryFilter(DataChannelQueryFilter filter) {
-        contributeQueryFilters().addBinding().toInstance(filter);
+        contributeQueryFilters().add(filter);
         return this;
     }
 
@@ -85,7 +85,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
      * @since 1.1
      */
     public CayenneModuleExtender addQueryFilter(Class<? extends DataChannelQueryFilter> filterType) {
-        contributeQueryFilters().addBinding().to(filterType);
+        contributeQueryFilters().add(filterType);
         return this;
     }
 
@@ -96,7 +96,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
      */
     @Deprecated
     public CayenneModuleExtender addFilter(DataChannelFilter filter) {
-        contributeFilters().addBinding().toInstance(filter);
+        contributeFilters().add(filter);
         return this;
     }
 
@@ -107,62 +107,62 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
      */
     @Deprecated
     public CayenneModuleExtender addFilter(Class<? extends DataChannelFilter> filterType) {
-        contributeFilters().addBinding().to(filterType);
+        contributeFilters().add(filterType);
         return this;
     }
 
     public CayenneModuleExtender addListener(Object listener) {
-        contributeListeners().addBinding().toInstance(listener);
+        contributeListeners().add(listener);
         return this;
     }
 
     public CayenneModuleExtender addListener(Class<?> listenerType) {
-        contributeListeners().addBinding().to(listenerType);
+        contributeListeners().add(listenerType);
         return this;
     }
 
     public CayenneModuleExtender addProject(String projectConfig) {
-        contributeProjects().addBinding().toInstance(projectConfig);
+        contributeProjects().add(projectConfig);
         return this;
     }
 
     public CayenneModuleExtender addModule(Module module) {
-        contributeModules().addBinding().toInstance(module);
+        contributeModules().add(module);
         return this;
     }
 
     public CayenneModuleExtender addModule(Class<? extends Module> moduleType) {
-        contributeModules().addBinding().to(moduleType);
+        contributeModules().add(moduleType);
         return this;
     }
 
     public CayenneModuleExtender addModule(Key<? extends Module> moduleKey) {
-        contributeModules().addBinding().to(moduleKey);
+        contributeModules().add(moduleKey);
         return this;
     }
 
-    protected Multibinder<DataChannelQueryFilter> contributeQueryFilters() {
+    protected SetBuilder<DataChannelQueryFilter> contributeQueryFilters() {
         return queryFilters != null ? queryFilters : (queryFilters = newSet(DataChannelQueryFilter.class));
     }
 
-    protected Multibinder<DataChannelSyncFilter> contributeSyncFilters() {
+    protected SetBuilder<DataChannelSyncFilter> contributeSyncFilters() {
         return syncFilters != null ? syncFilters : (syncFilters = newSet(DataChannelSyncFilter.class));
     }
 
     @Deprecated
-    protected Multibinder<DataChannelFilter> contributeFilters() {
+    protected SetBuilder<DataChannelFilter> contributeFilters() {
         return filters != null ? filters : (filters = newSet(DataChannelFilter.class));
     }
 
-    protected Multibinder<Object> contributeListeners() {
+    protected SetBuilder<Object> contributeListeners() {
         return listeners != null ? listeners : (listeners = newSet(Object.class, CayenneListener.class));
     }
 
-    protected Multibinder<String> contributeProjects() {
+    protected SetBuilder<String> contributeProjects() {
         return projects != null ? projects : (projects = newSet(String.class, CayenneConfigs.class));
     }
 
-    protected Multibinder<Module> contributeModules() {
+    protected SetBuilder<Module> contributeModules() {
         return modules != null ? modules : (modules = newSet(Module.class));
     }
 }

@@ -19,18 +19,18 @@
 
 package io.bootique.cayenne.jcache;
 
-import com.google.inject.Binder;
-import com.google.inject.BindingAnnotation;
-import com.google.inject.Key;
-import com.google.inject.Module;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
 import io.bootique.cayenne.CayenneModule;
+import io.bootique.di.Binder;
+import io.bootique.di.Key;
+import io.bootique.di.BQModule;
+import io.bootique.di.Provides;
 import org.apache.cayenne.cache.invalidation.CacheInvalidationModule;
 import org.apache.cayenne.cache.invalidation.CacheInvalidationModuleExtender;
 import org.apache.cayenne.cache.invalidation.InvalidationHandler;
 
 import javax.cache.CacheManager;
+import javax.inject.Qualifier;
+import javax.inject.Singleton;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -42,7 +42,7 @@ import java.util.Set;
  *
  * @since 0.18
  */
-public class CayenneJCacheModule implements Module {
+public class CayenneJCacheModule implements BQModule {
 
     /**
      * @param binder DI binder passed to the Module that invokes this method.
@@ -84,7 +84,7 @@ public class CayenneJCacheModule implements Module {
 
     @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
     @Retention(RetentionPolicy.RUNTIME)
-    @BindingAnnotation
+    @Qualifier
     @interface DefinedInCayenneJCache {
     }
 

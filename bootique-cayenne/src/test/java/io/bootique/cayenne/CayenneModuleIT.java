@@ -19,7 +19,7 @@
 
 package io.bootique.cayenne;
 
-import com.google.inject.Module;
+import io.bootique.di.BQModule;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.DataDomainLoadException;
@@ -164,7 +164,7 @@ public class CayenneModuleIT {
         Key<Object> key = Key.get(Object.class, "_test_");
         Object value = new Object();
 
-        Module guiceModule = b -> {
+        BQModule guiceModule = b -> {
             org.apache.cayenne.di.Module cayenneModule = (cb) -> cb.bind(key).toInstance(value);
             CayenneModule.extend(b).addModule(cayenneModule);
         };
@@ -181,7 +181,7 @@ public class CayenneModuleIT {
     @Test
     public void testMergeConfigs() {
 
-        Module cayenneProjectModule = binder -> CayenneModule.extend(binder).addProject("cayenne-project2.xml");
+        BQModule cayenneProjectModule = binder -> CayenneModule.extend(binder).addProject("cayenne-project2.xml");
 
         ServerRuntime runtime = testFactory.app("--config=classpath:noconfig.yml")
                 .autoLoadModules()

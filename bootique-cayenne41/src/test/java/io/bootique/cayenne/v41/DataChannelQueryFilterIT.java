@@ -18,7 +18,7 @@
  */
 package io.bootique.cayenne.v41;
 
-import com.google.inject.Module;
+import io.bootique.di.BQModule;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.DataChannelQueryFilter;
 import org.apache.cayenne.QueryResponse;
@@ -39,7 +39,7 @@ public class DataChannelQueryFilterIT {
 
     private ServerRuntime runtimeWithFilters(DataChannelQueryFilter... filters) {
 
-        Module filtersModule = (binder) -> {
+        BQModule filtersModule = (binder) -> {
             CayenneModuleExtender extender = CayenneModule.extend(binder);
             Arrays.asList(filters).forEach(extender::addQueryFilter);
         };

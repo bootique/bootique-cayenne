@@ -19,9 +19,9 @@
 
 package io.bootique.cayenne.jcache;
 
-import com.google.inject.Binder;
-import com.google.inject.multibindings.Multibinder;
 import io.bootique.ModuleExtender;
+import io.bootique.di.Binder;
+import io.bootique.di.SetBuilder;
 import io.bootique.jcache.JCacheModule;
 import org.apache.cayenne.cache.invalidation.InvalidationHandler;
 import org.apache.cayenne.jcache.JCacheConstants;
@@ -44,12 +44,12 @@ public class CayenneJCacheModuleExtender extends ModuleExtender<CayenneJCacheMod
     }
 
     public CayenneJCacheModuleExtender addInvalidationHandler(InvalidationHandler handler) {
-        contributeInvalidationHandler().addBinding().toInstance(handler);
+        contributeInvalidationHandler().add(handler);
         return this;
     }
 
     public CayenneJCacheModuleExtender addInvalidationHandler(Class<? extends InvalidationHandler> handlerType) {
-        contributeInvalidationHandler().addBinding().to(handlerType);
+        contributeInvalidationHandler().add(handlerType);
         return this;
     }
 
@@ -59,7 +59,7 @@ public class CayenneJCacheModuleExtender extends ModuleExtender<CayenneJCacheMod
         return this;
     }
 
-    protected Multibinder<InvalidationHandler> contributeInvalidationHandler() {
+    protected SetBuilder<InvalidationHandler> contributeInvalidationHandler() {
         return newSet(InvalidationHandler.class);
     }
 }

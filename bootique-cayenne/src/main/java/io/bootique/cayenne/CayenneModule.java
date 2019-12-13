@@ -19,13 +19,12 @@
 
 package io.bootique.cayenne;
 
-import com.google.inject.Binder;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
 import io.bootique.ConfigModule;
 import io.bootique.cayenne.annotation.CayenneConfigs;
 import io.bootique.cayenne.annotation.CayenneListener;
 import io.bootique.config.ConfigurationFactory;
+import io.bootique.di.Binder;
+import io.bootique.di.Provides;
 import io.bootique.jdbc.DataSourceFactory;
 import io.bootique.log.BootLogger;
 import io.bootique.shutdown.ShutdownManager;
@@ -39,6 +38,7 @@ import org.apache.cayenne.di.Module;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
+import javax.inject.Singleton;
 
 
 public class CayenneModule extends ConfigModule {

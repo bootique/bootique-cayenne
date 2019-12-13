@@ -19,12 +19,12 @@
 
 package io.bootique.cayenne;
 
-import com.google.inject.Binder;
-import com.google.inject.Key;
-import com.google.inject.multibindings.Multibinder;
 import io.bootique.ModuleExtender;
 import io.bootique.cayenne.annotation.CayenneConfigs;
 import io.bootique.cayenne.annotation.CayenneListener;
+import io.bootique.di.Binder;
+import io.bootique.di.Key;
+import io.bootique.di.SetBuilder;
 import org.apache.cayenne.DataChannelFilter;
 import org.apache.cayenne.di.Module;
 
@@ -33,10 +33,10 @@ import org.apache.cayenne.di.Module;
  */
 public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender> {
 
-    private Multibinder<DataChannelFilter> filters;
-    private Multibinder<Object> listeners;
-    private Multibinder<String> projects;
-    private Multibinder<Module> modules;
+    private SetBuilder<DataChannelFilter> filters;
+    private SetBuilder<Object> listeners;
+    private SetBuilder<String> projects;
+    private SetBuilder<Module> modules;
 
     public CayenneModuleExtender(Binder binder) {
         super(binder);
@@ -52,58 +52,58 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     public CayenneModuleExtender addFilter(DataChannelFilter filter) {
-        contributeFilters().addBinding().toInstance(filter);
+        contributeFilters().add(filter);
         return this;
     }
 
     public CayenneModuleExtender addFilter(Class<? extends DataChannelFilter> filterType) {
-        contributeFilters().addBinding().to(filterType);
+        contributeFilters().add(filterType);
         return this;
     }
 
     public CayenneModuleExtender addListener(Object listener) {
-        contributeListeners().addBinding().toInstance(listener);
+        contributeListeners().add(listener);
         return this;
     }
 
     public CayenneModuleExtender addListener(Class<?> listenerType) {
-        contributeListeners().addBinding().to(listenerType);
+        contributeListeners().add(listenerType);
         return this;
     }
 
     public CayenneModuleExtender addProject(String projectConfig) {
-        contributeProjects().addBinding().toInstance(projectConfig);
+        contributeProjects().add(projectConfig);
         return this;
     }
 
     public CayenneModuleExtender addModule(Module module) {
-        contributeModules().addBinding().toInstance(module);
+        contributeModules().add(module);
         return this;
     }
 
     public CayenneModuleExtender addModule(Class<? extends Module> moduleType) {
-        contributeModules().addBinding().to(moduleType);
+        contributeModules().add(moduleType);
         return this;
     }
 
     public CayenneModuleExtender addModule(Key<? extends Module> moduleKey) {
-        contributeModules().addBinding().to(moduleKey);
+        contributeModules().add(moduleKey);
         return this;
     }
 
-    protected Multibinder<DataChannelFilter> contributeFilters() {
+    protected SetBuilder<DataChannelFilter> contributeFilters() {
         return filters != null ? filters : (filters = newSet(DataChannelFilter.class));
     }
 
-    protected Multibinder<Object> contributeListeners() {
+    protected SetBuilder<Object> contributeListeners() {
         return listeners != null ? listeners : (listeners = newSet(Object.class, CayenneListener.class));
     }
 
-    protected Multibinder<String> contributeProjects() {
+    protected SetBuilder<String> contributeProjects() {
         return projects != null ? projects : (projects = newSet(String.class, CayenneConfigs.class));
     }
 
-    protected Multibinder<Module> contributeModules() {
+    protected SetBuilder<Module> contributeModules() {
         return modules != null ? modules : (modules = newSet(Module.class));
     }
 }

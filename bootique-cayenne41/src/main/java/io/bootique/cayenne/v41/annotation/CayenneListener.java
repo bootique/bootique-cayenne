@@ -19,12 +19,11 @@
 
 package io.bootique.cayenne.v41.annotation;
 
-import com.google.inject.BindingAnnotation;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import javax.inject.Qualifier;
 
 /**
  * A Guice binding annotation used for objects that are Cayenne listeners.
@@ -33,7 +32,7 @@ import java.lang.annotation.Target;
  */
 @Target({ ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-@BindingAnnotation
+@Qualifier
 public @interface CayenneListener {
 
 }

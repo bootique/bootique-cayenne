@@ -19,9 +19,9 @@
 
 package io.bootique.cayenne.test;
 
-import com.google.inject.Binder;
-import com.google.inject.multibindings.Multibinder;
 import io.bootique.ModuleExtender;
+import io.bootique.di.Binder;
+import io.bootique.di.SetBuilder;
 
 /**
  * @since 0.24
@@ -39,16 +39,16 @@ public class CayenneTestModuleExtender extends ModuleExtender<CayenneTestModuleE
     }
 
     public CayenneTestModuleExtender addSchemaListener(SchemaListener listener) {
-        contributeSchemaListeners().addBinding().toInstance(listener);
+        contributeSchemaListeners().add(listener);
         return this;
     }
 
     public CayenneTestModuleExtender addSchemaListener(Class<? extends SchemaListener> listenerType) {
-        contributeSchemaListeners().addBinding().to(listenerType);
+        contributeSchemaListeners().add(listenerType);
         return this;
     }
 
-    private Multibinder<SchemaListener> contributeSchemaListeners() {
+    private SetBuilder<SchemaListener> contributeSchemaListeners() {
         return newSet(SchemaListener.class);
     }
 }

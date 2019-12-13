@@ -19,9 +19,9 @@
 
 package io.bootique.cayenne.jcache;
 
-import com.google.inject.Module;
 import io.bootique.BQModuleProvider;
 import io.bootique.cayenne.CayenneModuleProvider;
+import io.bootique.di.BQModule;
 import io.bootique.jcache.JCacheModuleProvider;
 
 import java.util.Collection;
@@ -31,7 +31,7 @@ import static java.util.Arrays.asList;
 public class CayenneJCacheModuleProvider implements BQModuleProvider {
 
     @Override
-    public Module module() {
+    public BQModule module() {
         return new CayenneJCacheModule();
     }
 

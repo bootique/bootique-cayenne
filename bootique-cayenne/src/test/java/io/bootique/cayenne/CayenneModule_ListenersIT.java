@@ -19,7 +19,7 @@
 
 package io.bootique.cayenne;
 
-import com.google.inject.Module;
+import io.bootique.di.BQModule;
 import io.bootique.test.junit.BQTestFactory;
 import org.apache.cayenne.CayenneDataObject;
 import org.apache.cayenne.ObjectContext;
@@ -43,7 +43,7 @@ public class CayenneModule_ListenersIT {
 
     private ServerRuntime runtimeWithListeners(Object... listeners) {
 
-        Module listenersModule = (binder) -> {
+        BQModule listenersModule = (binder) -> {
             CayenneModuleExtender extender = CayenneModule.extend(binder);
             Arrays.asList(listeners).forEach(extender::addListener);
         };

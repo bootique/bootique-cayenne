@@ -19,23 +19,23 @@
 
 package io.bootique.cayenne.v41.test;
 
-import com.google.inject.Binder;
-import com.google.inject.Inject;
-import com.google.inject.Module;
-import com.google.inject.Provides;
-import com.google.inject.Singleton;
+import io.bootique.di.Binder;
+import io.bootique.di.BQModule;
+import io.bootique.di.Provides;
 import io.bootique.jdbc.JdbcModule;
 import io.bootique.jdbc.test.runtime.DatabaseChannelFactory;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 
 import java.util.Set;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * An auto-loadable module that installs Cayenne schema generation hooks in bootique-jdbc-test.
  *
  * @since 1.0.RC1
  */
-public class CayenneTestModule implements Module {
+public class CayenneTestModule implements BQModule {
 
     /**
      * @param binder Guice DI binder
@@ -52,7 +52,7 @@ public class CayenneTestModule implements Module {
         JdbcModule.extend(binder).addDataSourceListener(SchemaCreationListener.class);
 
         // this will trigger eager Cayenne startup and subsequent schema loading in the test DB
-        binder.bind(SchemaLoader.class).asEagerSingleton();
+        binder.bind(SchemaLoader.class).initOnStartup();
     }
 
     @Provides
