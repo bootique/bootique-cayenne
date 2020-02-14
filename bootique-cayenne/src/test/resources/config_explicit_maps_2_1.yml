@@ -17,18 +17,11 @@ jdbc:
   ds1:
     url: jdbc:derby:target/derby/bqjdbc_config_explicit_maps1;create=true
     initialSize: 1
-  ds2:
-    url: jdbc:derby:target/derby/bqjdbc_config_explicit_maps2;create=true
-    initialSize: 1
 
+# module 1
 cayenne:
-  datasource: ds1
-  createSchema: true
   maps:
     m1:
-      location: classpath:datamap1.map.xml
+      datasource: ds1
       name: map1
-    m2:
-      location: classpath:datamap2.map.xml
-      name: map2
-      datasource: ds2
+      location: "classpath:datamap1.map.xml"

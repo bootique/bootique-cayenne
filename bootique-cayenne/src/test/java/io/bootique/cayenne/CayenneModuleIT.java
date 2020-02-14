@@ -221,4 +221,22 @@ public class CayenneModuleIT {
         assertSame(domain.getDataNode("ds2_node"), domain.lookupDataNode(domain.getDataMap("map2")));
         assertSame(domain.getDataNode("ds1_node"), domain.lookupDataNode(domain.getDataMap("map3")));
     }
+
+    @Test
+    public void testConfig_ExplicitMaps_DifferentConfig() {
+
+        ServerRuntime runtime = testFactory.app("--config=classpath:config_explicit_maps_2_1.yml"
+                , "--config=classpath:config_explicit_maps_2_2.yml")
+                .autoLoadModules()
+                .createRuntime()
+                .getInstance(ServerRuntime.class);
+
+        DataDomain domain = runtime.getDataDomain();
+        assertNotNull(domain.getEntityResolver().getDbEntity("db_entity"));
+        assertNotNull(domain.getEntityResolver().getDbEntity("db_entity2"));
+
+        // trigger a DB op
+        SQLSelect.dataRowQuery("map1", "SELECT * FROM db_entity").select(runtime.newContext());
+        SQLSelect.dataRowQuery("map2", "SELECT * FROM db_entity2").select(runtime.newContext());
+    }
 }
