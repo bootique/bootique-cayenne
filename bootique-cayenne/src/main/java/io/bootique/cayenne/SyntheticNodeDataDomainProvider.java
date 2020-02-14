@@ -43,12 +43,6 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
     @Inject
     protected Provider<DataMapLoader> xmlDataMapLoaderProvider;
 
-    /**
-     * dataMapConfigs changed from list to map
-     *
-     * @since 2.0
-     */
-
     @Inject
     private Map<String, DataMapConfig> dataMapConfigs;
 

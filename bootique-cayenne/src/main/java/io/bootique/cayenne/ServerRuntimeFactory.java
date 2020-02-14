@@ -30,7 +30,12 @@ import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
 import org.apache.cayenne.di.Key;
 import org.apache.cayenne.di.Module;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
 
 @BQConfig("Configures Cayenne stack, providing injectable ServerRuntime.")
 public class ServerRuntimeFactory {
@@ -39,11 +44,6 @@ public class ServerRuntimeFactory {
 
     private String name;
     private Collection<String> configs;
-    /**
-     * Changed from list to map
-     *
-     * @since 2.0
-     */
     private Map<String, DataMapConfig> maps;
     private String datasource;
     private boolean createSchema;
@@ -156,11 +156,9 @@ public class ServerRuntimeFactory {
     /**
      * Sets a map of DataMaps that are included in the app runtime without an explicit refrence in  'cayenne-project.xml'.
      *
-     * Parameter maps changed from list type to map type
-     *
      * @param maps map of DataMap configs
      * @since 0.18
-     * @since 2.0
+     * @since 2.0 changed from list to map
      */
     @BQConfigProperty("A list of DataMaps that are included in the app runtime without an explicit refrence in " +
             "'cayenne-project.xml'.")

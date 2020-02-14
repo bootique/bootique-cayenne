@@ -1,6 +1,9 @@
-## 1.1
+## 2.0
 
 * #68 "maps" config must be a dictionary, not a list for extensibility
+
+## 1.1
+
 * #64 ServerRuntimeFactory hardcoded inside CayenneModule
 * #65 Upgrade Cayenne 4.1 to 4.1.B2
 * #72 DataMaps from YAML should be loaded together with other DataMaps 
