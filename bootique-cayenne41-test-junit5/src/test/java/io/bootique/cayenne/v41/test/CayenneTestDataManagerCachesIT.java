@@ -20,37 +20,29 @@
 package io.bootique.cayenne.v41.test;
 
 import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.cayenne.v41.test.persistence.Table1;
 import io.bootique.cayenne.v41.test.persistence.Table2;
-import io.bootique.test.junit5.BQTestClassFactory;
+import io.bootique.test.junit5.BQApp;
+import io.bootique.test.junit5.BQTest;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+@BQTest
 public class CayenneTestDataManagerCachesIT {
 
-    @RegisterExtension
-    public static BQTestClassFactory TEST_FACTORY = new BQTestClassFactory();
-    private static BQRuntime TEST_RUNTIME;
+    @BQApp(skipRun = true)
+    static final BQRuntime runtime = Bootique.app("-c", "classpath:config2.yml").autoLoadModules().createRuntime();
 
     @RegisterExtension
-    public CayenneTestDataManager dataManager = CayenneTestDataManager.builder(TEST_RUNTIME)
+    static final CayenneTestDataManager dataManager = CayenneTestDataManager.builder(runtime)
             .entities(Table1.class, Table2.class)
             .build();
 
-    @BeforeAll
-    public static void beforeClass() {
-        TEST_RUNTIME = TEST_FACTORY.app("-c", "classpath:config2.yml")
-                .autoLoadModules()
-                .createRuntime();
-    }
-
-    protected static ServerRuntime getCayenneRuntime() {
-        return TEST_RUNTIME.getInstance(ServerRuntime.class);
-    }
+    static final ServerRuntime cayenneRuntime = dataManager.getRuntime();
 
     @Test
     public void crossTestInterference1() {
@@ -65,10 +57,10 @@ public class CayenneTestDataManagerCachesIT {
 
     private void verifyCachesEmptyAndAddObjectsToCache() {
         // verify that there's no data in the cache
-        Assertions.assertEquals(0, getCayenneRuntime().getDataDomain().getSharedSnapshotCache().size());
+        Assertions.assertEquals(0, cayenneRuntime.getDataDomain().getSharedSnapshotCache().size());
 
         // seed the cache for the next test
-        ObjectContext context = getCayenneRuntime().newContext();
+        ObjectContext context = cayenneRuntime.newContext();
         Table1 t1 = context.newObject(Table1.class);
         t1.setA(5L);
         t1.setB(6L);

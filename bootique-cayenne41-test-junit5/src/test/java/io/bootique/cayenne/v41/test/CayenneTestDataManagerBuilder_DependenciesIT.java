@@ -20,14 +20,14 @@
 package io.bootique.cayenne.v41.test;
 
 import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.cayenne.v41.test.persistence3.P3T1;
 import io.bootique.cayenne.v41.test.persistence3.P3T3;
 import io.bootique.cayenne.v41.test.persistence3.P3T4;
 import io.bootique.jdbc.test.Table;
-import io.bootique.test.junit5.BQTestClassFactory;
-import org.junit.jupiter.api.BeforeAll;
+import io.bootique.test.junit5.BQApp;
+import io.bootique.test.junit5.BQTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,23 +36,16 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@BQTest
 public class CayenneTestDataManagerBuilder_DependenciesIT {
 
-    @RegisterExtension
-    public static BQTestClassFactory TEST_FACTORY = new BQTestClassFactory();
-    private static BQRuntime TEST_RUNTIME;
-
-    @BeforeAll
-    public static void beforeClass() {
-        TEST_RUNTIME = TEST_FACTORY.app("-c", "classpath:config3.yml")
-                .autoLoadModules()
-                .createRuntime();
-    }
+    @BQApp(skipRun = true)
+    static final BQRuntime runtime = Bootique.app("-c", "classpath:config3.yml").autoLoadModules().createRuntime();
 
     @Test
     public void testDependentEntities1() {
         CayenneTestDataManager dm = CayenneTestDataManager
-                .builder(TEST_RUNTIME)
+                .builder(runtime)
                 .entitiesAndDependencies(P3T1.class)
                 .build();
 
@@ -67,7 +60,7 @@ public class CayenneTestDataManagerBuilder_DependenciesIT {
     @Test
     public void testDependentEntities2() {
         CayenneTestDataManager dm = CayenneTestDataManager
-                .builder(TEST_RUNTIME)
+                .builder(runtime)
                 .entitiesAndDependencies(P3T4.class)
                 .build();
 
@@ -80,7 +73,7 @@ public class CayenneTestDataManagerBuilder_DependenciesIT {
     @Test
     public void testDependentEntities3() {
         CayenneTestDataManager dm = CayenneTestDataManager
-                .builder(TEST_RUNTIME)
+                .builder(runtime)
                 .entitiesAndDependencies(P3T3.class)
                 .build();
 
@@ -92,7 +85,7 @@ public class CayenneTestDataManagerBuilder_DependenciesIT {
     @Test
     public void testDependentTables1() {
         CayenneTestDataManager dm = CayenneTestDataManager
-                .builder(TEST_RUNTIME)
+                .builder(runtime)
                 .tablesAndDependencies("p3_t1_t4")
                 .build();
 

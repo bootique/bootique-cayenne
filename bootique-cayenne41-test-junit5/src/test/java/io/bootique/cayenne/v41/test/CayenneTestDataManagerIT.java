@@ -20,33 +20,27 @@
 package io.bootique.cayenne.v41.test;
 
 import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.cayenne.v41.test.persistence.Table1;
 import io.bootique.cayenne.v41.test.persistence.Table2;
 import io.bootique.jdbc.test.Table;
-import io.bootique.test.junit5.BQTestClassFactory;
-import org.junit.jupiter.api.BeforeAll;
+import io.bootique.test.junit5.BQApp;
+import io.bootique.test.junit5.BQTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@BQTest
 public class CayenneTestDataManagerIT {
 
-    @RegisterExtension
-    public static BQTestClassFactory TEST_FACTORY = new BQTestClassFactory();
-    private static BQRuntime TEST_RUNTIME;
+    @BQApp(skipRun = true)
+    static final BQRuntime runtime = Bootique.app("-c", "classpath:config2.yml").autoLoadModules().createRuntime();
 
     @RegisterExtension
-    public CayenneTestDataManager dataManager = CayenneTestDataManager.builder(TEST_RUNTIME)
+    static final CayenneTestDataManager dataManager = CayenneTestDataManager.builder(runtime)
             .entities(Table1.class, Table2.class)
             .build();
-
-    @BeforeAll
-    public static void beforeClass() {
-        TEST_RUNTIME = TEST_FACTORY.app("-c", "classpath:config2.yml")
-                .autoLoadModules()
-                .createRuntime();
-    }
 
     @Test
     public void testNoSuchTable() {
