@@ -19,15 +19,15 @@
 package io.bootique.cayenne;
 
 import io.bootique.di.BQModule;
-import io.bootique.test.junit.BQTestFactory;
+import io.bootique.test.junit5.BQTestFactory;
 import org.apache.cayenne.CayenneDataObject;
 import org.apache.cayenne.DataChannelFilter;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.ObjectId;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.graph.GraphDiff;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.util.Arrays;
 
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.*;
 
 public class CayenneModule_DataChannelFiltersIT {
 
-    @Rule
+    @RegisterExtension
     public BQTestFactory testFactory = new BQTestFactory();
 
     private ServerRuntime runtimeWithFilters(DataChannelFilter... filters) {

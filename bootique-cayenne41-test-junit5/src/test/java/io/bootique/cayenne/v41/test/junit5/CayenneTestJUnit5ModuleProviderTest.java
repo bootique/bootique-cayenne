@@ -46,8 +46,8 @@ public class CayenneTestJUnit5ModuleProviderTest {
                 // add arguments and tomcat module,
                 // since DataSource required for CayenneTestModule
                 .app("-c", "classpath:config4.yml")
-                .module(new JdbcTomcatModuleProvider())
-                .module(new CayenneTestJUnit5ModuleProvider())
+                .moduleProvider(new JdbcTomcatModuleProvider())
+                .moduleProvider(new CayenneTestJUnit5ModuleProvider())
                 .createRuntime();
 
         BQRuntimeChecker.testModulesLoaded(bqRuntime,

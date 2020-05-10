@@ -21,18 +21,18 @@ package io.bootique.cayenne.v41;
 
 import io.bootique.BQRuntime;
 import io.bootique.jdbc.JdbcModule;
-import io.bootique.test.junit.BQModuleProviderChecker;
-import io.bootique.test.junit.BQRuntimeChecker;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.Rule;
-import org.junit.Test;
+import io.bootique.test.junit5.BQModuleProviderChecker;
+import io.bootique.test.junit5.BQRuntimeChecker;
+import io.bootique.test.junit5.BQTestFactory;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * @since 1.0.RC1
  */
 public class CayenneModuleProviderIT {
 
-    @Rule
+    @RegisterExtension
     public BQTestFactory testFactory = new BQTestFactory();
 
     @Test
@@ -47,7 +47,7 @@ public class CayenneModuleProviderIT {
 
     @Test
     public void testModuleDeclaresDependencies() {
-        final BQRuntime bqRuntime = testFactory.app().moduleProvider(new CayenneModuleProvider()).createRuntime();
+        BQRuntime bqRuntime = testFactory.app().moduleProvider(new CayenneModuleProvider()).createRuntime();
         BQRuntimeChecker.testModulesLoaded(bqRuntime, JdbcModule.class);
     }
 }

@@ -22,16 +22,14 @@ package io.bootique.cayenne;
 import io.bootique.jdbc.DataSourceFactory;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.ServerRuntime;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
 import java.util.Collections;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -41,7 +39,7 @@ public class ServerRuntimeFactoryTest {
 	private DataSourceFactory mockDSFactory;
 	private CayenneConfigMerger configMerger;
 
-	@Before
+	@BeforeEach
 	public void before() {
 		this.mockDSFactory = mock(DataSourceFactory.class);
 		when(mockDSFactory.forName(anyString())).thenReturn(mock(DataSource.class));

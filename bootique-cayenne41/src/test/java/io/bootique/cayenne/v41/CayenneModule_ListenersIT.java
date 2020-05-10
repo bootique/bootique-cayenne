@@ -20,28 +20,28 @@
 package io.bootique.cayenne.v41;
 
 import io.bootique.di.BQModule;
-import io.bootique.test.junit.BQTestFactory;
+import io.bootique.test.junit5.BQTestFactory;
 import org.apache.cayenne.CayenneDataObject;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.ObjectId;
 import org.apache.cayenne.annotation.PostPersist;
 import org.apache.cayenne.configuration.server.ServerRuntime;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @since 1.0.RC1
  */
 public class CayenneModule_ListenersIT {
 
-    @Rule
+    @RegisterExtension
     public BQTestFactory testFactory = new BQTestFactory();
 
     private ServerRuntime runtimeWithListeners(Object... listeners) {

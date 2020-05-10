@@ -20,63 +20,53 @@
 package io.bootique.cayenne.jcache.invalidation;
 
 import io.bootique.BQRuntime;
+import io.bootique.Bootique;
 import io.bootique.cayenne.jcache.CayenneJCacheModule;
 import io.bootique.cayenne.jcache.persistent.Table1;
 import io.bootique.cayenne.jcache.persistent.Table2;
 import io.bootique.cayenne.test.CayenneTestDataManager;
-import io.bootique.test.junit.BQTestFactory;
+import io.bootique.test.junit5.BQApp;
+import io.bootique.test.junit5.BQTest;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.cache.invalidation.CacheGroupDescriptor;
 import org.apache.cayenne.cache.invalidation.CacheGroups;
 import org.apache.cayenne.cache.invalidation.InvalidationHandler;
-import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.query.ObjectSelect;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.cache.Cache;
 import javax.cache.CacheManager;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
+@BQTest
 public class CacheInvalidationIT {
 
-    @ClassRule
-    public static BQTestFactory TEST_FACTORY = new BQTestFactory();
-    private static BQRuntime TEST_RUNTIME;
-    private static ServerRuntime SERVER_RUNTIME;
+    static final InvalidationHandler invalidationHandler = type -> {
+        if (type.getAnnotation(CacheGroups.class) != null) {
+            return null;
+        }
+        return p -> asList(new CacheGroupDescriptor("cayenne1"), new CacheGroupDescriptor("nocayenne1"));
+    };
 
-    @Rule
-    public CayenneTestDataManager dataManager = CayenneTestDataManager.builder(TEST_RUNTIME)
+    @BQApp(skipRun = true)
+    static final BQRuntime runtime = Bootique.app("-c", "classpath:bq1.yml")
+            .autoLoadModules()
+            .module(b -> CayenneJCacheModule.extend(b).addInvalidationHandler(invalidationHandler))
+            .createRuntime();
+
+    @RegisterExtension
+    public CayenneTestDataManager dataManager = CayenneTestDataManager.builder(runtime)
             .entities(Table1.class, Table2.class)
             .build();
-
-    @BeforeClass
-    public static void beforeClass() {
-
-        InvalidationHandler invalidationHandler = type -> {
-            if (type.getAnnotation(CacheGroups.class) != null) {
-                return null;
-            }
-
-            return p -> asList(new CacheGroupDescriptor("cayenne1"), new CacheGroupDescriptor("nocayenne1"));
-        };
-
-        TEST_RUNTIME = TEST_FACTORY.app("-c", "classpath:bq1.yml")
-                .autoLoadModules()
-                .module(b -> CayenneJCacheModule.extend(b).addInvalidationHandler(invalidationHandler))
-                .createRuntime();
-        SERVER_RUNTIME = TEST_RUNTIME.getInstance(ServerRuntime.class);
-    }
 
     @Test
     public void testInvalidate_CustomHandler() {
 
-        ObjectContext context = SERVER_RUNTIME.newContext();
+        ObjectContext context = dataManager.getRuntime().newContext();
         // no explicit cache group must still work - it lands inside default cache called 'cayenne.default.cache'
         ObjectSelect<Table1> g0 = ObjectSelect.query(Table1.class).localCache();
         ObjectSelect<Table1> g1 = ObjectSelect.query(Table1.class).localCache("cayenne1");
@@ -115,7 +105,7 @@ public class CacheInvalidationIT {
     @Test
     public void testInvalidate_CacheGroup() {
 
-        ObjectContext context = SERVER_RUNTIME.newContext();
+        ObjectContext context = dataManager.getRuntime().newContext();
         ObjectSelect<Table2> g3 = ObjectSelect.query(Table2.class).localCache("cayenne3");
         ObjectSelect<Table2> g4 = ObjectSelect.query(Table2.class).localCache("cayenne4");
 
@@ -146,14 +136,14 @@ public class CacheInvalidationIT {
     @Test
     public void testInvalidate_CustomData() {
 
-        ObjectContext context = SERVER_RUNTIME.newContext();
+        ObjectContext context = dataManager.getRuntime().newContext();
 
         // make sure Cayenne-specific caches are created...
         ObjectSelect<Table1> g1 = ObjectSelect.query(Table1.class).localCache("cayenne1");
         assertEquals(0, g1.select(context).size());
 
         // add custom data
-        CacheManager cacheManager = TEST_RUNTIME.getInstance(CacheManager.class);
+        CacheManager cacheManager = runtime.getInstance(CacheManager.class);
         Cache<String, String> cache = cacheManager.getCache("cayenne1");
         cache.put("a", "b");
 

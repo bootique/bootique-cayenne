@@ -20,67 +20,56 @@
 package io.bootique.cayenne.v41.jcache;
 
 import io.bootique.BQRuntime;
-import io.bootique.cayenne.v41.test.CayenneTestDataManager;
-import io.bootique.test.junit.BQTestFactory;
+import io.bootique.Bootique;
 import io.bootique.cayenne.v41.jcache.persistent.Table1;
+import io.bootique.cayenne.v41.test.CayenneTestDataManager;
+import io.bootique.test.junit5.BQApp;
+import io.bootique.test.junit5.BQTest;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.cache.QueryCache;
-import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.jcache.JCacheQueryCache;
 import org.apache.cayenne.query.ObjectSelect;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.cache.CacheManager;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * @since 1.0.RC1
- */
+@BQTest
 public class CayenneJCacheModuleIT {
 
-    @ClassRule
-    public static BQTestFactory TEST_FACTORY = new BQTestFactory();
-    private static BQRuntime TEST_RUNTIME;
-    private static ServerRuntime RUNTIME;
 
-    @Rule
-    public CayenneTestDataManager dataManager = CayenneTestDataManager.builder(TEST_RUNTIME)
+    @BQApp(skipRun = true)
+    static final BQRuntime runtime = Bootique.app("-c", "classpath:bq1.yml")
+            .autoLoadModules()
+            .createRuntime();
+
+    @RegisterExtension
+    public CayenneTestDataManager dataManager = CayenneTestDataManager.builder(runtime)
             .entities(Table1.class)
             .build();
 
-    @BeforeClass
-    public static void setupRuntime() {
-        TEST_RUNTIME = TEST_FACTORY.app("-c", "classpath:bq1.yml")
-                .autoLoadModules()
-                .createRuntime();
-
-        RUNTIME = TEST_RUNTIME.getInstance(ServerRuntime.class);
-    }
-
     @Test
     public void testCacheProvider() {
-        QueryCache cache = RUNTIME.getInjector().getInstance(QueryCache.class);
-        assertTrue("Unexpected cache type: " + cache.getClass().getName(), cache instanceof JCacheQueryCache);
+        QueryCache cache = dataManager.getRuntime().getInjector().getInstance(QueryCache.class);
+        assertTrue(cache instanceof JCacheQueryCache, "Unexpected cache type: " + cache.getClass().getName());
     }
 
     @Test
     public void testCacheManager() {
-        CacheManager cacheManager = RUNTIME.getInjector().getInstance(CacheManager.class);
-        assertTrue("Unexpected cache type: " + cacheManager.getClass().getName(),
-                cacheManager.getClass().getName().startsWith("org.ehcache.jsr107"));
+        CacheManager cacheManager = runtime.getInstance(CacheManager.class);
+        assertTrue(cacheManager.getClass().getName().startsWith("org.ehcache.jsr107"),
+                "Unexpected cache type: " + cacheManager.getClass().getName());
 
-        CacheManager expectedCacheManager = TEST_RUNTIME.getInstance(CacheManager.class);
+        CacheManager expectedCacheManager = runtime.getInstance(CacheManager.class);
         assertSame(expectedCacheManager, cacheManager);
     }
 
     @Test
     public void testCachedQueries() {
 
-        ObjectContext context = RUNTIME.newContext();
+        ObjectContext context = dataManager.getRuntime().newContext();
         ObjectSelect<Table1> g1 = ObjectSelect.query(Table1.class).localCache("g1");
         ObjectSelect<Table1> g2 = ObjectSelect.query(Table1.class).localCache("g2");
 
@@ -95,7 +84,7 @@ public class CayenneJCacheModuleIT {
         assertEquals(4, g2.select(context).size());
 
         // refresh the cache, so that "g1" could see the changes
-        RUNTIME.getDataDomain().getQueryCache().removeGroup("g1");
+        dataManager.getRuntime().getDataDomain().getQueryCache().removeGroup("g1");
         assertEquals(4, g1.select(context).size());
     }
 }

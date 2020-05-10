@@ -59,11 +59,6 @@
 
         <!-- Unit test dependencies -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
@@ -85,12 +80,12 @@
         </dependency>
         <dependency>
             <groupId>io.bootique</groupId>
-            <artifactId>bootique-test</artifactId>
+            <artifactId>bootique-test-junit5</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.bootique.cayenne</groupId>
-            <artifactId>bootique-cayenne-test</artifactId>
+            <artifactId>bootique-cayenne-test-junit5</artifactId>
             <scope>test</scope>
             <version>${bootique.version}</version>
         </dependency>

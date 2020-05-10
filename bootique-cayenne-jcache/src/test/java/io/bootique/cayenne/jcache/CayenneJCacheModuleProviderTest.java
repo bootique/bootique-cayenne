@@ -23,16 +23,15 @@ import io.bootique.BQRuntime;
 import io.bootique.cayenne.CayenneModule;
 import io.bootique.jcache.JCacheModule;
 import io.bootique.jdbc.JdbcModule;
-import io.bootique.test.junit.BQModuleProviderChecker;
-import io.bootique.test.junit.BQRuntimeChecker;
-import io.bootique.test.junit.BQTestFactory;
-import org.junit.Rule;
-import org.junit.Test;
+import io.bootique.test.junit5.BQModuleProviderChecker;
+import io.bootique.test.junit5.BQRuntimeChecker;
+import io.bootique.test.junit5.BQTestFactory;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 public class CayenneJCacheModuleProviderTest {
 
-
-    @Rule
+    @RegisterExtension
     public BQTestFactory testFactory = new BQTestFactory();
 
     @Test
@@ -42,7 +41,7 @@ public class CayenneJCacheModuleProviderTest {
 
     @Test
     public void testModuleDeclaresDependencies() {
-        final BQRuntime bqRuntime = testFactory.app().moduleProvider(new CayenneJCacheModuleProvider()).createRuntime();
+        BQRuntime bqRuntime = testFactory.app().moduleProvider(new CayenneJCacheModuleProvider()).createRuntime();
         BQRuntimeChecker.testModulesLoaded(bqRuntime,
                 CayenneModule.class,
                 JdbcModule.class,

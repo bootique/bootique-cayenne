@@ -30,7 +30,7 @@
     <artifactId>bootique-cayenne41-jcache</artifactId>
     <packaging>jar</packaging>
 
-    <name>bootique-cayenne-jcache41: Integrates bootique-cayenne with bootique-jcache</name>
+    <name>bootique-cayenne41-jcache: Integrates bootique-cayenne with bootique-jcache</name>
     <description>Integrates bootique-cayenne with bootique-jcache.</description>
 
     <dependencies>
@@ -59,11 +59,6 @@
 
         <!-- Unit test dependencies -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
@@ -85,12 +80,12 @@
         </dependency>
         <dependency>
             <groupId>io.bootique</groupId>
-            <artifactId>bootique-test</artifactId>
+            <artifactId>bootique-test-junit5</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.bootique.cayenne</groupId>
-            <artifactId>bootique-cayenne41-test</artifactId>
+            <artifactId>bootique-cayenne41-test-junit5</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.cayenne</groupId>

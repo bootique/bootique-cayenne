@@ -20,32 +20,24 @@
 package io.bootique.cayenne.v41;
 
 import io.bootique.di.BQModule;
-import io.bootique.test.junit.BQTestFactory;
+import io.bootique.test.junit5.BQTestFactory;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.DataDomainLoadException;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.di.Key;
 import org.apache.cayenne.query.SQLSelect;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * @since 1.0.RC1
- */
 public class CayenneModuleIT {
 
-    @Rule
+    @RegisterExtension
     public BQTestFactory testFactory = new BQTestFactory();
 
     @Test
