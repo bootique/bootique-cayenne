@@ -27,60 +27,55 @@
         <version>2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>bootique-cayenne41-jcache</artifactId>
+    <artifactId>bootique-cayenne42</artifactId>
     <packaging>jar</packaging>
 
-    <name>bootique-cayenne41-jcache: Integrates bootique-cayenne with bootique-jcache</name>
-    <description>Integrates bootique-cayenne with bootique-jcache.</description>
+    <name>bootique-cayenne42: Cayenne Integration Bundle for Bootique</name>
+    <description>Provides Apache Cayenne integration with Bootique</description>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.apache.cayenne</groupId>
-                <artifactId>cayenne-jcache</artifactId>
-                <version>${cayenne41.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cayenne</groupId>
-                <artifactId>cayenne-cache-invalidation</artifactId>
-                <version>${cayenne41.version}</version>
+                <artifactId>cayenne-server</artifactId>
+                <version>${cayenne42.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
+
         <!-- Compile dependencies -->
         <dependency>
-            <groupId>io.bootique.cayenne</groupId>
-            <artifactId>bootique-cayenne41</artifactId>
-            <version>${bootique.version}</version>
+            <groupId>io.bootique</groupId>
+            <artifactId>bootique</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.bootique.jdbc</groupId>
+            <artifactId>bootique-jdbc</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.cayenne</groupId>
-            <artifactId>cayenne-jcache</artifactId>
+            <artifactId>cayenne-server</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>io.bootique.jcache</groupId>
-            <artifactId>bootique-jcache</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cayenne</groupId>
-            <artifactId>cayenne-cache-invalidation</artifactId>
-            <scope>compile</scope>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
 
         <!-- Unit test dependencies -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -97,18 +92,6 @@
             <groupId>io.bootique</groupId>
             <artifactId>bootique-test-junit5</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.bootique.cayenne</groupId>
-            <artifactId>bootique-cayenne41-test-junit5</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.cayenne</groupId>
-                    <artifactId>cayenne-java8</artifactId>
-                </exclusion>
-            </exclusions>
-            <scope>test</scope>
-            <version>${bootique.version}</version>
         </dependency>
         <dependency>
             <groupId>io.bootique.jdbc</groupId>
@@ -135,6 +118,22 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>rat</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.rat</groupId>
+                        <artifactId>apache-rat-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>derby.log</exclude>
+                            </excludes>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
