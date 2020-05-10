@@ -21,10 +21,10 @@
 	<db-entity name="p3_t4">
 		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 	</db-entity>
-	<obj-entity name="P3T1" className="io.bootique.cayenne.v41.test.persistence3.P3T1" dbEntityName="p3_t1"/>
-	<obj-entity name="P3T2" className="io.bootique.cayenne.v41.test.persistence3.P3T2" dbEntityName="p3_t2"/>
-	<obj-entity name="P3T3" className="io.bootique.cayenne.v41.test.persistence3.P3T3" dbEntityName="p3_t3"/>
-	<obj-entity name="P3T4" className="io.bootique.cayenne.v41.test.persistence3.P3T4" dbEntityName="p3_t4"/>
+	<obj-entity name="P3T1" className="io.bootique.cayenne.v42.test.persistence3.P3T1" dbEntityName="p3_t1"/>
+	<obj-entity name="P3T2" className="io.bootique.cayenne.v42.test.persistence3.P3T2" dbEntityName="p3_t2"/>
+	<obj-entity name="P3T3" className="io.bootique.cayenne.v42.test.persistence3.P3T3" dbEntityName="p3_t3"/>
+	<obj-entity name="P3T4" className="io.bootique.cayenne.v42.test.persistence3.P3T4" dbEntityName="p3_t4"/>
 	<db-relationship name="t1t4" source="p3_t1" target="p3_t1_t4" toDependentPK="true" toMany="true">
 		<db-attribute-pair source="id" target="t1_id"/>
 	</db-relationship>

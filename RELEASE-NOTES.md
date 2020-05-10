@@ -2,6 +2,7 @@
 
 * #68 "maps" config must be a dictionary, not a list for extensibility
 * #78 Support for JUnit 5
+* #79 Support for Cayenne 4.2
 
 ## 1.1
 

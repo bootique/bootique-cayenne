@@ -22,4 +22,4 @@ cayenne:
   datasource: ds
   createSchema: true
   configs:
-    - io/bootique/cayenne/v41/cayenne-generic.xml
+    - io/bootique/cayenne/v42/cayenne-generic.xml
