@@ -45,12 +45,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @BQTest
 public class CacheInvalidationIT {
 
-    static final InvalidationHandler invalidationHandler = type -> {
-        if (type.getAnnotation(CacheGroups.class) != null) {
-            return null;
-        }
-        return p -> asList(new CacheGroupDescriptor("cayenne1"), new CacheGroupDescriptor("nocayenne1"));
-    };
+    static final InvalidationHandler invalidationHandler =
+            type -> type.getAnnotation(CacheGroups.class) == null
+                    ? p -> asList(new CacheGroupDescriptor("cayenne1"), new CacheGroupDescriptor("nocayenne1"))
+                    : null;
 
     @BQApp(skipRun = true)
     static final BQRuntime runtime = Bootique.app("-c", "classpath:bq1.yml")
