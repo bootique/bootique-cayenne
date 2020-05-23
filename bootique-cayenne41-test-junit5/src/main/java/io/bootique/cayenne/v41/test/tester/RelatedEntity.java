@@ -16,17 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package io.bootique.cayenne.v41.test.tester;
 
-package io.bootique.cayenne.v41.test;
-
-import org.apache.cayenne.map.DataMap;
+import org.apache.cayenne.Persistent;
 
 /**
- * A listener that is called when the test DB schema is created.
- *
  * @since 2.0
  */
-public interface SchemaListener {
+public class RelatedEntity {
 
-    void afterSchemaCreated(DataMap dataMap);
+    private Class<? extends Persistent> type;
+    private String relationship;
+
+    public RelatedEntity(Class<? extends Persistent> type, String relationship) {
+        this.type = type;
+        this.relationship = relationship;
+    }
+
+    public Class<? extends Persistent> getType() {
+        return type;
+    }
+
+    public String getRelationship() {
+        return relationship;
+    }
 }
