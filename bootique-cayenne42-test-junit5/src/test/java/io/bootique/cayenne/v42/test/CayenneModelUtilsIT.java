@@ -20,8 +20,6 @@
 package io.bootique.cayenne.v42.test;
 
 import io.bootique.BQRuntime;
-import io.bootique.cayenne.v42.test.CayenneModelUtils;
-import io.bootique.jdbc.test.Column;
 import io.bootique.jdbc.test.Table;
 import io.bootique.test.junit5.BQTestFactory;
 import org.junit.jupiter.api.Test;

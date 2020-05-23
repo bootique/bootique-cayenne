@@ -20,8 +20,7 @@
 package io.bootique.cayenne.v41.test;
 
 import io.bootique.BQRuntime;
-import io.bootique.jdbc.test.Column;
-import io.bootique.jdbc.test.DatabaseChannel;
+import io.bootique.jdbc.test.connector.DbConnector;
 import io.bootique.jdbc.test.Table;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.exp.Property;
@@ -40,7 +39,7 @@ class CayenneModelUtils {
 
     static Table createTableModel(BQRuntime runtime, Class<?> entityType) {
         ServerRuntime serverRuntime = runtime.getInstance(ServerRuntime.class);
-        return createTableModel(DatabaseChannel.get(runtime), getDbEntity(
+        return createTableModel(DbConnector.get(runtime), getDbEntity(
                 serverRuntime.getDataDomain().getEntityResolver(),
                 entityType));
     }
@@ -49,10 +48,10 @@ class CayenneModelUtils {
         ServerRuntime serverRuntime = runtime.getInstance(ServerRuntime.class);
         DbEntity dbEntity = serverRuntime.getDataDomain().getEntityResolver().getDbEntity(tableName);
         Objects.requireNonNull(dbEntity);
-        return createTableModel(DatabaseChannel.get(runtime), dbEntity);
+        return createTableModel(DbConnector.get(runtime), dbEntity);
     }
 
-    static Table createTableModel(DatabaseChannel channel, DbEntity dbEntity) {
+    static Table createTableModel(DbConnector channel, DbEntity dbEntity) {
 
         Column[] columns = new Column[dbEntity.getAttributes().size()];
         int i = 0;
@@ -93,7 +92,7 @@ class CayenneModelUtils {
         List<DbEntity> list = new ArrayList<>(dbEntities);
         sorter.sortDbEntities(list, false);
 
-        DatabaseChannel channel = DatabaseChannel.get(runtime);
+        DbConnector channel = DbConnector.get(runtime);
 
         Table[] tables = new Table[list.size()];
         for (int i = 0; i < tables.length; i++) {

@@ -16,33 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package io.bootique.cayenne.test.tester;
 
-package io.bootique.cayenne.test.junit5;
+import org.apache.cayenne.configuration.server.ServerRuntime;
 
-import io.bootique.BQModuleProvider;
-import io.bootique.cayenne.CayenneModuleProvider;
-import io.bootique.di.BQModule;
-import io.bootique.jdbc.test.junit5.JdbcTestJUnit5ModuleProvider;
+import javax.inject.Inject;
 
-import java.util.Collection;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import static java.util.Arrays.asList;
+public class CayenneTesterBootiqueHook {
 
-/**
- * @since 2.0
- */
-public class CayenneTestJUnit5ModuleProvider implements BQModuleProvider {
+    @Inject
+    ServerRuntime runtime;
 
-    @Override
-    public BQModule module() {
-        return new CayenneTestJUnit5Module();
-    }
-
-    @Override
-    public Collection<BQModuleProvider> dependencies() {
-        return asList(
-                new CayenneModuleProvider(),
-                new JdbcTestJUnit5ModuleProvider()
-        );
+    public ServerRuntime getRuntime() {
+        assertNotNull(runtime, "ServerRuntime is not initialized. Not connected to Bootique runtime?");
+        return runtime;
     }
 }

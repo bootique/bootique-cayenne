@@ -16,34 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package io.bootique.cayenne.test.tester;
 
-package io.bootique.cayenne.test;
-
+import org.apache.cayenne.map.DataMap;
 import org.apache.cayenne.map.DbEntity;
-import org.apache.cayenne.map.DbRelationship;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
-class ModelDependencyResolver {
+/**
+ * A DataMap decorator that provides access to a subset of DbEntities from another DataMap without changing their
+ * parent.
+ *
+ * @since 2.0
+ */
+public class FilteredDataMap extends DataMap {
 
-    static Set<DbEntity> resolve(Collection<DbEntity> entities) {
-        Set<DbEntity> resolved = new HashSet<>();
-        entities.forEach(e -> resolve(resolved, e));
-        return resolved;
+    private Map<String, DbEntity> includedEntities;
+
+    public FilteredDataMap(String mapName, Map<String, DbEntity> includedEntities) {
+        super(mapName);
+        this.includedEntities = includedEntities;
     }
 
-    static private void resolve(Set<DbEntity> resolved, DbEntity entity) {
-
-        if (resolved.add(entity)) {
-            entity.getRelationships().forEach(r -> resolveDependent(resolved, r));
-        }
+    @Override
+    public Collection<DbEntity> getDbEntities() {
+        return includedEntities.values();
     }
 
-    static private void resolveDependent(Set<DbEntity> resolved, DbRelationship relationship) {
-        if (relationship.isFromPK() && !relationship.isToMasterPK()) {
-            resolve(resolved, relationship.getTargetEntity());
-        }
+    @Override
+    public DbEntity getDbEntity(String dbEntityName) {
+        return includedEntities.get(dbEntityName);
     }
 }

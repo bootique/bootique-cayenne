@@ -19,7 +19,7 @@
 
 package io.bootique.cayenne.v41.test;
 
-import io.bootique.jdbc.test.DatabaseChannel;
+import io.bootique.jdbc.test.connector.DbConnector;
 import io.bootique.jdbc.test.Table;
 import org.apache.cayenne.exp.Property;
 import org.apache.cayenne.map.DbEntity;
@@ -39,11 +39,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CayenneTableManager {
 
-    private DatabaseChannel channel;
+    private DbConnector channel;
     private EntityResolver resolver;
     private Map<String, Table> tables;
 
-    public CayenneTableManager(EntityResolver resolver, DatabaseChannel channel) {
+    public CayenneTableManager(EntityResolver resolver, DbConnector channel) {
         this.resolver = resolver;
         this.channel = channel;
         this.tables = new ConcurrentHashMap<>();

@@ -23,35 +23,45 @@ import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.cayenne.test.persistence.Table1;
 import io.bootique.cayenne.test.persistence.Table2;
+import io.bootique.jdbc.test.DbTester;
 import io.bootique.jdbc.test.Table;
 import io.bootique.test.junit5.BQApp;
 import io.bootique.test.junit5.BQTest;
+import org.apache.cayenne.Persistent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @BQTest
-public class CayenneTestDataManagerIT {
-
-    @BQApp(skipRun = true)
-    static final BQRuntime runtime = Bootique.app("-c", "classpath:config2.yml").autoLoadModules().createRuntime();
+public class CayenneTesterIT {
 
     @RegisterExtension
-    static final CayenneTestDataManager dataManager = CayenneTestDataManager.builder(runtime)
-            .entities(Table1.class, Table2.class)
-            .build();
+    static final DbTester db = DbTester.derbyDb();
+
+    @RegisterExtension
+    static final CayenneTester cayenne = CayenneTester
+            .create()
+            .entities(Table1.class, Table2.class);
+
+    @BQApp(skipRun = true)
+    static final BQRuntime app = Bootique
+            .app("-c", "classpath:config2.yml")
+            .autoLoadModules()
+            .module(db.setOrReplaceDataSource("db"))
+            .module(cayenne.registerTestHooks())
+            .createRuntime();
 
     @Test
     public void testNoSuchTable() {
-        assertThrows(IllegalArgumentException.class, () -> dataManager.getTable(String.class));
+        assertThrows(IllegalArgumentException.class, () -> cayenne.getTableName(Persistent.class));
     }
 
     @Test
     public void test1() {
 
-        Table t1 = dataManager.getTable(Table1.class);
-        Table t2 = dataManager.getTable(Table2.class);
+        Table t1 = db.getTable(cayenne.getTableName(Table1.class));
+        Table t2 = db.getTable(cayenne.getTableName(Table2.class));
 
         t1.matcher().assertNoMatches();
         t2.matcher().assertNoMatches();
@@ -66,8 +76,8 @@ public class CayenneTestDataManagerIT {
     @Test
     public void test2() {
 
-        Table t1 = dataManager.getTable(Table1.class);
-        Table t2 = dataManager.getTable(Table2.class);
+        Table t1 = db.getTable(cayenne.getTableName(Table1.class));
+        Table t2 = db.getTable(cayenne.getTableName(Table2.class));
 
         t1.matcher().assertNoMatches();
         t2.matcher().assertNoMatches();
