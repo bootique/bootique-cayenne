@@ -43,6 +43,7 @@ public class CayenneTester implements BeforeEachCallback {
 
     private boolean refreshCayenneCaches;
     private boolean deleteBeforeEachTest;
+    private boolean skipSchemaCreation;
     private Collection<Class<? extends Persistent>> entities;
     private Collection<Class<? extends Persistent>> entityGraphRoots;
     private Collection<String> tables;
@@ -63,14 +64,20 @@ public class CayenneTester implements BeforeEachCallback {
                 // TODO: are we shooting ourselves in the foot with this? Is it reasonable to expect a dirty
                 //   DB before the first test?
                 .onFirstAccess(r -> resolveRuntimeManager(r))
-                .onFirstAccess(r -> getRuntimeManager().createSchema());
+                .onFirstAccess(r -> createSchema());
 
         this.refreshCayenneCaches = true;
         this.deleteBeforeEachTest = false;
+        this.skipSchemaCreation = false;
     }
 
     public CayenneTester doNoRefreshCayenneCaches() {
         this.refreshCayenneCaches = false;
+        return this;
+    }
+
+    public CayenneTester skipSchemaCreation() {
+        this.skipSchemaCreation = true;
         return this;
     }
 
@@ -197,6 +204,12 @@ public class CayenneTester implements BeforeEachCallback {
                 .tableGraphRoots(tableGraphRoots)
                 .relatedEntities(relatedTables)
                 .build();
+    }
+
+    protected void createSchema() {
+        if(!skipSchemaCreation) {
+            getRuntimeManager().createSchema();
+        }
     }
 
     @Override
