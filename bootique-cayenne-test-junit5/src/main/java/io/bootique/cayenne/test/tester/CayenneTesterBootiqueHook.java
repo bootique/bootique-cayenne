@@ -21,6 +21,9 @@ package io.bootique.cayenne.test.tester;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -29,8 +32,40 @@ public class CayenneTesterBootiqueHook {
     @Inject
     ServerRuntime runtime;
 
+    private Collection<Consumer<ServerRuntime>> onInitCallbacks;
+    private boolean callbacksPending;
+
+    public CayenneTesterBootiqueHook() {
+        this.onInitCallbacks = new ArrayList<>();
+        this.callbacksPending = true;
+    }
+
+    public boolean isInitialized() {
+        return !callbacksPending;
+    }
+
+    public CayenneTesterBootiqueHook onFirstAccess(Consumer<ServerRuntime> callback) {
+
+        if (!callbacksPending) {
+            throw new IllegalStateException("Callbacks already processed");
+        }
+
+        onInitCallbacks.add(callback);
+        return this;
+    }
+
     public ServerRuntime getRuntime() {
         assertNotNull(runtime, "ServerRuntime is not initialized. Not connected to Bootique runtime?");
+
+        if (callbacksPending) {
+            synchronized (this) {
+                if (callbacksPending) {
+                    onInitCallbacks.forEach(c -> c.accept(runtime));
+                    this.callbacksPending = false;
+                }
+            }
+        }
+
         return runtime;
     }
 }

@@ -19,49 +19,46 @@
 package io.bootique.cayenne.test;
 
 import io.bootique.cayenne.test.tester.CayenneTesterBootiqueHook;
-import io.bootique.cayenne.test.tester.FilteredDataMap;
-import io.bootique.cayenne.test.tester.SchemaGenerator;
+import io.bootique.cayenne.test.tester.CayenneRuntimeManager;
 import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 import org.apache.cayenne.Persistent;
-import org.apache.cayenne.access.DataDomain;
-import org.apache.cayenne.access.DataNode;
 import org.apache.cayenne.configuration.server.ServerRuntime;
-import org.apache.cayenne.map.DataMap;
-import org.apache.cayenne.map.DbEntity;
-import org.apache.cayenne.map.EntityResolver;
 import org.apache.cayenne.map.ObjEntity;
-import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * A JUnit5 extension that manages test schema, data and Cayenne runtime state between the tests.
  *
  * @since 2.0
  */
-public class CayenneTester implements BeforeAllCallback, BeforeEachCallback {
+public class CayenneTester implements BeforeEachCallback {
 
     private boolean refreshCayenneCaches;
     private boolean deleteBeforeEachTest;
     private Collection<Class<? extends Persistent>> entities;
 
     private CayenneTesterBootiqueHook bootiqueHook;
-    private Map<String, DataMap> managedEntitiesByNode;
+    private CayenneRuntimeManager runtimeManager;
 
     public static CayenneTester create() {
         return new CayenneTester();
     }
 
     protected CayenneTester() {
-        this.bootiqueHook = new CayenneTesterBootiqueHook();
+
+        this.bootiqueHook = new CayenneTesterBootiqueHook()
+                // lazy init helps to prevent certain unneeded steps, such as DB cleanup before the first test
+                // TODO: are we shooting ourselves in the foot with this? Is it reasonable to expect a dirty
+                //   DB before the first test?
+                .onFirstAccess(r -> resolveRuntimeManager(r))
+                .onFirstAccess(r -> getRuntimeManager().createSchema());
+
         this.refreshCayenneCaches = true;
         this.deleteBeforeEachTest = false;
         this.entities = new ArrayList<>();
@@ -87,7 +84,7 @@ public class CayenneTester implements BeforeAllCallback, BeforeEachCallback {
     }
 
     /**
-     * Configures the Tester to delete data from the tester's entity classes before each test.
+     * Configures the Tester to delete data corresponding to the tester's entity model before each test.
      *
      * @return this tester
      */
@@ -107,24 +104,22 @@ public class CayenneTester implements BeforeAllCallback, BeforeEachCallback {
     }
 
     protected void configure(Binder binder) {
-        binder.bind(CayenneTesterBootiqueHook.class).toInstance(bootiqueHook);
-    }
-
-    protected DataDomain getDomain() {
-        return bootiqueHook.getRuntime().getDataDomain();
+        binder.bind(CayenneTesterBootiqueHook.class).toInstance(bootiqueHook)
+                // using "initOnStartup" to cause immediate Cayenne initialization. Any downsides?
+                .initOnStartup();
     }
 
     public ServerRuntime getRuntime() {
         return bootiqueHook.getRuntime();
     }
 
-    protected Map<String, DataMap> getManagedEntitiesByNode() {
-        assertNotNull(managedEntitiesByNode, "Managed Cayenne entities are not resolved. Called outside of test lifecycle?");
-        return managedEntitiesByNode;
+    protected CayenneRuntimeManager getRuntimeManager() {
+        Assertions.assertNotNull(runtimeManager, "Cayenne runtime is not resolved. Called outside of test lifecycle?");
+        return runtimeManager;
     }
 
     public String getTableName(Class<? extends Persistent> entity) {
-        ObjEntity e = getDomain().getEntityResolver().getObjEntity(entity);
+        ObjEntity e = getRuntime().getDataDomain().getEntityResolver().getObjEntity(entity);
         if (e == null) {
             throw new IllegalStateException("Type is not mapped in Cayenne: " + entity);
         }
@@ -132,73 +127,24 @@ public class CayenneTester implements BeforeAllCallback, BeforeEachCallback {
         return e.getDbEntity().getName();
     }
 
-    protected void triggerCayenneStackInit() {
-
-    }
-
-    protected void resolveManagedEntitiesByNode() {
-
-        DataDomain domain = getDomain();
-        Map<String, Map<String, DbEntity>> byNode = new HashMap<>();
-
-        if (!entities.isEmpty()) {
-            EntityResolver resolver = domain.getEntityResolver();
-
-            entities.forEach(t -> {
-
-                ObjEntity e = resolver.getObjEntity(t);
-                if (e == null) {
-                    throw new IllegalStateException("Type is not mapped in Cayenne: " + t);
-                }
-
-                DbEntity dbe = e.getDbEntity();
-                DataNode node = domain.lookupDataNode(dbe.getDataMap());
-                byNode.computeIfAbsent(node.getName(), nn -> new HashMap<>()).put(dbe.getName(), dbe);
-            });
-        }
-
-        Map<String, DataMap> managedEntitiesByNode = new HashMap<>();
-        byNode.forEach((k, v) -> managedEntitiesByNode.put(k, new FilteredDataMap("CayenneTester_" + k, v)));
-        this.managedEntitiesByNode = managedEntitiesByNode;
-    }
-
-    protected void initSchema() {
-        SchemaGenerator generator = new SchemaGenerator(getDomain());
-        getManagedEntitiesByNode().forEach(generator::createSchema);
-    }
-
-    protected void deleteTestData() {
-        throw new UnsupportedOperationException("TODO");
-    }
-
-    protected void refreshCayenneCaches() {
-
-        DataDomain domain = getDomain();
-
-        if (domain.getSharedSnapshotCache() != null) {
-            domain.getSharedSnapshotCache().clear();
-        }
-
-        if (domain.getQueryCache() != null) {
-            // note that this also flushes per-context caches .. at least with JCache implementation
-            domain.getQueryCache().clear();
-        }
-    }
-
-    @Override
-    public void beforeAll(ExtensionContext context) {
-        resolveManagedEntitiesByNode();
-        initSchema();
+    protected void resolveRuntimeManager(ServerRuntime runtime) {
+        this.runtimeManager = CayenneRuntimeManager
+                .builder(runtime.getDataDomain())
+                .entities(entities)
+                .build();
     }
 
     @Override
     public void beforeEach(ExtensionContext context) {
-        if (refreshCayenneCaches) {
-            refreshCayenneCaches();
-        }
 
-        if (deleteBeforeEachTest && !entities.isEmpty()) {
-            deleteTestData();
+        if (bootiqueHook.isInitialized()) {
+            if (refreshCayenneCaches) {
+                getRuntimeManager().refreshCaches();
+            }
+
+            if (deleteBeforeEachTest && !entities.isEmpty()) {
+                getRuntimeManager().deleteData();
+            }
         }
     }
 }

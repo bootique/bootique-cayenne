@@ -23,10 +23,13 @@ import org.apache.cayenne.map.DbEntity;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * A DataMap decorator that provides access to a subset of DbEntities from another DataMap without changing their
- * parent.
+ * parent. Unfortunately it is not easy tio just copy some entities from one DataMap to another, as the entities'
+ * parent will get reset. Hence using thsi decorator.
  *
  * @since 2.0
  */
@@ -37,6 +40,11 @@ public class FilteredDataMap extends DataMap {
     public FilteredDataMap(String mapName, Map<String, DbEntity> includedEntities) {
         super(mapName);
         this.includedEntities = includedEntities;
+    }
+
+    @Override
+    public SortedMap<String, DbEntity> getDbEntityMap() {
+        return new TreeMap<>(includedEntities);
     }
 
     @Override

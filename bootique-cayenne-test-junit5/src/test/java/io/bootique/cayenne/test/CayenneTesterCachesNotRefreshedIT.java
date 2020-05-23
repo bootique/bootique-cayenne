@@ -24,17 +24,15 @@ import io.bootique.Bootique;
 import io.bootique.cayenne.test.persistence.Table1;
 import io.bootique.cayenne.test.persistence.Table2;
 import io.bootique.jdbc.test.DbTester;
-import io.bootique.jdbc.test.Table;
 import io.bootique.test.junit5.BQApp;
 import io.bootique.test.junit5.BQTest;
-import org.apache.cayenne.Persistent;
-import org.junit.jupiter.api.Test;
+import org.apache.cayenne.ObjectContext;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 @BQTest
-public class CayenneTesterIT {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class CayenneTesterCachesNotRefreshedIT {
 
     @RegisterExtension
     static final DbTester db = DbTester.derbyDb();
@@ -42,51 +40,41 @@ public class CayenneTesterIT {
     @RegisterExtension
     static final CayenneTester cayenne = CayenneTester
             .create()
-            .entities(Table1.class, Table2.class)
-            .deleteBeforeEachTest();
+            .doNoRefreshCayenneCaches()
+            .entities(Table1.class, Table2.class);
 
     @BQApp(skipRun = true)
-    static final BQRuntime app = Bootique
-            .app("-c", "classpath:config2.yml")
+    static final BQRuntime app = Bootique.app("-c", "classpath:config2.yml")
             .autoLoadModules()
             .module(db.setOrReplaceDataSource("db"))
             .module(cayenne.registerTestHooks())
             .createRuntime();
 
     @Test
-    public void testNoSuchTable() {
-        assertThrows(IllegalStateException.class, () -> cayenne.getTableName(Persistent.class));
+    @Order(1)
+    public void crossTestInterference1() {
+        verifyCachesEmptyAndAddObjectsToCache();
     }
 
     @Test
-    public void test1() {
-
-        Table t1 = db.getTable(cayenne.getTableName(Table1.class));
-        Table t2 = db.getTable(cayenne.getTableName(Table2.class));
-
-        t1.matcher().assertNoMatches();
-        t2.matcher().assertNoMatches();
-
-        t1.insert(1, 2, 3);
-        t2.insert(5, "x");
-
-        t1.matcher().assertOneMatch();
-        t2.matcher().assertOneMatch();
+    @Order(2)
+    public void crossTestInterference2() {
+        verifyCaches(1);
     }
 
-    @Test
-    public void test2() {
+    private void verifyCaches(int expectedCount) {
+        Assertions.assertEquals(expectedCount, cayenne.getRuntime().getDataDomain().getSharedSnapshotCache().size());
+    }
 
-        Table t1 = db.getTable(cayenne.getTableName(Table1.class));
-        Table t2 = db.getTable(cayenne.getTableName(Table2.class));
+    private void verifyCachesEmptyAndAddObjectsToCache() {
+        // verify that there's no data in the cache
+        verifyCaches(0);
 
-        t1.matcher().assertNoMatches();
-        t2.matcher().assertNoMatches();
-
-        t1.insert(4, 5, 6);
-        t2.insert(7, "y");
-
-        t1.matcher().assertOneMatch();
-        t2.matcher().assertOneMatch();
+        // seed the cache for the next test
+        ObjectContext context = cayenne.getRuntime().newContext();
+        Table1 t1 = context.newObject(Table1.class);
+        t1.setA(5L);
+        t1.setB(6L);
+        context.commitChanges();
     }
 }

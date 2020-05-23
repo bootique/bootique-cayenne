@@ -27,12 +27,12 @@ import io.bootique.jdbc.test.DbTester;
 import io.bootique.test.junit5.BQApp;
 import io.bootique.test.junit5.BQTest;
 import org.apache.cayenne.ObjectContext;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 @BQTest
-public class CayenneTesterCachesIT {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class CayenneTesterCachesRefreshedIT {
 
     @RegisterExtension
     static final DbTester db = DbTester.derbyDb();
@@ -50,19 +50,25 @@ public class CayenneTesterCachesIT {
             .createRuntime();
 
     @Test
+    @Order(1)
     public void crossTestInterference1() {
         verifyCachesEmptyAndAddObjectsToCache();
     }
 
     @Test
+    @Order(2)
     public void crossTestInterference2() {
-        // do the same thing as "test1" to ensure cross-test interference is verified regardless of the test run order
-        verifyCachesEmptyAndAddObjectsToCache();
+        verifyCachesEmpty();
+    }
+
+    private void verifyCachesEmpty() {
+        // verify that there's no data in the cache
+        Assertions.assertEquals(0, cayenne.getRuntime().getDataDomain().getSharedSnapshotCache().size());
     }
 
     private void verifyCachesEmptyAndAddObjectsToCache() {
         // verify that there's no data in the cache
-        Assertions.assertEquals(0, cayenne.getDomain().getSharedSnapshotCache().size());
+        verifyCachesEmpty();
 
         // seed the cache for the next test
         ObjectContext context = cayenne.getRuntime().newContext();
