@@ -20,8 +20,7 @@
 package io.bootique.cayenne.v42.jcache;
 
 import io.bootique.BQRuntime;
-import io.bootique.cayenne.v41.CayenneModule;
-import io.bootique.cayenne.v42.jcache.CayenneJCacheModuleProvider;
+import io.bootique.cayenne.v42.CayenneModule;
 import io.bootique.jcache.JCacheModule;
 import io.bootique.jdbc.JdbcModule;
 import io.bootique.test.junit5.BQModuleProviderChecker;

@@ -24,32 +24,54 @@ import io.bootique.Bootique;
 import io.bootique.cayenne.v42.test.persistence3.P3T1;
 import io.bootique.cayenne.v42.test.persistence3.P3T3;
 import io.bootique.cayenne.v42.test.persistence3.P3T4;
-import io.bootique.jdbc.test.Table;
+import io.bootique.cayenne.v42.test.tester.FilteredDataMap;
+import io.bootique.jdbc.test.DbTester;
 import io.bootique.test.junit5.BQApp;
 import io.bootique.test.junit5.BQTest;
+import org.apache.cayenne.configuration.server.ServerRuntime;
+import org.apache.cayenne.map.DbEntity;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
-public class CayenneTestDataManagerBuilder_DependenciesIT {
+public class CayenneTester_DependenciesIT {
+
+    @RegisterExtension
+    static final DbTester db = DbTester.derbyDb();
 
     @BQApp(skipRun = true)
-    static final BQRuntime runtime = Bootique.app("-c", "classpath:config3.yml").autoLoadModules().createRuntime();
+    static final BQRuntime app = Bootique
+            .app("-c", "classpath:config3.yml")
+            .autoLoadModules()
+            .module(db.setOrReplaceDataSource("db"))
+            .createRuntime();
+
+    private Set<String> getTables(CayenneTester ct) {
+        ct.resolveRuntimeManager(app.getInstance(ServerRuntime.class));
+        Map<String, FilteredDataMap> entities = ct.getRuntimeManager().getManagedEntitiesByNode();
+
+        assertEquals(1, entities.size());
+        FilteredDataMap map = entities.values().iterator().next();
+
+        return map.getDbEntitiesInInsertOrder()
+                .stream()
+                .map(DbEntity::getName)
+                .collect(Collectors.toSet());
+    }
 
     @Test
     public void testDependentEntities1() {
-        CayenneTestDataManager dm = CayenneTestDataManager
-                .builder(runtime)
-                .entitiesAndDependencies(P3T1.class)
-                .build();
 
-        Set<String> tables = Stream.of(dm.getTablesInInsertOrder()).map(Table::getName).collect(Collectors.toSet());
+        CayenneTester ct = CayenneTester.create().entitiesAndDependencies(P3T1.class);
+        Set<String> tables = getTables(ct);
+
         assertEquals(4, tables.size());
         assertTrue(tables.contains("p3_t1"));
         assertTrue(tables.contains("p3_t1_t4"));
@@ -59,12 +81,9 @@ public class CayenneTestDataManagerBuilder_DependenciesIT {
 
     @Test
     public void testDependentEntities2() {
-        CayenneTestDataManager dm = CayenneTestDataManager
-                .builder(runtime)
-                .entitiesAndDependencies(P3T4.class)
-                .build();
+        CayenneTester ct = CayenneTester.create().entitiesAndDependencies(P3T4.class);
+        Set<String> tables = getTables(ct);
 
-        Set<String> tables = Stream.of(dm.getTablesInInsertOrder()).map(Table::getName).collect(Collectors.toSet());
         assertEquals(2, tables.size());
         assertTrue(tables.contains("p3_t4"));
         assertTrue(tables.contains("p3_t1_t4"));
@@ -72,24 +91,18 @@ public class CayenneTestDataManagerBuilder_DependenciesIT {
 
     @Test
     public void testDependentEntities3() {
-        CayenneTestDataManager dm = CayenneTestDataManager
-                .builder(runtime)
-                .entitiesAndDependencies(P3T3.class)
-                .build();
+        CayenneTester ct = CayenneTester.create().entitiesAndDependencies(P3T3.class);
+        Set<String> tables = getTables(ct);
 
-        Set<String> tables = Stream.of(dm.getTablesInInsertOrder()).map(Table::getName).collect(Collectors.toSet());
         assertEquals(1, tables.size());
         assertTrue(tables.contains("p3_t3"));
     }
 
     @Test
     public void testDependentTables1() {
-        CayenneTestDataManager dm = CayenneTestDataManager
-                .builder(runtime)
-                .tablesAndDependencies("p3_t1_t4")
-                .build();
+        CayenneTester ct = CayenneTester.create().tablesAndDependencies("p3_t1_t4");
+        Set<String> tables = getTables(ct);
 
-        Set<String> tables = Stream.of(dm.getTablesInInsertOrder()).map(Table::getName).collect(Collectors.toSet());
         assertEquals(1, tables.size());
         assertTrue(tables.contains("p3_t1_t4"));
     }

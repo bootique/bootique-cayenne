@@ -13,12 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-jdbc:
-  ds:
-    url: jdbc:derby:target/derby/derby2;create=true
-    initialSize: 1
-
 cayenne:
-  datasource: ds
   configs:
     - cayenne-project2.xml

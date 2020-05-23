@@ -24,7 +24,8 @@ import io.bootique.Bootique;
 import io.bootique.cayenne.v42.jcache.CayenneJCacheModule;
 import io.bootique.cayenne.v42.jcache.persistent.Table1;
 import io.bootique.cayenne.v42.jcache.persistent.Table2;
-import io.bootique.cayenne.v41.test.CayenneTestDataManager;
+import io.bootique.cayenne.v42.test.CayenneTester;
+import io.bootique.jdbc.test.DbTester;
 import io.bootique.test.junit5.BQApp;
 import io.bootique.test.junit5.BQTest;
 import org.apache.cayenne.ObjectContext;
@@ -44,27 +45,32 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @BQTest
 public class CacheInvalidationIT {
-
     static final InvalidationHandler invalidationHandler =
             type -> type.getAnnotation(CacheGroups.class) == null
                     ? p -> asList(new CacheGroupDescriptor("cayenne1"), new CacheGroupDescriptor("nocayenne1"))
                     : null;
 
+    @RegisterExtension
+    static final DbTester db = DbTester.derbyDb();
+
+    @RegisterExtension
+    static final CayenneTester cayenne = CayenneTester
+            .create()
+            .entities(Table1.class, Table2.class)
+            .deleteBeforeEachTest();
+
     @BQApp(skipRun = true)
     static final BQRuntime runtime = Bootique.app("-c", "classpath:bq1.yml")
             .autoLoadModules()
             .module(b -> CayenneJCacheModule.extend(b).addInvalidationHandler(invalidationHandler))
+            .module(db.setOrReplaceDataSource("db"))
+            .module(cayenne.registerTestHooks())
             .createRuntime();
-
-    @RegisterExtension
-    public CayenneTestDataManager dataManager = CayenneTestDataManager.builder(runtime)
-            .entities(Table1.class, Table2.class)
-            .build();
 
     @Test
     public void testInvalidate_CustomHandler() {
 
-        ObjectContext context = dataManager.getRuntime().newContext();
+        ObjectContext context = cayenne.getRuntime().newContext();
         // no explicit cache group must still work - it lands inside default cache called 'cayenne.default.cache'
         ObjectSelect<Table1> g0 = ObjectSelect.query(Table1.class).localCache();
         ObjectSelect<Table1> g1 = ObjectSelect.query(Table1.class).localCache("cayenne1");
@@ -74,7 +80,7 @@ public class CacheInvalidationIT {
         assertEquals(0, g1.select(context).size());
         assertEquals(0, g2.select(context).size());
 
-        dataManager.getTable(Table1.class).insert(1).insert(2);
+        db.getTable(cayenne.getTableName(Table1.class)).insert(1).insert(2);
 
         // inserted via SQL... query results are still cached...
         assertEquals(0, g0.select(context).size());
@@ -103,14 +109,14 @@ public class CacheInvalidationIT {
     @Test
     public void testInvalidate_CacheGroup() {
 
-        ObjectContext context = dataManager.getRuntime().newContext();
+        ObjectContext context = cayenne.getRuntime().newContext();
         ObjectSelect<Table2> g3 = ObjectSelect.query(Table2.class).localCache("cayenne3");
         ObjectSelect<Table2> g4 = ObjectSelect.query(Table2.class).localCache("cayenne4");
 
         assertEquals(0, g3.select(context).size());
         assertEquals(0, g4.select(context).size());
 
-        dataManager.getTable(Table2.class).insertColumns("id", "name").values(1, "x1").exec();
+        db.getTable(cayenne.getTableName(Table2.class)).insertColumns("id", "name").values(1, "x1").exec();
 
         // inserted via SQL... query results are still cached...
         assertEquals(0, g3.select(context).size());
@@ -134,7 +140,7 @@ public class CacheInvalidationIT {
     @Test
     public void testInvalidate_CustomData() {
 
-        ObjectContext context = dataManager.getRuntime().newContext();
+        ObjectContext context = cayenne.getRuntime().newContext();
 
         // make sure Cayenne-specific caches are created...
         ObjectSelect<Table1> g1 = ObjectSelect.query(Table1.class).localCache("cayenne1");
@@ -146,7 +152,6 @@ public class CacheInvalidationIT {
         cache.put("a", "b");
 
         assertEquals("b", cache.get("a"));
-
 
         // generate commit event
         context.newObject(Table1.class);

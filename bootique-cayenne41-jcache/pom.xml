@@ -94,11 +94,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.bootique</groupId>
-            <artifactId>bootique-test-junit5</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>io.bootique.cayenne</groupId>
             <artifactId>bootique-cayenne41-test-junit5</artifactId>
             <scope>test</scope>

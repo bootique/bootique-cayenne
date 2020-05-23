@@ -13,11 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-jdbc:
-  ds:
-    url: jdbc:derby:target/derby/cached;create=true
-    maxActive: 2
-
 cayenne:
   configs:
     - cayenne-project1.xml

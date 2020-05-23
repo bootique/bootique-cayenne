@@ -23,44 +23,55 @@ import io.bootique.BQRuntime;
 import io.bootique.Bootique;
 import io.bootique.cayenne.v42.test.persistence.Table1;
 import io.bootique.cayenne.v42.test.persistence.Table2;
+import io.bootique.jdbc.test.DbTester;
 import io.bootique.test.junit5.BQApp;
 import io.bootique.test.junit5.BQTest;
 import org.apache.cayenne.ObjectContext;
-import org.apache.cayenne.configuration.server.ServerRuntime;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 @BQTest
-public class CayenneTestDataManagerCachesIT {
-
-    @BQApp(skipRun = true)
-    static final BQRuntime runtime = Bootique.app("-c", "classpath:config2.yml").autoLoadModules().createRuntime();
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class CayenneTesterCachesNotRefreshedIT {
 
     @RegisterExtension
-    static final CayenneTestDataManager dataManager = CayenneTestDataManager.builder(runtime)
-            .entities(Table1.class, Table2.class)
-            .build();
+    static final DbTester db = DbTester.derbyDb();
 
-    static final ServerRuntime cayenneRuntime = dataManager.getRuntime();
+    @RegisterExtension
+    static final CayenneTester cayenne = CayenneTester
+            .create()
+            .doNoRefreshCayenneCaches()
+            .entities(Table1.class, Table2.class);
+
+    @BQApp(skipRun = true)
+    static final BQRuntime app = Bootique.app("-c", "classpath:config2.yml")
+            .autoLoadModules()
+            .module(db.setOrReplaceDataSource("db"))
+            .module(cayenne.registerTestHooks())
+            .createRuntime();
 
     @Test
+    @Order(1)
     public void crossTestInterference1() {
         verifyCachesEmptyAndAddObjectsToCache();
     }
 
     @Test
+    @Order(2)
     public void crossTestInterference2() {
-        // do the same thing as "test1" to ensure cross-test interference is verified regardless of the test run order
-        verifyCachesEmptyAndAddObjectsToCache();
+        verifyCaches(1);
+    }
+
+    private void verifyCaches(int expectedCount) {
+        Assertions.assertEquals(expectedCount, cayenne.getRuntime().getDataDomain().getSharedSnapshotCache().size());
     }
 
     private void verifyCachesEmptyAndAddObjectsToCache() {
         // verify that there's no data in the cache
-        Assertions.assertEquals(0, cayenneRuntime.getDataDomain().getSharedSnapshotCache().size());
+        verifyCaches(0);
 
         // seed the cache for the next test
-        ObjectContext context = cayenneRuntime.newContext();
+        ObjectContext context = cayenne.getRuntime().newContext();
         Table1 t1 = context.newObject(Table1.class);
         t1.setA(5L);
         t1.setB(6L);

@@ -98,26 +98,16 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.bootique</groupId>
-            <artifactId>bootique-test-junit5</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>io.bootique.cayenne</groupId>
-            <artifactId>bootique-cayenne41-test-junit5</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.cayenne</groupId>
-                    <artifactId>cayenne-java8</artifactId>
-                </exclusion>
-            </exclusions>
+            <artifactId>bootique-cayenne42-test-junit5</artifactId>
             <scope>test</scope>
             <version>${bootique.version}</version>
         </dependency>
         <dependency>
             <groupId>io.bootique.jdbc</groupId>
-            <artifactId>bootique-jdbc-tomcat</artifactId>
+            <artifactId>bootique-jdbc-test-junit5</artifactId>
             <scope>test</scope>
+            <version>${bootique.version}</version>
         </dependency>
     </dependencies>
 
