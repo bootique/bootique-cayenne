@@ -21,10 +21,7 @@ package io.bootique.cayenne.test.tester;
 import org.apache.cayenne.map.DataMap;
 import org.apache.cayenne.map.DbEntity;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * A DataMap decorator that provides access to a subset of DbEntities from another DataMap without changing their
@@ -35,25 +32,40 @@ import java.util.TreeMap;
  */
 public class FilteredDataMap extends DataMap {
 
-    private Map<String, DbEntity> includedEntities;
+    // expected to be in the insert order
+    private LinkedHashMap<String, DbEntity> orderedEntities;
+    private List<DbEntity> entitiesInDeleteOrder;
 
-    public FilteredDataMap(String mapName, Map<String, DbEntity> includedEntities) {
+    public FilteredDataMap(String mapName, LinkedHashMap<String, DbEntity> orderedEntities) {
         super(mapName);
-        this.includedEntities = includedEntities;
+        this.orderedEntities = orderedEntities;
+    }
+
+    public List<DbEntity> getEntitiesInDeleteOrder() {
+        if (entitiesInDeleteOrder == null) {
+            List<DbEntity> list = new ArrayList<>(orderedEntities.values());
+            Collections.reverse(list);
+            this.entitiesInDeleteOrder = list;
+        }
+        return entitiesInDeleteOrder;
+    }
+
+    public Collection<DbEntity> getDbEntitiesInInsertOrder() {
+        return orderedEntities.values();
     }
 
     @Override
     public SortedMap<String, DbEntity> getDbEntityMap() {
-        return new TreeMap<>(includedEntities);
+        return new TreeMap<>(orderedEntities);
     }
 
     @Override
     public Collection<DbEntity> getDbEntities() {
-        return includedEntities.values();
+        return getDbEntitiesInInsertOrder();
     }
 
     @Override
     public DbEntity getDbEntity(String dbEntityName) {
-        return includedEntities.get(dbEntityName);
+        return orderedEntities.get(dbEntityName);
     }
 }

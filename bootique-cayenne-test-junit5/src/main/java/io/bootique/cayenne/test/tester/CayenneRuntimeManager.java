@@ -18,7 +18,6 @@
  */
 package io.bootique.cayenne.test.tester;
 
-import org.apache.cayenne.Persistent;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.access.DataNode;
 import org.apache.cayenne.access.DbGenerator;
@@ -29,20 +28,20 @@ import org.apache.cayenne.query.SQLTemplate;
 import java.util.*;
 
 /**
- * A wrapper around a subset of Cayenne entities managed by CayenneTester.
+ * Manages various aspects of Cayenne stack (caching, schema generation, etc) for a subset of selected entities.
  *
  * @since 2.0
  */
 public class CayenneRuntimeManager {
 
     private DataDomain domain;
-    private Map<String, DataMap> managedEntitiesByNode;
+    private Map<String, FilteredDataMap> managedEntitiesByNode;
 
-    public static Builder builder(DataDomain domain) {
-        return new Builder(domain);
+    public static CayenneRuntimeManagerBuilder builder(DataDomain domain) {
+        return new CayenneRuntimeManagerBuilder(domain);
     }
 
-    protected CayenneRuntimeManager(DataDomain domain, Map<String, DataMap> managedEntitiesByNode) {
+    protected CayenneRuntimeManager(DataDomain domain, Map<String, FilteredDataMap> managedEntitiesByNode) {
         this.domain = domain;
         this.managedEntitiesByNode = managedEntitiesByNode;
     }
@@ -58,6 +57,11 @@ public class CayenneRuntimeManager {
         }
     }
 
+    // keeping public for the tests
+    public Map<String, FilteredDataMap> getManagedEntitiesByNode() {
+        return managedEntitiesByNode;
+    }
+
     public void deleteData() {
         managedEntitiesByNode.forEach(this::deleteData);
     }
@@ -66,12 +70,12 @@ public class CayenneRuntimeManager {
         managedEntitiesByNode.forEach(this::createSchema);
     }
 
-    protected void deleteData(String nodeName, DataMap map) {
+    protected void deleteData(String nodeName, FilteredDataMap map) {
 
         DataNode node = domain.getDataNode(nodeName);
 
-        // TODO: delete order
-        map.getDbEntities().forEach(e -> deleteData(node, e));
+        // TODO: single transaction?
+        map.getEntitiesInDeleteOrder().forEach(e -> deleteData(node, e));
     }
 
     protected void deleteData(DataNode node, DbEntity entity) {
@@ -100,60 +104,6 @@ public class CayenneRuntimeManager {
             generator.runGenerator(node.getDataSource());
         } catch (Exception e) {
             throw new RuntimeException("Error creating schema for DataNode: " + node.getName(), e);
-        }
-    }
-
-    public static class Builder {
-
-        private DataDomain domain;
-        private Collection<Class<? extends Persistent>> entities;
-
-        protected Builder(DataDomain domain) {
-            this.domain = domain;
-        }
-
-        public Builder entities(Collection<Class<? extends Persistent>> entities) {
-            this.entities = entities;
-            return this;
-        }
-
-        public CayenneRuntimeManager build() {
-
-            Map<String, Map<String, DbEntity>> byNode = new HashMap<>();
-            buildEntitiesInInsertOrder().forEach(e -> {
-                DataNode node = domain.lookupDataNode(e.getDataMap());
-                // using LinkedHashMap to preserve insert order of entities
-                byNode.computeIfAbsent(node.getName(), nn -> new LinkedHashMap<>()).put(e.getName(), e);
-            });
-
-            Map<String, DataMap> managedEntitiesByNode = new HashMap<>();
-            byNode.forEach((k, v) -> managedEntitiesByNode.put(k, new FilteredDataMap("CayenneTester_" + k, v)));
-            return new CayenneRuntimeManager(domain, managedEntitiesByNode);
-        }
-
-        private List<DbEntity> buildEntitiesInInsertOrder() {
-            if (entities == null || entities.isEmpty()) {
-                return Collections.emptyList();
-            }
-
-            EntityResolver resolver = domain.getEntityResolver();
-            List<DbEntity> dbEntities = new ArrayList<>(entities.size());
-            entities.forEach(t -> {
-                ObjEntity e = resolver.getObjEntity(t);
-                if (e == null) {
-                    throw new IllegalStateException("Type is not mapped in Cayenne: " + t);
-                }
-
-                dbEntities.add(e.getDbEntity());
-            });
-
-            if (dbEntities.size() > 1) {
-                // Do not obtain sorter from Cayenne DI. It is not a singleton and will come uninitialized
-                EntitySorter sorter = domain.getEntitySorter();
-                sorter.sortDbEntities(dbEntities, false);
-            }
-
-            return dbEntities;
         }
     }
 }

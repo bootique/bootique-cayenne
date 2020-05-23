@@ -18,19 +18,21 @@
  */
 package io.bootique.cayenne.test;
 
-import io.bootique.cayenne.test.tester.CayenneTesterBootiqueHook;
 import io.bootique.cayenne.test.tester.CayenneRuntimeManager;
+import io.bootique.cayenne.test.tester.CayenneTesterBootiqueHook;
+import io.bootique.cayenne.test.tester.RelatedEntity;
 import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 import org.apache.cayenne.Persistent;
 import org.apache.cayenne.configuration.server.ServerRuntime;
+import org.apache.cayenne.exp.Property;
 import org.apache.cayenne.map.ObjEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * A JUnit5 extension that manages test schema, data and Cayenne runtime state between the tests.
@@ -42,6 +44,10 @@ public class CayenneTester implements BeforeEachCallback {
     private boolean refreshCayenneCaches;
     private boolean deleteBeforeEachTest;
     private Collection<Class<? extends Persistent>> entities;
+    private Collection<Class<? extends Persistent>> entityGraphRoots;
+    private Collection<String> tables;
+    private Collection<String> tableGraphRoots;
+    private Collection<RelatedEntity> relatedTables;
 
     private CayenneTesterBootiqueHook bootiqueHook;
     private CayenneRuntimeManager runtimeManager;
@@ -61,7 +67,6 @@ public class CayenneTester implements BeforeEachCallback {
 
         this.refreshCayenneCaches = true;
         this.deleteBeforeEachTest = false;
-        this.entities = new ArrayList<>();
     }
 
     public CayenneTester doNoRefreshCayenneCaches() {
@@ -76,8 +81,64 @@ public class CayenneTester implements BeforeEachCallback {
      * @return this tester
      */
     public CayenneTester entities(Class<? extends Persistent>... entities) {
+
+        if (this.entities == null) {
+            this.entities = new HashSet<>();
+        }
+
         for (Class<? extends Persistent> e : entities) {
             this.entities.add(e);
+        }
+
+        return this;
+    }
+
+    public CayenneTester entitiesAndDependencies(Class<? extends Persistent>... entities) {
+        if (this.entityGraphRoots == null) {
+            this.entityGraphRoots = new HashSet<>();
+        }
+
+        for (Class<? extends Persistent> e : entities) {
+            this.entityGraphRoots.add(e);
+        }
+
+        return this;
+    }
+
+    public CayenneTester tables(String... tables) {
+
+        if (this.tables == null) {
+            this.tables = new HashSet<>();
+        }
+
+        for (String t : tables) {
+            this.tables.add(t);
+        }
+
+        return this;
+    }
+
+    public CayenneTester tablesAndDependencies(String... tables) {
+
+        if (this.tableGraphRoots == null) {
+            this.tableGraphRoots = new HashSet<>();
+        }
+
+        for (String t : tables) {
+            this.tableGraphRoots.add(t);
+        }
+
+        return this;
+    }
+
+    public CayenneTester relatedTables(Class<? extends Persistent> entityType, Property<?> relationship) {
+
+        if (this.relatedTables == null) {
+            this.relatedTables = new HashSet<>();
+        }
+
+        for (String t : tables) {
+            this.relatedTables.add(new RelatedEntity(entityType, relationship.getName()));
         }
 
         return this;
@@ -94,7 +155,7 @@ public class CayenneTester implements BeforeEachCallback {
     }
 
     /**
-     * Returns a a new Bootique module that registers Cayenne test extensions that allow the tester to interact
+     * Returns a new Bootique module that registers Cayenne test extensions that allow the tester to interact
      * with Bootique runtime defined somewhere in the test.
      *
      * @return a new Bootique module that registers Cayenne test extensions
@@ -131,6 +192,10 @@ public class CayenneTester implements BeforeEachCallback {
         this.runtimeManager = CayenneRuntimeManager
                 .builder(runtime.getDataDomain())
                 .entities(entities)
+                .entityGraphRoots(entityGraphRoots)
+                .tables(tables)
+                .tableGraphRoots(tableGraphRoots)
+                .relatedEntities(relatedTables)
                 .build();
     }
 
@@ -142,7 +207,7 @@ public class CayenneTester implements BeforeEachCallback {
                 getRuntimeManager().refreshCaches();
             }
 
-            if (deleteBeforeEachTest && !entities.isEmpty()) {
+            if (deleteBeforeEachTest) {
                 getRuntimeManager().deleteData();
             }
         }

@@ -16,27 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package io.bootique.cayenne.test.tester;
 
-import org.apache.cayenne.map.DbEntity;
-import org.apache.cayenne.map.DbRelationship;
+import org.apache.cayenne.Persistent;
 
-import java.util.Set;
+/**
+ * @since 2.0
+ */
+public class RelatedEntity {
 
-class ModelDependencyResolver {
+    private Class<? extends Persistent> type;
+    private String relationship;
 
-    static void resolve(Set<DbEntity> resolved, DbEntity entity) {
-
-        // if already there, assume entity's dependencies are already resolved
-        if (resolved.add(entity)) {
-            entity.getRelationships().forEach(r -> resolveDependent(resolved, r));
-        }
+    public RelatedEntity(Class<? extends Persistent> type, String relationship) {
+        this.type = type;
+        this.relationship = relationship;
     }
 
-    static private void resolveDependent(Set<DbEntity> resolved, DbRelationship relationship) {
-        if (relationship.isFromPK() && !relationship.isToMasterPK()) {
-            resolve(resolved, relationship.getTargetEntity());
-        }
+    public Class<? extends Persistent> getType() {
+        return type;
+    }
+
+    public String getRelationship() {
+        return relationship;
     }
 }
