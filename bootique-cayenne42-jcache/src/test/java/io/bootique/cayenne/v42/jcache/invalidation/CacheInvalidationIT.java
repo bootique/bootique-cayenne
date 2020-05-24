@@ -24,7 +24,7 @@ import io.bootique.Bootique;
 import io.bootique.cayenne.v42.jcache.CayenneJCacheModule;
 import io.bootique.cayenne.v42.jcache.persistent.Table1;
 import io.bootique.cayenne.v42.jcache.persistent.Table2;
-import io.bootique.cayenne.v42.test.CayenneTester;
+import io.bootique.cayenne.v42.junit5.CayenneTester;
 import io.bootique.jdbc.junit5.DbTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;

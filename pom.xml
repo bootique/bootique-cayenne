@@ -40,16 +40,16 @@
         <module>bootique-cayenne</module>
         <module>bootique-cayenne-jcache</module>
         <module>bootique-cayenne-test</module>
-        <module>bootique-cayenne-test-junit5</module>
+        <module>bootique-cayenne-junit5</module>
 
         <module>bootique-cayenne41</module>
         <module>bootique-cayenne41-jcache</module>
         <module>bootique-cayenne41-test</module>
-        <module>bootique-cayenne41-test-junit5</module>
+        <module>bootique-cayenne41-junit5</module>
 
         <module>bootique-cayenne42</module>
         <module>bootique-cayenne42-jcache</module>
-        <module>bootique-cayenne42-test-junit5</module>
+        <module>bootique-cayenne42-junit5</module>
 
         <module>bootique-cayenne-default-it</module>
         <module>bootique-cayenne-default-multi-map-it</module>
