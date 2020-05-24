@@ -20,7 +20,7 @@
 package io.bootique.cayenne.v41;
 
 import io.bootique.di.BQModule;
-import io.bootique.test.junit5.BQTestFactory;
+import io.bootique.junit5.BQTestFactory;
 import org.apache.cayenne.CayenneDataObject;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.ObjectId;

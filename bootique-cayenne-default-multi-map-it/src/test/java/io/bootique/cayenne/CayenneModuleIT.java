@@ -21,7 +21,7 @@ package io.bootique.cayenne;
 
 import io.bootique.cayenne.dm1.Entity1;
 import io.bootique.cayenne.dm2.Entity2;
-import io.bootique.test.junit5.BQTestFactory;
+import io.bootique.junit5.BQTestFactory;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.map.DataMap;

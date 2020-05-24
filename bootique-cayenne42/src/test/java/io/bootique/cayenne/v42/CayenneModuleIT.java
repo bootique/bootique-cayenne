@@ -21,7 +21,7 @@ package io.bootique.cayenne.v42;
 
 import io.bootique.cayenne.v42.CayenneModule;
 import io.bootique.di.BQModule;
-import io.bootique.test.junit5.BQTestFactory;
+import io.bootique.junit5.BQTestFactory;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.DataDomainLoadException;
 import org.apache.cayenne.configuration.server.ServerRuntime;

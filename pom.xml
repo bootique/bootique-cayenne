@@ -87,7 +87,7 @@
             </dependency>
             <dependency>
                 <groupId>io.bootique</groupId>
-                <artifactId>bootique-test-junit5</artifactId>
+                <artifactId>bootique-junit5</artifactId>
                 <version>${bootique.version}</version>
             </dependency>
             <dependency>

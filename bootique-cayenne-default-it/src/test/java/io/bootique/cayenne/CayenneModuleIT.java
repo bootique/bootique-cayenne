@@ -19,7 +19,7 @@
 
 package io.bootique.cayenne;
 
-import io.bootique.test.junit5.BQTestFactory;
+import io.bootique.junit5.BQTestFactory;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.query.SQLSelect;
