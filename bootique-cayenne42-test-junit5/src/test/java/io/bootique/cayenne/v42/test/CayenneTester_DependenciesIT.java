@@ -25,7 +25,7 @@ import io.bootique.cayenne.v42.test.persistence3.P3T1;
 import io.bootique.cayenne.v42.test.persistence3.P3T3;
 import io.bootique.cayenne.v42.test.persistence3.P3T4;
 import io.bootique.cayenne.v42.test.tester.FilteredDataMap;
-import io.bootique.jdbc.test.DbTester;
+import io.bootique.jdbc.junit5.DbTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import org.apache.cayenne.configuration.server.ServerRuntime;
