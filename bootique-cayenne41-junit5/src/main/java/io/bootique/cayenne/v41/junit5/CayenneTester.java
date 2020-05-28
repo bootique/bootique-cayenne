@@ -18,8 +18,10 @@
  */
 package io.bootique.cayenne.v41.junit5;
 
+import io.bootique.cayenne.v41.CayenneModule;
 import io.bootique.cayenne.v41.junit5.tester.CayenneRuntimeManager;
 import io.bootique.cayenne.v41.junit5.tester.CayenneTesterBootiqueHook;
+import io.bootique.cayenne.v41.junit5.tester.CommitCounter;
 import io.bootique.cayenne.v41.junit5.tester.RelatedEntity;
 import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
@@ -52,6 +54,7 @@ public class CayenneTester implements BeforeEachCallback {
 
     private CayenneTesterBootiqueHook bootiqueHook;
     private CayenneRuntimeManager runtimeManager;
+    private CommitCounter commitCounter;
 
     public static CayenneTester create() {
         return new CayenneTester();
@@ -69,6 +72,7 @@ public class CayenneTester implements BeforeEachCallback {
         this.refreshCayenneCaches = true;
         this.deleteBeforeEachTest = false;
         this.skipSchemaCreation = false;
+        this.commitCounter = new CommitCounter();
     }
 
     public CayenneTester doNoRefreshCayenneCaches() {
@@ -172,7 +176,10 @@ public class CayenneTester implements BeforeEachCallback {
     }
 
     protected void configure(Binder binder) {
-        binder.bind(CayenneTesterBootiqueHook.class).toInstance(bootiqueHook)
+        CayenneModule.extend(binder).addSyncFilter(commitCounter);
+
+        binder.bind(CayenneTesterBootiqueHook.class)
+                .toInstance(bootiqueHook)
                 // using "initOnStartup" to cause immediate Cayenne initialization. Any downsides?
                 .initOnStartup();
     }
@@ -195,6 +202,13 @@ public class CayenneTester implements BeforeEachCallback {
         return e.getDbEntity().getName();
     }
 
+    /**
+     * Checks whether Cayenne performed the expected number of DB commits within a single test method.
+     */
+    public void assertCommitCount(int expected) {
+        commitCounter.assertCount(expected);
+    }
+
     protected void resolveRuntimeManager(ServerRuntime runtime) {
         this.runtimeManager = CayenneRuntimeManager
                 .builder(runtime.getDataDomain())
@@ -207,7 +221,7 @@ public class CayenneTester implements BeforeEachCallback {
     }
 
     protected void createSchema() {
-        if(!skipSchemaCreation) {
+        if (!skipSchemaCreation) {
             getRuntimeManager().createSchema();
         }
     }
@@ -223,6 +237,8 @@ public class CayenneTester implements BeforeEachCallback {
             if (deleteBeforeEachTest) {
                 getRuntimeManager().deleteData();
             }
+
+            commitCounter.resetCounter();
         }
     }
 }

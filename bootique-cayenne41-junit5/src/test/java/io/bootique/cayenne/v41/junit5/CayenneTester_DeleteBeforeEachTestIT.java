@@ -17,24 +17,25 @@
  * under the License.
  */
 
-package io.bootique.cayenne.junit5;
+package io.bootique.cayenne.v41.junit5;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
-import io.bootique.cayenne.junit5.persistence.Table1;
-import io.bootique.cayenne.junit5.persistence.Table2;
+import io.bootique.cayenne.v41.junit5.persistence.Table1;
+import io.bootique.cayenne.v41.junit5.persistence.Table2;
 import io.bootique.jdbc.junit5.DbTester;
 import io.bootique.jdbc.junit5.Table;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import org.apache.cayenne.Persistent;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @BQTest
-public class CayenneTesterIT {
+public class CayenneTester_DeleteBeforeEachTestIT {
 
     @RegisterExtension
     static final DbTester db = DbTester.derbyDb();
@@ -58,7 +59,7 @@ public class CayenneTesterIT {
         assertThrows(IllegalStateException.class, () -> cayenne.getTableName(Persistent.class));
     }
 
-    @Test
+    @RepeatedTest(2)
     public void test1() {
 
         Table t1 = db.getTable(cayenne.getTableName(Table1.class));
@@ -69,22 +70,6 @@ public class CayenneTesterIT {
 
         t1.insert(1, 2, 3);
         t2.insert(5, "x");
-
-        t1.matcher().assertOneMatch();
-        t2.matcher().assertOneMatch();
-    }
-
-    @Test
-    public void test2() {
-
-        Table t1 = db.getTable(cayenne.getTableName(Table1.class));
-        Table t2 = db.getTable(cayenne.getTableName(Table2.class));
-
-        t1.matcher().assertNoMatches();
-        t2.matcher().assertNoMatches();
-
-        t1.insert(4, 5, 6);
-        t2.insert(7, "y");
 
         t1.matcher().assertOneMatch();
         t2.matcher().assertOneMatch();
