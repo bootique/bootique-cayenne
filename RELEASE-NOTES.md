@@ -4,6 +4,7 @@
 * #78 Support for JUnit 5
 * #79 Support for Cayenne 4.2
 * #80 Redesign JUnit 5 tests - CayenneTester
+* #81 CayenneTester - support for commit counter
 
 ## 1.1
 
