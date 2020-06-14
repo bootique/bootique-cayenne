@@ -51,7 +51,7 @@ public class CayenneTester_RunAppIT {
             .autoLoadModules()
             .module(b -> BQCoreModule.extend(b).setDefaultCommand(CayenneTester_RunAppIT::triggerCayenneInit))
             .module(db.setOrReplaceDataSource("db"))
-            .module(cayenne.registerTestHooks())
+            .module(cayenne.moduleWithTestHooks())
             .createRuntime();
 
     private static CommandOutcome triggerCayenneInit(Cli cli) {

@@ -65,7 +65,7 @@ public class CacheInvalidationIT {
             .autoLoadModules()
             .module(b -> CayenneJCacheModule.extend(b).addInvalidationHandler(invalidationHandler))
             .module(db.setOrReplaceDataSource("db"))
-            .module(cayenne.registerTestHooks())
+            .module(cayenne.moduleWithTestHooks())
             .createRuntime();
 
     @Test

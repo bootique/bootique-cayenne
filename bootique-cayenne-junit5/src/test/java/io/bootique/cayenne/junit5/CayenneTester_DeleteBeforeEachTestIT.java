@@ -51,7 +51,7 @@ public class CayenneTester_DeleteBeforeEachTestIT {
             .app("-c", "classpath:config2.yml")
             .autoLoadModules()
             .module(db.setOrReplaceDataSource("db"))
-            .module(cayenne.registerTestHooks())
+            .module(cayenne.moduleWithTestHooks())
             .createRuntime();
 
     @Test

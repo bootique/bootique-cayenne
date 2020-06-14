@@ -21,7 +21,6 @@ package io.bootique.cayenne.junit5;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
-import io.bootique.cayenne.junit5.CayenneTester;
 import io.bootique.cayenne.junit5.persistence.Table1;
 import io.bootique.cayenne.junit5.persistence.Table2;
 import io.bootique.jdbc.junit5.DbTester;
@@ -47,7 +46,7 @@ public class CayenneTesterCachesRefreshedIT {
     static final BQRuntime app = Bootique.app("-c", "classpath:config2.yml")
             .autoLoadModules()
             .module(db.setOrReplaceDataSource("db"))
-            .module(cayenne.registerTestHooks())
+            .module(cayenne.moduleWithTestHooks())
             .createRuntime();
 
     @Test

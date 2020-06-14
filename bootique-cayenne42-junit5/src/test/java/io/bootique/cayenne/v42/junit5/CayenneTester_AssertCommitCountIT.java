@@ -47,7 +47,7 @@ public class CayenneTester_AssertCommitCountIT {
             .app("-c", "classpath:config2.yml")
             .autoLoadModules()
             .module(db.setOrReplaceDataSource("db"))
-            .module(cayenne.registerTestHooks())
+            .module(cayenne.moduleWithTestHooks())
             .createRuntime();
 
     @RepeatedTest(3)
