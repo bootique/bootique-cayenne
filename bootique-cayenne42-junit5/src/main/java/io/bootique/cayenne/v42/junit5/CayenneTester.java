@@ -27,17 +27,20 @@ import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 import org.apache.cayenne.Persistent;
 import org.apache.cayenne.configuration.server.ServerRuntime;
-import org.apache.cayenne.exp.Property;
+import org.apache.cayenne.exp.property.Property;
 import org.apache.cayenne.map.ObjEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 /**
- * A JUnit5 extension that manages test schema, data and Cayenne runtime state between the tests.
+ * A JUnit5 extension that manages test schema, data and Cayenne runtime state between tests. A single CayenneTester
+ * can be used with a single {@link io.bootique.BQRuntime}. If you have multiple BQRuntimes in a test, you will need to
+ * declare a separate CayenneTester for each one of them.
  *
  * @since 2.0
  */
@@ -91,28 +94,24 @@ public class CayenneTester implements BeforeEachCallback {
      * @param entities a list of entities to manage (create schema for, delete test data, etc.)
      * @return this tester
      */
-    public CayenneTester entities(Class<? extends Persistent>... entities) {
+    @SafeVarargs
+    public final CayenneTester entities(Class<? extends Persistent>... entities) {
 
         if (this.entities == null) {
             this.entities = new HashSet<>();
         }
 
-        for (Class<? extends Persistent> e : entities) {
-            this.entities.add(e);
-        }
-
+        Collections.addAll(this.entities, entities);
         return this;
     }
 
-    public CayenneTester entitiesAndDependencies(Class<? extends Persistent>... entities) {
+    @SafeVarargs
+    public final CayenneTester entitiesAndDependencies(Class<? extends Persistent>... entities) {
         if (this.entityGraphRoots == null) {
             this.entityGraphRoots = new HashSet<>();
         }
 
-        for (Class<? extends Persistent> e : entities) {
-            this.entityGraphRoots.add(e);
-        }
-
+        Collections.addAll(this.entityGraphRoots, entities);
         return this;
     }
 
@@ -122,10 +121,7 @@ public class CayenneTester implements BeforeEachCallback {
             this.tables = new HashSet<>();
         }
 
-        for (String t : tables) {
-            this.tables.add(t);
-        }
-
+        Collections.addAll(this.tables, tables);
         return this;
     }
 
@@ -135,10 +131,7 @@ public class CayenneTester implements BeforeEachCallback {
             this.tableGraphRoots = new HashSet<>();
         }
 
-        for (String t : tables) {
-            this.tableGraphRoots.add(t);
-        }
-
+        Collections.addAll(this.tableGraphRoots, tables);
         return this;
     }
 
@@ -148,10 +141,7 @@ public class CayenneTester implements BeforeEachCallback {
             this.relatedTables = new HashSet<>();
         }
 
-        for (String t : tables) {
-            this.relatedTables.add(new RelatedEntity(entityType, relationship.getName()));
-        }
-
+        this.relatedTables.add(new RelatedEntity(entityType, relationship.getName()));
         return this;
     }
 

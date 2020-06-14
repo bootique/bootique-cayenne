@@ -37,7 +37,9 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
- * A JUnit5 extension that manages test schema, data and Cayenne runtime state between the tests.
+ * A JUnit5 extension that manages test schema, data and Cayenne runtime state between tests. A single CayenneTester
+ * can be used with a single {@link io.bootique.BQRuntime}. If you have multiple BQRuntimes in a test, you will need to
+ * declare a separate CayenneTester for each one of them.
  *
  * @since 2.0
  */
@@ -148,10 +150,7 @@ public class CayenneTester implements BeforeEachCallback {
             this.relatedTables = new HashSet<>();
         }
 
-        for (String t : tables) {
-            this.relatedTables.add(new RelatedEntity(entityType, relationship.getName()));
-        }
-
+        this.relatedTables.add(new RelatedEntity(entityType, relationship.getName()));
         return this;
     }
 
