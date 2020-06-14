@@ -19,10 +19,7 @@
 package io.bootique.cayenne.v42.junit5;
 
 import io.bootique.cayenne.v42.CayenneModule;
-import io.bootique.cayenne.v42.junit5.tester.CayenneRuntimeManager;
-import io.bootique.cayenne.v42.junit5.tester.CayenneTesterBootiqueHook;
-import io.bootique.cayenne.v42.junit5.tester.CommitCounter;
-import io.bootique.cayenne.v42.junit5.tester.RelatedEntity;
+import io.bootique.cayenne.v42.junit5.tester.*;
 import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 import org.apache.cayenne.Persistent;
@@ -170,7 +167,9 @@ public class CayenneTester implements BeforeEachCallback {
         CayenneModule.extend(binder).addSyncFilter(commitCounter);
 
         binder.bind(CayenneTesterBootiqueHook.class)
-                .toInstance(bootiqueHook)
+                // wrapping the hook in provider to be able to run the checks for when this tester is erroneously
+                // used for multiple runtimes
+                .toProviderInstance(new CayenneTesterBootiqueHookProvider(bootiqueHook))
                 // using "initOnStartup" to cause immediate Cayenne initialization. Any downsides?
                 .initOnStartup();
     }

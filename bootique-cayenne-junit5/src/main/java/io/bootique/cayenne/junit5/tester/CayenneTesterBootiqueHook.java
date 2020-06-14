@@ -20,7 +20,6 @@ package io.bootique.cayenne.junit5.tester;
 
 import org.apache.cayenne.configuration.server.ServerRuntime;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -29,9 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CayenneTesterBootiqueHook {
 
-    @Inject
-    ServerRuntime runtime;
-
+    private ServerRuntime runtime;
     private Collection<Consumer<ServerRuntime>> onInitCallbacks;
     private boolean callbacksPending;
 
@@ -52,6 +49,19 @@ public class CayenneTesterBootiqueHook {
 
         onInitCallbacks.add(callback);
         return this;
+    }
+
+    protected void setRuntime(ServerRuntime runtime) {
+        checkUnused(runtime);
+        this.runtime = runtime;
+    }
+
+    private void checkUnused(ServerRuntime runtime) {
+        if (this.runtime != null && this.runtime != runtime) {
+            throw new IllegalStateException("ServerRuntime is already initialized. " +
+                    "Likely this CayenneTester is already in connected to another BQRuntime. " +
+                    "To fix this error use one CayenneTester per BQRuntime.");
+        }
     }
 
     public ServerRuntime getRuntime() {
