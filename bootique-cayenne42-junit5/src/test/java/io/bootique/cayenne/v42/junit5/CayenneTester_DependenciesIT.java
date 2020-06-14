@@ -21,7 +21,6 @@ package io.bootique.cayenne.v42.junit5;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
-import io.bootique.cayenne.v42.junit5.CayenneTester;
 import io.bootique.cayenne.v42.junit5.persistence3.P3T1;
 import io.bootique.cayenne.v42.junit5.persistence3.P3T3;
 import io.bootique.cayenne.v42.junit5.persistence3.P3T4;
@@ -51,7 +50,7 @@ public class CayenneTester_DependenciesIT {
     static final BQRuntime app = Bootique
             .app("-c", "classpath:config3.yml")
             .autoLoadModules()
-            .module(db.setOrReplaceDataSource("db"))
+            .module(db.moduleWithTestDataSource("db"))
             .createRuntime();
 
     private Set<String> getTables(CayenneTester ct) {

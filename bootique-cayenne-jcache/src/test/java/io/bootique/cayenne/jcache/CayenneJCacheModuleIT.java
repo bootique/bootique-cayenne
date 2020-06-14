@@ -52,7 +52,7 @@ public class CayenneJCacheModuleIT {
     @BQApp(skipRun = true)
     static final BQRuntime runtime = Bootique.app("-c", "classpath:bq1.yml")
             .autoLoadModules()
-            .module(db.setOrReplaceDataSource("db"))
+            .module(db.moduleWithTestDataSource("db"))
             .module(cayenne.moduleWithTestHooks())
             .createRuntime();
 

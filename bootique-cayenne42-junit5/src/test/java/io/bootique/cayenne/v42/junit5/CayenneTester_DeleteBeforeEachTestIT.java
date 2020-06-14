@@ -50,7 +50,7 @@ public class CayenneTester_DeleteBeforeEachTestIT {
     static final BQRuntime app = Bootique
             .app("-c", "classpath:config2.yml")
             .autoLoadModules()
-            .module(db.setOrReplaceDataSource("db"))
+            .module(db.moduleWithTestDataSource("db"))
             .module(cayenne.moduleWithTestHooks())
             .createRuntime();
 

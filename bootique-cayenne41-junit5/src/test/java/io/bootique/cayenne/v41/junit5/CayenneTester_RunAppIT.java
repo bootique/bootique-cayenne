@@ -50,7 +50,7 @@ public class CayenneTester_RunAppIT {
             .app("-c", "classpath:config2.yml")
             .autoLoadModules()
             .module(b -> BQCoreModule.extend(b).setDefaultCommand(CayenneTester_RunAppIT::triggerCayenneInit))
-            .module(db.setOrReplaceDataSource("db"))
+            .module(db.moduleWithTestDataSource("db"))
             .module(cayenne.moduleWithTestHooks())
             .createRuntime();
 

@@ -63,7 +63,7 @@ public class CacheInvalidationIT {
     static final BQRuntime runtime = Bootique.app("-c", "classpath:bq1.yml")
             .autoLoadModules()
             .module(b -> CayenneJCacheModule.extend(b).addInvalidationHandler(invalidationHandler))
-            .module(db.setOrReplaceDataSource("db"))
+            .module(db.moduleWithTestDataSource("db"))
             .module(cayenne.moduleWithTestHooks())
             .createRuntime();
 
