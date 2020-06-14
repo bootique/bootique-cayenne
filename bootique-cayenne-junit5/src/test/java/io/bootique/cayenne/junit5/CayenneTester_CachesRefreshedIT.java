@@ -32,7 +32,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 @BQTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class CayenneTesterCachesRefreshedIT {
+public class CayenneTester_CachesRefreshedIT {
 
     @RegisterExtension
     static final DbTester db = DbTester.derbyDb();

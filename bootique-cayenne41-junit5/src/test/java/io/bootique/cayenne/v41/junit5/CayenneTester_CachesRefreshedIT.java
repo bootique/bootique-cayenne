@@ -17,12 +17,12 @@
  * under the License.
  */
 
-package io.bootique.cayenne.v42.junit5;
+package io.bootique.cayenne.v41.junit5;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
-import io.bootique.cayenne.v42.junit5.persistence.Table1;
-import io.bootique.cayenne.v42.junit5.persistence.Table2;
+import io.bootique.cayenne.v41.junit5.persistence.Table1;
+import io.bootique.cayenne.v41.junit5.persistence.Table2;
 import io.bootique.jdbc.junit5.DbTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
@@ -32,7 +32,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 @BQTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class CayenneTesterCachesNotRefreshedIT {
+public class CayenneTester_CachesRefreshedIT {
 
     @RegisterExtension
     static final DbTester db = DbTester.derbyDb();
@@ -40,7 +40,6 @@ public class CayenneTesterCachesNotRefreshedIT {
     @RegisterExtension
     static final CayenneTester cayenne = CayenneTester
             .create()
-            .doNoRefreshCayenneCaches()
             .entities(Table1.class, Table2.class);
 
     @BQApp(skipRun = true)
@@ -59,16 +58,17 @@ public class CayenneTesterCachesNotRefreshedIT {
     @Test
     @Order(2)
     public void crossTestInterference2() {
-        verifyCaches(1);
+        verifyCachesEmpty();
     }
 
-    private void verifyCaches(int expectedCount) {
-        Assertions.assertEquals(expectedCount, cayenne.getRuntime().getDataDomain().getSharedSnapshotCache().size());
+    private void verifyCachesEmpty() {
+        // verify that there's no data in the cache
+        Assertions.assertEquals(0, cayenne.getRuntime().getDataDomain().getSharedSnapshotCache().size());
     }
 
     private void verifyCachesEmptyAndAddObjectsToCache() {
         // verify that there's no data in the cache
-        verifyCaches(0);
+        verifyCachesEmpty();
 
         // seed the cache for the next test
         ObjectContext context = cayenne.getRuntime().newContext();

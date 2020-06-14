@@ -17,12 +17,12 @@
  * under the License.
  */
 
-package io.bootique.cayenne.v41.junit5;
+package io.bootique.cayenne.junit5;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
-import io.bootique.cayenne.v41.junit5.persistence.Table1;
-import io.bootique.cayenne.v41.junit5.persistence.Table2;
+import io.bootique.cayenne.junit5.persistence.Table1;
+import io.bootique.cayenne.junit5.persistence.Table2;
 import io.bootique.jdbc.junit5.DbTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
@@ -32,7 +32,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 @BQTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class CayenneTesterCachesNotRefreshedIT {
+public class CayenneTester_CachesNotRefreshedIT {
 
     @RegisterExtension
     static final DbTester db = DbTester.derbyDb();

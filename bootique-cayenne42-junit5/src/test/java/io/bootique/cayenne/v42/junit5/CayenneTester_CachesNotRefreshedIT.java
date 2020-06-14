@@ -32,7 +32,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 @BQTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class CayenneTesterCachesRefreshedIT {
+public class CayenneTester_CachesNotRefreshedIT {
 
     @RegisterExtension
     static final DbTester db = DbTester.derbyDb();
@@ -40,6 +40,7 @@ public class CayenneTesterCachesRefreshedIT {
     @RegisterExtension
     static final CayenneTester cayenne = CayenneTester
             .create()
+            .doNoRefreshCayenneCaches()
             .entities(Table1.class, Table2.class);
 
     @BQApp(skipRun = true)
@@ -58,17 +59,16 @@ public class CayenneTesterCachesRefreshedIT {
     @Test
     @Order(2)
     public void crossTestInterference2() {
-        verifyCachesEmpty();
+        verifyCaches(1);
     }
 
-    private void verifyCachesEmpty() {
-        // verify that there's no data in the cache
-        Assertions.assertEquals(0, cayenne.getRuntime().getDataDomain().getSharedSnapshotCache().size());
+    private void verifyCaches(int expectedCount) {
+        Assertions.assertEquals(expectedCount, cayenne.getRuntime().getDataDomain().getSharedSnapshotCache().size());
     }
 
     private void verifyCachesEmptyAndAddObjectsToCache() {
         // verify that there's no data in the cache
-        verifyCachesEmpty();
+        verifyCaches(0);
 
         // seed the cache for the next test
         ObjectContext context = cayenne.getRuntime().newContext();
