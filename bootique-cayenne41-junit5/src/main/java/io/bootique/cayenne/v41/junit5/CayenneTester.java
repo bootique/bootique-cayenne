@@ -165,8 +165,9 @@ public class CayenneTester implements BeforeEachCallback {
     }
 
     /**
-     * Returns a new Bootique module that registers Cayenne test extensions. This allows the tester to interact with
-     * a test {@link io.bootique.BQRuntime} that includes this module.
+     * Returns a new Bootique module that registers Cayenne test extensions. This module should be passed to a single
+     * test {@link io.bootique.BQRuntime} to associate the tester with that runtime. This would allow the tester to
+     * interact with Cayenne stack inside that runtime to perform its functions through the test lifecycle.
      *
      * @return a new Bootique module that registers Cayenne test extensions
      */
