@@ -63,11 +63,8 @@ public class CayenneTester implements BeforeEachCallback {
     protected CayenneTester() {
 
         this.bootiqueHook = new CayenneTesterBootiqueHook()
-                // lazy init helps to prevent certain unneeded steps, such as DB cleanup before the first test
-                // TODO: are we shooting ourselves in the foot with this? Is it reasonable to expect a dirty
-                //   DB before the first test?
-                .onFirstAccess(r -> resolveRuntimeManager(r))
-                .onFirstAccess(r -> createSchema());
+                .onInit(r -> resolveRuntimeManager(r))
+                .onInit(r -> createSchema());
 
         this.refreshCayenneCaches = true;
         this.deleteBeforeEachTest = false;
@@ -219,7 +216,12 @@ public class CayenneTester implements BeforeEachCallback {
     @Override
     public void beforeEach(ExtensionContext context) {
 
-        if (bootiqueHook.isInitialized()) {
+        // Skipping cleanup workflow steps before the first test. Assuming things are clean.
+        // TODO: are we shooting ourselves in the foot with this? Is it reasonable to expect a dirty
+        //   DB before the first test?
+
+        if (!bootiqueHook.initIfNeeded()) {
+           
             if (refreshCayenneCaches) {
                 getRuntimeManager().refreshCaches();
             }

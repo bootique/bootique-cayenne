@@ -26,6 +26,9 @@ import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+/**
+ * @since 2.0
+ */
 public class CayenneTesterBootiqueHook {
 
     private ServerRuntime runtime;
@@ -41,7 +44,7 @@ public class CayenneTesterBootiqueHook {
         return !callbacksPending;
     }
 
-    public CayenneTesterBootiqueHook onFirstAccess(Consumer<ServerRuntime> callback) {
+    public CayenneTesterBootiqueHook onInit(Consumer<ServerRuntime> callback) {
 
         if (!callbacksPending) {
             throw new IllegalStateException("Callbacks already processed");
@@ -64,18 +67,22 @@ public class CayenneTesterBootiqueHook {
         }
     }
 
-    public ServerRuntime getRuntime() {
-        assertNotNull(runtime, "ServerRuntime is not initialized. Not connected to Bootique runtime?");
-
+    public boolean initIfNeeded() {
         if (callbacksPending) {
             synchronized (this) {
                 if (callbacksPending) {
                     onInitCallbacks.forEach(c -> c.accept(runtime));
                     this.callbacksPending = false;
+                    return true;
                 }
             }
         }
 
+        return false;
+    }
+
+    public ServerRuntime getRuntime() {
+        assertNotNull(runtime, "ServerRuntime is not initialized. Not connected to Bootique runtime?");
         return runtime;
     }
 }
