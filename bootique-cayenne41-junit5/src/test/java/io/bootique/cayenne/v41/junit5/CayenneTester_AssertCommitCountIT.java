@@ -26,17 +26,17 @@ import io.bootique.cayenne.v41.junit5.persistence.Table2;
 import io.bootique.jdbc.junit5.DbTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
+import io.bootique.junit5.BQTestTool;
 import org.apache.cayenne.ObjectContext;
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 @BQTest
 public class CayenneTester_AssertCommitCountIT {
 
-    @RegisterExtension
+    @BQTestTool
     static final DbTester db = DbTester.derbyDb();
 
-    @RegisterExtension
+    @BQTestTool
     static final CayenneTester cayenne = CayenneTester
             .create()
             .entities(Table1.class, Table2.class)

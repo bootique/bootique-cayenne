@@ -19,12 +19,13 @@
 package io.bootique.cayenne.v41;
 
 import io.bootique.di.BQModule;
+import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
+import io.bootique.junit5.BQTestTool;
 import org.apache.cayenne.*;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.graph.GraphDiff;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.util.Arrays;
 
@@ -34,10 +35,11 @@ import static org.mockito.Mockito.*;
 
 // DataChannelFilter is deprecated in Cayenne
 @Deprecated
+@BQTest
 public class CayenneModule_DataChannelFiltersIT {
 
-    @RegisterExtension
-    public BQTestFactory testFactory = new BQTestFactory();
+    @BQTestTool
+    final BQTestFactory testFactory = new BQTestFactory();
 
     private ServerRuntime runtimeWithFilters(DataChannelFilter... filters) {
 

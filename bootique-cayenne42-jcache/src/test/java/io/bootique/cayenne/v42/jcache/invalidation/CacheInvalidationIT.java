@@ -28,13 +28,13 @@ import io.bootique.cayenne.v42.junit5.CayenneTester;
 import io.bootique.jdbc.junit5.DbTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
+import io.bootique.junit5.BQTestTool;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.cache.invalidation.CacheGroupDescriptor;
 import org.apache.cayenne.cache.invalidation.CacheGroups;
 import org.apache.cayenne.cache.invalidation.InvalidationHandler;
 import org.apache.cayenne.query.ObjectSelect;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.cache.Cache;
 import javax.cache.CacheManager;
@@ -50,10 +50,10 @@ public class CacheInvalidationIT {
                     ? p -> asList(new CacheGroupDescriptor("cayenne1"), new CacheGroupDescriptor("nocayenne1"))
                     : null;
 
-    @RegisterExtension
+    @BQTestTool
     static final DbTester db = DbTester.derbyDb();
 
-    @RegisterExtension
+    @BQTestTool
     static final CayenneTester cayenne = CayenneTester
             .create()
             .entities(Table1.class, Table2.class)

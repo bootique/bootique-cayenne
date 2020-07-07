@@ -28,10 +28,10 @@ import io.bootique.cayenne.v41.junit5.tester.FilteredDataMap;
 import io.bootique.jdbc.junit5.DbTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
+import io.bootique.junit5.BQTestTool;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.map.DbEntity;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @BQTest
 public class CayenneTester_DependenciesIT {
 
-    @RegisterExtension
+    @BQTestTool
     static final DbTester db = DbTester.derbyDb();
 
     @BQApp(skipRun = true)

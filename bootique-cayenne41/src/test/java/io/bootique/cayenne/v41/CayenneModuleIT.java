@@ -20,14 +20,15 @@
 package io.bootique.cayenne.v41;
 
 import io.bootique.di.BQModule;
+import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
+import io.bootique.junit5.BQTestTool;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.DataDomainLoadException;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.di.Key;
 import org.apache.cayenne.query.SQLSelect;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -35,10 +36,11 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@BQTest
 public class CayenneModuleIT {
 
-    @RegisterExtension
-    public BQTestFactory testFactory = new BQTestFactory();
+    @BQTestTool
+    final BQTestFactory testFactory = new BQTestFactory();
 
     @Test
     public void testFullConfig() {

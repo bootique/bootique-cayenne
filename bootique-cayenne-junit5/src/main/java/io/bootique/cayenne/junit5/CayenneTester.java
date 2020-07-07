@@ -22,12 +22,13 @@ import io.bootique.cayenne.CayenneModule;
 import io.bootique.cayenne.junit5.tester.*;
 import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
+import io.bootique.junit5.BQTestScope;
+import io.bootique.junit5.scope.BQBeforeMethodCallback;
 import org.apache.cayenne.Persistent;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.exp.Property;
 import org.apache.cayenne.map.ObjEntity;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.util.Collection;
@@ -41,7 +42,7 @@ import java.util.HashSet;
  *
  * @since 2.0
  */
-public class CayenneTester implements BeforeEachCallback {
+public class CayenneTester implements BQBeforeMethodCallback {
 
     private boolean refreshCayenneCaches;
     private boolean deleteBeforeEachTest;
@@ -214,14 +215,14 @@ public class CayenneTester implements BeforeEachCallback {
     }
 
     @Override
-    public void beforeEach(ExtensionContext context) {
+    public void beforeMethod(BQTestScope scope, ExtensionContext context) {
 
         // Skipping cleanup workflow steps before the first test. Assuming things are clean.
         // TODO: are we shooting ourselves in the foot with this? Is it reasonable to expect a dirty
         //   DB before the first test?
 
         if (!bootiqueHook.initIfNeeded()) {
-           
+
             if (refreshCayenneCaches) {
                 getRuntimeManager().refreshCaches();
             }

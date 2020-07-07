@@ -26,12 +26,12 @@ import io.bootique.cayenne.junit5.CayenneTester;
 import io.bootique.jdbc.junit5.DbTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
+import io.bootique.junit5.BQTestTool;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.cache.QueryCache;
 import org.apache.cayenne.jcache.JCacheQueryCache;
 import org.apache.cayenne.query.ObjectSelect;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import javax.cache.CacheManager;
 
@@ -40,10 +40,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @BQTest
 public class CayenneJCacheModuleIT {
 
-    @RegisterExtension
+    @BQTestTool
     static final DbTester db = DbTester.derbyDb();
 
-    @RegisterExtension
+    @BQTestTool
     static final CayenneTester cayenne = CayenneTester
             .create()
             .entities(Table1.class)

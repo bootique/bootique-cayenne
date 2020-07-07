@@ -20,18 +20,20 @@ package io.bootique.cayenne.junit5;
 
 import io.bootique.BQRuntime;
 import io.bootique.di.DIRuntimeException;
+import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
+import io.bootique.junit5.BQTestTool;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@BQTest
 public class CayenneTester_ModuleWithTestHooksIT {
 
-    @RegisterExtension
+    @BQTestTool
     static final BQTestFactory testFactory = new BQTestFactory();
 
     @Test

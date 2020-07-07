@@ -28,18 +28,18 @@ import io.bootique.command.CommandOutcome;
 import io.bootique.jdbc.junit5.DbTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
+import io.bootique.junit5.BQTestTool;
 import org.apache.cayenne.ObjectContext;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 @BQTest
 public class CayenneTester_RunAppIT {
 
-    @RegisterExtension
+    @BQTestTool
     static final DbTester db = DbTester.derbyDb();
 
-    @RegisterExtension
+    @BQTestTool
     static final CayenneTester cayenne = CayenneTester
             .create()
             .entities(Table1.class)

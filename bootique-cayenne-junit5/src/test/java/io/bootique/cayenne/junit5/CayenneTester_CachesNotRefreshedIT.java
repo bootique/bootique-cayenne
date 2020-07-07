@@ -26,18 +26,18 @@ import io.bootique.cayenne.junit5.persistence.Table2;
 import io.bootique.jdbc.junit5.DbTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
+import io.bootique.junit5.BQTestTool;
 import org.apache.cayenne.ObjectContext;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 @BQTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CayenneTester_CachesNotRefreshedIT {
 
-    @RegisterExtension
+    @BQTestTool
     static final DbTester db = DbTester.derbyDb();
 
-    @RegisterExtension
+    @BQTestTool
     static final CayenneTester cayenne = CayenneTester
             .create()
             .doNoRefreshCayenneCaches()
