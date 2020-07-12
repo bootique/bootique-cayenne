@@ -88,7 +88,8 @@ public class CayenneTester implements BQBeforeMethodCallback {
      * @param entities a list of entities to manage (create schema for, delete test data, etc.)
      * @return this tester
      */
-    public CayenneTester entities(Class<? extends Persistent>... entities) {
+    @SafeVarargs
+    public final CayenneTester entities(Class<? extends Persistent>... entities) {
 
         if (this.entities == null) {
             this.entities = new HashSet<>();
@@ -101,7 +102,8 @@ public class CayenneTester implements BQBeforeMethodCallback {
         return this;
     }
 
-    public CayenneTester entitiesAndDependencies(Class<? extends Persistent>... entities) {
+    @SafeVarargs
+    public final CayenneTester entitiesAndDependencies(Class<? extends Persistent>... entities) {
         if (this.entityGraphRoots == null) {
             this.entityGraphRoots = new HashSet<>();
         }
