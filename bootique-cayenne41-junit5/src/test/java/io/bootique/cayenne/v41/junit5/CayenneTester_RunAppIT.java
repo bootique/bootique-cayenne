@@ -25,7 +25,7 @@ import io.bootique.Bootique;
 import io.bootique.cayenne.v41.junit5.persistence.Table1;
 import io.bootique.cli.Cli;
 import io.bootique.command.CommandOutcome;
-import io.bootique.jdbc.junit5.DbTester;
+import io.bootique.jdbc.junit5.derby.DerbyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestTool;
@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Test;
 public class CayenneTester_RunAppIT {
 
     @BQTestTool
-    static final DbTester db = DbTester.derbyDb();
+    static final DerbyTester db = DerbyTester.db();
 
     @BQTestTool
     static final CayenneTester cayenne = CayenneTester

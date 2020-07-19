@@ -25,7 +25,7 @@ import io.bootique.cayenne.v41.jcache.CayenneJCacheModule;
 import io.bootique.cayenne.v41.jcache.persistent.Table1;
 import io.bootique.cayenne.v41.jcache.persistent.Table2;
 import io.bootique.cayenne.v41.junit5.CayenneTester;
-import io.bootique.jdbc.junit5.DbTester;
+import io.bootique.jdbc.junit5.derby.DerbyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestTool;
@@ -51,7 +51,7 @@ public class CacheInvalidationIT {
                     : null;
 
     @BQTestTool
-    static final DbTester db = DbTester.derbyDb();
+    static final DerbyTester db = DerbyTester.db();
 
     @BQTestTool
     static final CayenneTester cayenne = CayenneTester

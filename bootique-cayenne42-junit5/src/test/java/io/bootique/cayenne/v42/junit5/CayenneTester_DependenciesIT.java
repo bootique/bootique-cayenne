@@ -25,7 +25,7 @@ import io.bootique.cayenne.v42.junit5.persistence3.P3T1;
 import io.bootique.cayenne.v42.junit5.persistence3.P3T3;
 import io.bootique.cayenne.v42.junit5.persistence3.P3T4;
 import io.bootique.cayenne.v42.junit5.tester.FilteredDataMap;
-import io.bootique.jdbc.junit5.DbTester;
+import io.bootique.jdbc.junit5.derby.DerbyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestTool;
@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class CayenneTester_DependenciesIT {
 
     @BQTestTool
-    static final DbTester db = DbTester.derbyDb();
+    static final DerbyTester db = DerbyTester.db();
 
     @BQApp(skipRun = true)
     static final BQRuntime app = Bootique

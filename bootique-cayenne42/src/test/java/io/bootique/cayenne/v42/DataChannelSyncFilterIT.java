@@ -40,7 +40,7 @@ import static org.mockito.Mockito.*;
 public class DataChannelSyncFilterIT {
 
     @BQTestTool
-    public BQTestFactory testFactory = new BQTestFactory();
+    final BQTestFactory testFactory = new BQTestFactory();
 
     private ServerRuntime runtimeWithFilters(DataChannelSyncFilter... filters) {
 

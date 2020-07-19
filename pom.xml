@@ -92,6 +92,11 @@
             </dependency>
             <dependency>
                 <groupId>io.bootique.jdbc</groupId>
+                <artifactId>bootique-jdbc-junit5-derby</artifactId>
+                <version>${bootique.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.bootique.jdbc</groupId>
                 <artifactId>bootique-jdbc</artifactId>
                 <version>${bootique.version}</version>
             </dependency>
@@ -109,11 +114,6 @@
                 <groupId>org.ehcache</groupId>
                 <artifactId>ehcache</artifactId>
                 <version>${ehcache.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.derby</groupId>
-                <artifactId>derby</artifactId>
-                <version>${derby.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
