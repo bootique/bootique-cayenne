@@ -5,6 +5,7 @@
 * #79 Support for Cayenne 4.2
 * #80 Redesign JUnit 5 tests - CayenneTester
 * #81 CayenneTester - support for commit counter
+* #82 Upgrade to the final version of Cayenne 4.1
 
 ## 1.1
 
