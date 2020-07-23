@@ -1,3 +1,7 @@
+## 1.2
+
+* #83 Upgrade to the final version of Cayenne 4.1 - branch 1.x
+
 ## 1.1
 
 * #64 ServerRuntimeFactory hardcoded inside CayenneModule
