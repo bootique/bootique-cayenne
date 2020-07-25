@@ -217,21 +217,16 @@ public class CayenneTester implements BQBeforeMethodCallback {
     @Override
     public void beforeMethod(BQTestScope scope, ExtensionContext context) {
 
-        // Skipping cleanup workflow steps before the first test. Assuming things are clean.
-        // TODO: are we shooting ourselves in the foot with this? Is it reasonable to expect a dirty
-        //   DB before the first test?
+        bootiqueHook.initIfNeeded();
 
-        if (!bootiqueHook.initIfNeeded()) {
-
-            if (refreshCayenneCaches) {
-                getRuntimeManager().refreshCaches();
-            }
-
-            if (deleteBeforeEachTest) {
-                getRuntimeManager().deleteData();
-            }
-
-            commitCounter.resetCounter();
+        if (refreshCayenneCaches) {
+            getRuntimeManager().refreshCaches();
         }
+
+        if (deleteBeforeEachTest) {
+            getRuntimeManager().deleteData();
+        }
+
+        commitCounter.resetCounter();
     }
 }
