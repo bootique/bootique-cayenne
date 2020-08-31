@@ -1,4 +1,4 @@
-## 2.0
+## 2.0.M1
 
 * #68 "maps" config must be a dictionary, not a list for extensibility
 * #78 Support for JUnit 5
