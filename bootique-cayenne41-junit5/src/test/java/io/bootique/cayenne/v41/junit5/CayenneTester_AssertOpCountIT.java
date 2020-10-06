@@ -17,21 +17,22 @@
  * under the License.
  */
 
-package io.bootique.cayenne.junit5;
+package io.bootique.cayenne.v41.junit5;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
-import io.bootique.cayenne.junit5.persistence.Table1;
-import io.bootique.cayenne.junit5.persistence.Table2;
+import io.bootique.cayenne.v41.junit5.persistence.Table1;
+import io.bootique.cayenne.v41.junit5.persistence.Table2;
 import io.bootique.jdbc.junit5.derby.DerbyTester;
 import io.bootique.junit5.BQApp;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestTool;
 import org.apache.cayenne.ObjectContext;
+import org.apache.cayenne.query.ObjectSelect;
 import org.junit.jupiter.api.RepeatedTest;
 
 @BQTest
-public class CayenneTester_AssertCommitCountIT {
+public class CayenneTester_AssertOpCountIT {
 
     @BQTestTool
     static final DerbyTester db = DerbyTester.db();
@@ -51,7 +52,7 @@ public class CayenneTester_AssertCommitCountIT {
             .createRuntime();
 
     @RepeatedTest(3)
-    public void test1() {
+    public void testAssertCommitCount() {
 
         // must be reset at every run
         cayenne.assertCommitCount(0);
@@ -63,5 +64,23 @@ public class CayenneTester_AssertCommitCountIT {
         context.commitChanges();
 
         cayenne.assertCommitCount(1);
+    }
+
+    @RepeatedTest(3)
+    public void testAssertQueryCount() {
+
+        // must be reset at every run
+        cayenne.assertQueryCount(0);
+        ObjectContext context = cayenne.getRuntime().newContext();
+
+        ObjectSelect.query(Table1.class).select(context);
+        cayenne.assertQueryCount(1);
+
+        ObjectSelect.query(Table1.class).select(context);
+        cayenne.assertQueryCount(2);
+
+        // reset context, same counter should be in use
+        ObjectSelect.query(Table1.class).select(cayenne.getRuntime().newContext());
+        cayenne.assertQueryCount(3);
     }
 }

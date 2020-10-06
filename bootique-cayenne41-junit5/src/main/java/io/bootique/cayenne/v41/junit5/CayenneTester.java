@@ -55,6 +55,7 @@ public class CayenneTester implements BQBeforeMethodCallback {
     private CayenneTesterBootiqueHook bootiqueHook;
     private CayenneRuntimeManager runtimeManager;
     private CommitCounter commitCounter;
+    private QueryCounter queryCounter;
 
     public static CayenneTester create() {
         return new CayenneTester();
@@ -70,6 +71,7 @@ public class CayenneTester implements BQBeforeMethodCallback {
         this.deleteBeforeEachTest = false;
         this.skipSchemaCreation = false;
         this.commitCounter = new CommitCounter();
+        this.queryCounter = new QueryCounter();
     }
 
     public CayenneTester doNoRefreshCayenneCaches() {
@@ -173,7 +175,7 @@ public class CayenneTester implements BQBeforeMethodCallback {
     }
 
     protected void configure(Binder binder) {
-        CayenneModule.extend(binder).addSyncFilter(commitCounter);
+        CayenneModule.extend(binder).addSyncFilter(commitCounter).addQueryFilter(queryCounter);
 
         binder.bind(CayenneTesterBootiqueHook.class)
                 // wrapping the hook in provider to be able to run the checks for when this tester is erroneously
@@ -208,6 +210,15 @@ public class CayenneTester implements BQBeforeMethodCallback {
         commitCounter.assertCount(expected);
     }
 
+    /**
+     * Checks whether Cayenne performed the expected number of DB queries within a single test method.
+     *
+     * @since 2.0.B1
+     */
+    public void assertQueryCount(int expected) {
+        queryCounter.assertCount(expected);
+    }
+
     protected void resolveRuntimeManager(ServerRuntime runtime) {
         this.runtimeManager = CayenneRuntimeManager
                 .builder(runtime.getDataDomain())
@@ -239,6 +250,7 @@ public class CayenneTester implements BQBeforeMethodCallback {
             getRuntimeManager().deleteData();
         }
 
-        commitCounter.resetCounter();
+        commitCounter.reset();
+        queryCounter.reset();
     }
 }

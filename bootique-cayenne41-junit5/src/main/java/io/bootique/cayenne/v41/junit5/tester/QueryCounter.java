@@ -16,36 +16,37 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.bootique.cayenne.v42.junit5.tester;
+package io.bootique.cayenne.v41.junit5.tester;
 
-import org.apache.cayenne.DataChannelSyncFilter;
-import org.apache.cayenne.DataChannelSyncFilterChain;
+import org.apache.cayenne.DataChannelQueryFilter;
+import org.apache.cayenne.DataChannelQueryFilterChain;
 import org.apache.cayenne.ObjectContext;
-import org.apache.cayenne.graph.GraphDiff;
+import org.apache.cayenne.QueryResponse;
+import org.apache.cayenne.query.Query;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * @since 2.0
+ * @since 2.0.B1
  */
-public class CommitCounter implements DataChannelSyncFilter {
+public class QueryCounter implements DataChannelQueryFilter {
 
     private AtomicInteger count;
 
-    public CommitCounter() {
+    public QueryCounter() {
         this.count = new AtomicInteger(0);
     }
 
     @Override
-    public GraphDiff onSync(ObjectContext originatingContext, GraphDiff changes, int syncType, DataChannelSyncFilterChain filterChain) {
+    public QueryResponse onQuery(ObjectContext objectContext, Query query, DataChannelQueryFilterChain dataChannelQueryFilterChain) {
         count.incrementAndGet();
-        return filterChain.onSync(originatingContext, changes, syncType);
+        return dataChannelQueryFilterChain.onQuery(objectContext, query);
     }
 
     public void assertCount(int expectedCommits) {
-        assertEquals(expectedCommits, count.get(), "Unexpected number of Cayenne commits executed");
+        assertEquals(expectedCommits, count.get(), "Unexpected number of Cayenne queries executed");
     }
 
     public void reset() {

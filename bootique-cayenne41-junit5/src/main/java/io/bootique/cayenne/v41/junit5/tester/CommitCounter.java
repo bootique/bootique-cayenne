@@ -27,6 +27,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * @since 2.0
+ */
 public class CommitCounter implements DataChannelSyncFilter {
 
     private AtomicInteger count;
@@ -45,7 +48,7 @@ public class CommitCounter implements DataChannelSyncFilter {
         assertEquals(expectedCommits, count.get(), "Unexpected number of Cayenne commits executed");
     }
 
-    public void resetCounter() {
+    public void reset() {
         count.set(0);
     }
 }

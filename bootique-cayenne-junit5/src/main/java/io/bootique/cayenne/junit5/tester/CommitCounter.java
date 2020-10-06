@@ -54,7 +54,7 @@ public class CommitCounter implements DataChannelFilter {
         assertEquals(expectedCommits, count.get(), "Unexpected number of Cayenne commits executed");
     }
 
-    public void resetCounter() {
+    public void reset() {
         count.set(0);
     }
 }

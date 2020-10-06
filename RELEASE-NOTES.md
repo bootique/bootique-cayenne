@@ -1,3 +1,7 @@
+## 2.0.B1
+
+* #84 CayenneTester.assertQueryCount(int)
+
 ## 2.0.M1
 
 * #68 "maps" config must be a dictionary, not a list for extensibility
