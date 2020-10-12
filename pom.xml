@@ -60,7 +60,7 @@
         <ehcache.version>3.1.3</ehcache.version>
         <cayenne40.version>4.0.2</cayenne40.version>
         <cayenne41.version>4.1</cayenne41.version>
-        <cayenne42.version>4.2.M1</cayenne42.version>
+        <cayenne42.version>4.2.M2</cayenne42.version>
         <derby.version>10.14.1.0</derby.version>
     </properties>
 

@@ -1,6 +1,7 @@
 ## 2.0.B1
 
 * #84 CayenneTester.assertQueryCount(int)
+* #85 Upgrade to Cayenne 4.2.M2
 
 ## 2.0.M1
 
