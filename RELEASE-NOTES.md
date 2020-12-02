@@ -2,6 +2,7 @@
 
 * #84 CayenneTester.assertQueryCount(int)
 * #85 Upgrade to Cayenne 4.2.M2
+* #86 NPE: ObjectContext access causes premature faulting of JUnit 5 DataSource
 
 ## 2.0.M1
 
