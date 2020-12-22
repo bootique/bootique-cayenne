@@ -27,6 +27,7 @@ import io.bootique.junit5.scope.BQBeforeMethodCallback;
 import org.apache.cayenne.Persistent;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.exp.Property;
+import org.apache.cayenne.map.EntityResolver;
 import org.apache.cayenne.map.ObjEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -201,6 +202,14 @@ public class CayenneTester implements BQBeforeMethodCallback {
         }
 
         return e.getDbEntity().getName();
+    }
+
+    /**
+     * @since 2.0.B1
+     */
+    public String getTableName(Class<? extends Persistent> entityType, Property<?> relationship) {
+        EntityResolver entityResolver = getRuntime().getDataDomain().getEntityResolver();
+        return new RelatedEntity(entityType, relationship.getName()).getTarget(entityResolver).getName();
     }
 
     /**

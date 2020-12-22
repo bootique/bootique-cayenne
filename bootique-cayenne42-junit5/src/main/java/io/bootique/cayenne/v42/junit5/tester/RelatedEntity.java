@@ -19,6 +19,9 @@
 package io.bootique.cayenne.v42.junit5.tester;
 
 import org.apache.cayenne.Persistent;
+import org.apache.cayenne.map.*;
+
+import java.util.List;
 
 /**
  * @since 2.0
@@ -39,5 +42,24 @@ public class RelatedEntity {
 
     public String getRelationship() {
         return relationship;
+    }
+
+    public DbEntity getTarget(EntityResolver resolver) {
+        ObjEntity e = resolver.getObjEntity(type);
+        if (e == null) {
+            throw new IllegalStateException("Type is not mapped in Cayenne: " + type);
+        }
+
+        ObjRelationship objRelationship = e.getRelationship(relationship);
+        if (objRelationship == null) {
+            throw new IllegalArgumentException("No relationship '" + relationship + "' in entity " + e.getName());
+        }
+
+        List<DbRelationship> path = objRelationship.getDbRelationships();
+        if (path.isEmpty()) {
+            throw new IllegalArgumentException("Unmapped relationship '" + relationship + "' in entity " + e.getName());
+        }
+
+        return path.get(path.size() - 1).getTargetEntity();
     }
 }
