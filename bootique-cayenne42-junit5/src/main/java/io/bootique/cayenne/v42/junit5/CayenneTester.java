@@ -27,6 +27,7 @@ import io.bootique.junit5.scope.BQBeforeMethodCallback;
 import org.apache.cayenne.Persistent;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.exp.property.Property;
+import org.apache.cayenne.exp.property.RelationshipProperty;
 import org.apache.cayenne.map.EntityResolver;
 import org.apache.cayenne.map.ObjEntity;
 import org.junit.jupiter.api.Assertions;
@@ -194,11 +195,19 @@ public class CayenneTester implements BQBeforeMethodCallback {
     }
 
     /**
+     * Returns a name of a table related to a given entity via the specified relationship. Useful for navigation to
+     * join tables that are not directly mapped to Java classes.
+     *
+     * @param entity
+     * @param relationship
+     * @param tableIndex   An index in a list of tables spanned by 'relationship'. Index of 0 corresponds to the target
+     *                     DbEntity of the first object in a chain of DbRelationships for a given ObjRelationship.
+     * @return a name of a table related to a given entity via the specified relationship.
      * @since 2.0.B1
      */
-    public String getTableName(Class<? extends Persistent> entityType, org.apache.cayenne.exp.Property<?> relationship) {
+    public String getRelatedTableName(Class<? extends Persistent> entity, RelationshipProperty<?> relationship, int tableIndex) {
         EntityResolver entityResolver = getRuntime().getDataDomain().getEntityResolver();
-        return new RelatedEntity(entityType, relationship.getName()).getTarget(entityResolver).getName();
+        return new RelatedEntity(entity, relationship.getName()).getRelatedTable(entityResolver, tableIndex).getName();
     }
 
     /**

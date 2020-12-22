@@ -44,22 +44,32 @@ public class RelatedEntity {
         return relationship;
     }
 
-    public DbEntity getTarget(EntityResolver resolver) {
-        ObjEntity e = resolver.getObjEntity(type);
-        if (e == null) {
-            throw new IllegalStateException("Type is not mapped in Cayenne: " + type);
+    /**
+     * Returns a DbEntity related to a given entity via the specified relationship. Useful for navigation to join tables
+     * that are not directly mapped to Java classes.
+     *
+     * @param tableIndex   An index in a list of tables spanned by 'relationship'. Index of 0 corresponds to the target
+     *                     DbEntity of the first object in a chain of DbRelationships for a given ObjRelationship.
+     * @return a DbEntity related to a given entity via the specified relationship.
+     */
+    public DbEntity getRelatedTable(EntityResolver resolver, int tableIndex) {
+        ObjEntity entity = resolver.getObjEntity(type);
+        if (entity == null) {
+            throw new IllegalArgumentException("Not a Cayenne entity class: " + type.getName());
         }
 
-        ObjRelationship objRelationship = e.getRelationship(relationship);
-        if (objRelationship == null) {
-            throw new IllegalArgumentException("No relationship '" + relationship + "' in entity " + e.getName());
+        ObjRelationship flattened = entity.getRelationship(relationship);
+
+        if (flattened == null) {
+            throw new IllegalArgumentException("No relationship '" + relationship + "' in entity " + type.getName());
         }
 
-        List<DbRelationship> path = objRelationship.getDbRelationships();
-        if (path.isEmpty()) {
-            throw new IllegalArgumentException("Unmapped relationship '" + relationship + "' in entity " + e.getName());
+        List<DbRelationship> path = flattened.getDbRelationships();
+
+        if (path.size() < tableIndex + 1) {
+            throw new IllegalArgumentException("Index " + tableIndex + " is out of bounds for relationship '" + relationship);
         }
 
-        return path.get(path.size() - 1).getTargetEntity();
+        return path.get(tableIndex).getTargetEntity();
     }
 }
