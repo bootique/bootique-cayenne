@@ -39,7 +39,7 @@ public class CayenneTestModuleExtender extends ModuleExtender<CayenneTestModuleE
     }
 
     public CayenneTestModuleExtender addSchemaListener(SchemaListener listener) {
-        contributeSchemaListeners().add(listener);
+        contributeSchemaListeners().addInstance(listener);
         return this;
     }
 

@@ -44,7 +44,7 @@ public class CayenneJCacheModuleExtender extends ModuleExtender<CayenneJCacheMod
     }
 
     public CayenneJCacheModuleExtender addInvalidationHandler(InvalidationHandler handler) {
-        contributeInvalidationHandler().add(handler);
+        contributeInvalidationHandler().addInstance(handler);
         return this;
     }
 

@@ -52,7 +52,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     public CayenneModuleExtender addFilter(DataChannelFilter filter) {
-        contributeFilters().add(filter);
+        contributeFilters().addInstance(filter);
         return this;
     }
 
@@ -62,7 +62,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     public CayenneModuleExtender addListener(Object listener) {
-        contributeListeners().add(listener);
+        contributeListeners().addInstance(listener);
         return this;
     }
 
@@ -72,12 +72,12 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     public CayenneModuleExtender addProject(String projectConfig) {
-        contributeProjects().add(projectConfig);
+        contributeProjects().addInstance(projectConfig);
         return this;
     }
 
     public CayenneModuleExtender addModule(Module module) {
-        contributeModules().add(module);
+        contributeModules().addInstance(module);
         return this;
     }
 

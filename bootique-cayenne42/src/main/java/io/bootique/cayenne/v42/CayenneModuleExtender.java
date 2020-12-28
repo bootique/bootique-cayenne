@@ -58,7 +58,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
      * @since 1.1
      */
     public CayenneModuleExtender addSyncFilter(DataChannelSyncFilter filter) {
-        contributeSyncFilters().add(filter);
+        contributeSyncFilters().addInstance(filter);
         return this;
     }
 
@@ -74,7 +74,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
      * @since 1.1
      */
     public CayenneModuleExtender addQueryFilter(DataChannelQueryFilter filter) {
-        contributeQueryFilters().add(filter);
+        contributeQueryFilters().addInstance(filter);
         return this;
     }
 
@@ -87,7 +87,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     public CayenneModuleExtender addListener(Object listener) {
-        contributeListeners().add(listener);
+        contributeListeners().addInstance(listener);
         return this;
     }
 
@@ -97,12 +97,12 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     public CayenneModuleExtender addProject(String projectConfig) {
-        contributeProjects().add(projectConfig);
+        contributeProjects().addInstance(projectConfig);
         return this;
     }
 
     public CayenneModuleExtender addModule(Module module) {
-        contributeModules().add(module);
+        contributeModules().addInstance(module);
         return this;
     }
 
