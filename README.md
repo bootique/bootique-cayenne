@@ -17,7 +17,7 @@
   under the License.
   -->
 
-[![Build Status](https://travis-ci.org/bootique/bootique-cayenne.svg)](https://travis-ci.org/bootique/bootique-cayenne)
+[![build test deploy 1.x](https://github.com/bootique/bootique-cayenne/actions/workflows/maven-1x.yml/badge.svg)](https://github.com/bootique/bootique-cayenne/actions/workflows/maven-1x.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/io.bootique.cayenne/bootique-cayenne.svg?colorB=brightgreen)](https://search.maven.org/artifact/io.bootique.cayenne/bootique-cayenne/)
 
 
