@@ -51,6 +51,7 @@ public class CayenneTester implements BQBeforeMethodCallback {
     private boolean skipSchemaCreation;
     private Collection<Class<? extends Persistent>> entities;
     private Collection<Class<? extends Persistent>> entityGraphRoots;
+    private boolean allTables;
     private Collection<String> tables;
     private Collection<String> tableGraphRoots;
     private Collection<RelatedEntity> relatedTables;
@@ -84,6 +85,14 @@ public class CayenneTester implements BQBeforeMethodCallback {
 
     public CayenneTester skipSchemaCreation() {
         this.skipSchemaCreation = true;
+        return this;
+    }
+
+    /**
+     * @since 2.0.B1
+     */
+    public final CayenneTester allTables() {
+        this.allTables = true;
         return this;
     }
 
@@ -227,14 +236,23 @@ public class CayenneTester implements BQBeforeMethodCallback {
     }
 
     protected void resolveRuntimeManager(ServerRuntime runtime) {
-        this.runtimeManager = CayenneRuntimeManager
-                .builder(runtime.getDataDomain())
-                .entities(entities)
-                .entityGraphRoots(entityGraphRoots)
-                .tables(tables)
-                .tableGraphRoots(tableGraphRoots)
-                .relatedEntities(relatedTables)
-                .build();
+
+        if (allTables) {
+            this.runtimeManager = CayenneRuntimeManager
+                    .builder(runtime.getDataDomain())
+                    .dbEntities(runtime.getDataDomain().getEntityResolver().getDbEntities())
+                    .build();
+        } else {
+
+            this.runtimeManager = CayenneRuntimeManager
+                    .builder(runtime.getDataDomain())
+                    .entities(entities)
+                    .entityGraphRoots(entityGraphRoots)
+                    .tables(tables)
+                    .tableGraphRoots(tableGraphRoots)
+                    .relatedEntities(relatedTables)
+                    .build();
+        }
     }
 
     protected void createSchema() {
