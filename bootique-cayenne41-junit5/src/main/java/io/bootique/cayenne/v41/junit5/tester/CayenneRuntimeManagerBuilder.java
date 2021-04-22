@@ -42,6 +42,14 @@ public class CayenneRuntimeManagerBuilder {
         this.entityGraphs = new HashSet<>();
     }
 
+    public CayenneRuntimeManagerBuilder dbEntities(Collection<DbEntity> entities) {
+        if (entities != null) {
+            this.entities.addAll(entities);
+        }
+
+        return this;
+    }
+
     public CayenneRuntimeManagerBuilder entities(Collection<Class<? extends Persistent>> entities) {
         if (entities != null) {
             entities.forEach(e -> resolve(this.entities, e));
