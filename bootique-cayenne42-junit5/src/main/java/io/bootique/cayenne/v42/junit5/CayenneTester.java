@@ -37,6 +37,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.function.Consumer;
 
 /**
  * A JUnit5 extension that manages test schema, data and Cayenne runtime state between tests. A single CayenneTester
@@ -77,6 +78,14 @@ public class CayenneTester implements BQBeforeScopeCallback, BQBeforeMethodCallb
         this.skipSchemaCreation = false;
         this.commitCounter = new CommitCounter();
         this.queryCounter = new QueryCounter();
+    }
+
+    /**
+     * @since 2.0.B1
+     */
+    public CayenneTester onInit(Consumer<ServerRuntime> callback) {
+        bootiqueHook.onInit(callback);
+        return this;
     }
 
     public CayenneTester doNoRefreshCayenneCaches() {

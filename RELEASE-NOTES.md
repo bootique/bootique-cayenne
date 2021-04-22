@@ -6,6 +6,7 @@
 * #88 Upgrade Cayenne 4.2 to M3
 * #89 CayenneTester.allTables(..)
 * #90 CayenneTester must init schema before scope start
+* #91 Add "onInit" callback to CayenneTester 
 
 ## 2.0.M1
 
