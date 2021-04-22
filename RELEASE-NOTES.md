@@ -5,6 +5,7 @@
 * #86 NPE: ObjectContext access causes premature faulting of JUnit 5 DataSource
 * #88 Upgrade Cayenne 4.2 to M3
 * #89 CayenneTester.allTables(..)
+* #90 CayenneTester must init schema before scope start
 
 ## 2.0.M1
 

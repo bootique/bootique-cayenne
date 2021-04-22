@@ -24,6 +24,7 @@ import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 import io.bootique.junit5.BQTestScope;
 import io.bootique.junit5.scope.BQBeforeMethodCallback;
+import io.bootique.junit5.scope.BQBeforeScopeCallback;
 import org.apache.cayenne.Persistent;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.exp.Property;
@@ -43,7 +44,7 @@ import java.util.HashSet;
  *
  * @since 2.0
  */
-public class CayenneTester implements BQBeforeMethodCallback {
+public class CayenneTester implements BQBeforeScopeCallback, BQBeforeMethodCallback {
 
     private boolean refreshCayenneCaches;
     private boolean deleteBeforeEachTest;
@@ -261,9 +262,12 @@ public class CayenneTester implements BQBeforeMethodCallback {
     }
 
     @Override
-    public void beforeMethod(BQTestScope scope, ExtensionContext context) {
-
+    public void beforeScope(BQTestScope scope, ExtensionContext context) throws Exception {
         bootiqueHook.initIfNeeded();
+    }
+
+    @Override
+    public void beforeMethod(BQTestScope scope, ExtensionContext context) {
 
         if (refreshCayenneCaches) {
             getRuntimeManager().refreshCaches();
