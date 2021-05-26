@@ -37,14 +37,11 @@ import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.di.ListBuilder;
 import org.apache.cayenne.di.Module;
 
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
-import javax.inject.Singleton;
 
-/**
- * @since 1.0.RC1
- */
 public class CayenneModule extends ConfigModule {
 
     public CayenneModule() {
@@ -57,7 +54,6 @@ public class CayenneModule extends ConfigModule {
     /**
      * @param binder DI binder passed to the Module that invokes this method.
      * @return an instance of {@link CayenneModuleExtender} that can be used to load Cayenne custom extensions.
-     * @since 0.19
      */
     public static CayenneModuleExtender extend(Binder binder) {
         return new CayenneModuleExtender(binder);

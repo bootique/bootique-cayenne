@@ -29,9 +29,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-/**
- * @since 0.24
- */
 public class CayenneTestDataManagerBuilder {
 
     private BQRuntime runtime;
@@ -79,7 +76,6 @@ public class CayenneTestDataManagerBuilder {
      * Creates Tables for all entities present in the runtime.
      *
      * @return this builder instance
-     * @since 1.0.RC1
      */
     public CayenneTestDataManagerBuilder allEntities() {
         dbEntities.addAll(resolver.getDbEntities());

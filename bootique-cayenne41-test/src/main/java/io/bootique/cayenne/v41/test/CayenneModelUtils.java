@@ -36,9 +36,6 @@ import org.apache.cayenne.map.ObjRelationship;
 import java.util.*;
 import java.util.stream.Stream;
 
-/**
- * @since 1.0.RC1
- */
 class CayenneModelUtils {
 
     static Table createTableModel(BQRuntime runtime, Class<?> entityType) {

@@ -36,9 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @since 1.0.RC1
- */
 public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
 
     static final String DEFAULT_NAME = "cayenne";

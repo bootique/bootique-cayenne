@@ -30,9 +30,6 @@ import io.bootique.test.junit.BQTestFactory;
 import org.junit.Rule;
 import org.junit.Test;
 
-/**
- * @since 1.0.RC1
- */
 public class CayenneTestModuleProviderTest {
 
     @Rule

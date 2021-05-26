@@ -29,9 +29,6 @@ import org.apache.cayenne.DataChannelQueryFilter;
 import org.apache.cayenne.DataChannelSyncFilter;
 import org.apache.cayenne.di.Module;
 
-/**
- * @since 1.0.RC1
- */
 public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender> {
 
     private SetBuilder<DataChannelSyncFilter> syncFilters;

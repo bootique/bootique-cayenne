@@ -34,8 +34,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Manages a map of {@link Table} objects matching each Cayenne DbEntity.
- *
- * @since 1.0.RC1
  */
 public class CayenneTableManager {
 

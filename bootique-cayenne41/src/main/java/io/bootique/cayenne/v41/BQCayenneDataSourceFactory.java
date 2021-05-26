@@ -26,9 +26,6 @@ import org.apache.cayenne.configuration.server.DelegatingDataSourceFactory;
 import javax.sql.DataSource;
 import java.util.Collection;
 
-/**
- * @since 1.0.RC1
- */
 public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
 
     private static final String PARAM_PREFIX = "bqds:";

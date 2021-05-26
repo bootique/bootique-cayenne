@@ -28,9 +28,6 @@ import org.apache.cayenne.jcache.JCacheConstants;
 
 import javax.cache.configuration.Configuration;
 
-/**
- * @since 0.19
- */
 public class CayenneJCacheModuleExtender extends ModuleExtender<CayenneJCacheModuleExtender> {
 
     public CayenneJCacheModuleExtender(Binder binder) {

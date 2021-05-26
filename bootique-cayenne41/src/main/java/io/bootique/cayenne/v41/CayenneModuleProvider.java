@@ -29,9 +29,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-/**
- * @since 1.0.RC1
- */
 public class CayenneModuleProvider implements BQModuleProvider {
 
 	@Override

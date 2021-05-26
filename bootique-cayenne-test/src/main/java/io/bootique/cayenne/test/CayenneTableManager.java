@@ -34,8 +34,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Manages a map of {@link io.bootique.jdbc.test.Table} objects matching each Cayenne DbEntity.
- *
- * @since 0.18
  */
 public class CayenneTableManager {
 
@@ -58,7 +56,6 @@ public class CayenneTableManager {
      * @param tableIndex   An index in a list of tables spanned by 'relationship'. Index of 0 corresponds to the target
      *                     DbEntity of the first object in a chain of DbRelationships for a given ObjRelationship.
      * @return a Table related to a given entity via the specified relationship.
-     * @since 0.24
      */
     public Table getRelatedTable(Class<?> entityType, Property<?> relationship, int tableIndex) {
         ObjEntity entity = resolver.getObjEntity(entityType);

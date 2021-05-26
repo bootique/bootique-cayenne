@@ -19,16 +19,14 @@
 
 package io.bootique.cayenne.v41.annotation;
 
+import javax.inject.Qualifier;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import javax.inject.Qualifier;
 
 /**
- * A Guice binding annotation used for objects that are Cayenne project configs.
- * 
- * @since 1.0.RC1
+ * A binding annotation used for objects that are Cayenne project configs.
  */
 @Target({ ElementType.PARAMETER, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)

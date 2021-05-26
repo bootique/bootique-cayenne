@@ -31,9 +31,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-/**
- * @since 1.0.RC1
- */
 public class CayenneModelUtilsIT {
 
     @Rule

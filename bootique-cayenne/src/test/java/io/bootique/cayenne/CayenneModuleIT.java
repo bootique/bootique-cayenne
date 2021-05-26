@@ -161,14 +161,14 @@ public class CayenneModuleIT {
         Key<Object> key = Key.get(Object.class, "_test_");
         Object value = new Object();
 
-        BQModule guiceModule = b -> {
+        BQModule bqModule = b -> {
             org.apache.cayenne.di.Module cayenneModule = (cb) -> cb.bind(key).toInstance(value);
             CayenneModule.extend(b).addModule(cayenneModule);
         };
 
         ServerRuntime runtime = testFactory.app("--config=classpath:fullconfig.yml")
                 .autoLoadModules()
-                .module(guiceModule)
+                .module(bqModule)
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
 

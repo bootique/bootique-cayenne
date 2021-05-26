@@ -56,7 +56,6 @@ public class CayenneModule extends ConfigModule {
     /**
      * @param binder DI binder passed to the Module that invokes this method.
      * @return an instance of {@link CayenneModuleExtender} that can be used to load Cayenne custom extensions.
-     * @since 0.19
      */
     public static CayenneModuleExtender extend(Binder binder) {
         return new CayenneModuleExtender(binder);

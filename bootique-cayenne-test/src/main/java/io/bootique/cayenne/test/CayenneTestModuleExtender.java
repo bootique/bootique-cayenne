@@ -23,9 +23,6 @@ import io.bootique.ModuleExtender;
 import io.bootique.di.Binder;
 import io.bootique.di.SetBuilder;
 
-/**
- * @since 0.24
- */
 public class CayenneTestModuleExtender extends ModuleExtender<CayenneTestModuleExtender> {
 
     public CayenneTestModuleExtender(Binder binder) {

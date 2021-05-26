@@ -19,28 +19,25 @@
 
 package io.bootique.cayenne.v41.test;
 
-import io.bootique.di.Binder;
 import io.bootique.di.BQModule;
+import io.bootique.di.Binder;
 import io.bootique.di.Provides;
 import io.bootique.jdbc.JdbcModule;
 import io.bootique.jdbc.test.runtime.DatabaseChannelFactory;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 
-import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Set;
 
 /**
  * An auto-loadable module that installs Cayenne schema generation hooks in bootique-jdbc-test.
- *
- * @since 1.0.RC1
  */
 public class CayenneTestModule implements BQModule {
 
     /**
-     * @param binder Guice DI binder
+     * @param binder Bootique DI binder
      * @return a new extender instance.
-     * @since 0.24
      */
     public static CayenneTestModuleExtender extend(Binder binder) {
         return new CayenneTestModuleExtender(binder);

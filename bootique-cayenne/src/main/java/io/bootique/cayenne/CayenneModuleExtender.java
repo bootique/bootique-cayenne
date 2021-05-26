@@ -28,9 +28,6 @@ import io.bootique.di.SetBuilder;
 import org.apache.cayenne.DataChannelFilter;
 import org.apache.cayenne.di.Module;
 
-/**
- * @since 0.19
- */
 public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender> {
 
     private SetBuilder<DataChannelFilter> filters;

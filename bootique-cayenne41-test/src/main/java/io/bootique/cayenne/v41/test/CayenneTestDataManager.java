@@ -26,9 +26,6 @@ import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.exp.Property;
 
-/**
- * @since 1.0.RC1
- */
 public class CayenneTestDataManager extends TestDataManager {
 
     private CayenneTableManager tableManager;
@@ -59,7 +56,6 @@ public class CayenneTestDataManager extends TestDataManager {
      *
      * @param runtime {@link BQRuntime} used in the test.
      * @return a new instance of CayenneTestDataManager builder.
-     * @since 0.24
      */
     public static CayenneTestDataManagerBuilder builder(BQRuntime runtime) {
         return new CayenneTestDataManagerBuilder(runtime);
@@ -95,7 +91,6 @@ public class CayenneTestDataManager extends TestDataManager {
      * @param tableIndex   An index in a list of tables spanned by 'relationship'. Index of 0 corresponds to the target
      *                     DbEntity of the first object in a chain of DbRelationships for a given ObjRelationship.
      * @return a Table related to a given entity via the specified relationship.
-     * @since 0.24
      */
     public Table getRelatedTable(Class<?> entityType, Property<?> relationship, int tableIndex) {
         return tableManager.getRelatedTable(entityType, relationship, tableIndex);
@@ -105,7 +100,6 @@ public class CayenneTestDataManager extends TestDataManager {
      * @param entityType
      * @param relationship
      * @return a Table related to a given entity via the specified relationship.
-     * @since 0.24
      */
     public Table getRelatedTable(Class<?> entityType, Property<?> relationship) {
         return tableManager.getRelatedTable(entityType, relationship, 0);

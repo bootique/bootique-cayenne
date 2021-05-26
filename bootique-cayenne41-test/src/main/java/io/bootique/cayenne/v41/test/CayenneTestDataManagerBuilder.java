@@ -29,9 +29,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-/**
- * @since 1.0.RC1
- */
 public class CayenneTestDataManagerBuilder {
 
     private BQRuntime runtime;

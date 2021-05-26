@@ -21,8 +21,6 @@ package io.bootique.cayenne.v42;
 
 /**
  * A holder of an optional DefaultDataSource name.
- *
- * @since 1.0.RC1
  */
 public class DefaultDataSourceName {
 

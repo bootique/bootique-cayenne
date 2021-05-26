@@ -39,8 +39,6 @@ import java.util.Set;
 
 /**
  * Bootique DI module integrating bootique-jcache to Cayenne.
- *
- * @since 0.18
  */
 public class CayenneJCacheModule implements BQModule {
 
@@ -48,7 +46,6 @@ public class CayenneJCacheModule implements BQModule {
      * @param binder DI binder passed to the Module that invokes this method.
      * @return an instance of {@link CayenneJCacheModuleExtender} that can be used to load Cayenne cache
      * custom extensions.
-     * @since 0.19
      */
     public static CayenneJCacheModuleExtender extend(Binder binder) {
         return new CayenneJCacheModuleExtender(binder);
