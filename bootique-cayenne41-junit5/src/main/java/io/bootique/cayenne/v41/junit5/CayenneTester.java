@@ -45,7 +45,6 @@ import java.util.function.Consumer;
  * @since 2.0
  */
 public class CayenneTester implements BQBeforeScopeCallback, BQBeforeMethodCallback {
-
     private boolean refreshCayenneCaches;
     private boolean deleteBeforeEachTest;
     private boolean skipSchemaCreation;
@@ -256,7 +255,9 @@ public class CayenneTester implements BQBeforeScopeCallback, BQBeforeMethodCallb
     }
 
     protected void resolveRuntimeManager(ServerRuntime runtime) {
-
+        if(runtime == null) {
+            throw new RuntimeException("Cayenne tester not linked to any BQRuntime!");
+        }
         if (allTables) {
             this.runtimeManager = CayenneRuntimeManager
                     .builder(runtime.getDataDomain())

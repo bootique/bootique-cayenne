@@ -245,7 +245,9 @@ public class CayenneTester implements BQBeforeScopeCallback, BQBeforeMethodCallb
     }
 
     protected void resolveRuntimeManager(ServerRuntime runtime) {
-
+        if(runtime == null) {
+            throw new RuntimeException("Cayenne tester not linked to any BQRuntime!");
+        }
         if (allTables) {
             this.runtimeManager = CayenneRuntimeManager
                     .builder(runtime.getDataDomain())

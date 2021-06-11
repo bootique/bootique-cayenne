@@ -77,6 +77,12 @@
             <artifactId>bootique-jdbc-junit5-derby</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>1.7.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <!-- Optional profile used to sign artifacts -->
