@@ -43,13 +43,6 @@ import java.util.Set;
 
 public class CayenneModule extends ConfigModule {
 
-    public CayenneModule() {
-    }
-
-    public CayenneModule(String configPrefix) {
-        super(configPrefix);
-    }
-
     /**
      * @param binder DI binder passed to the Module that invokes this method.
      * @return an instance of {@link CayenneModuleExtender} that can be used to load Cayenne custom extensions.
