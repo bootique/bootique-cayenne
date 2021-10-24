@@ -32,7 +32,10 @@ import java.util.Set;
 
 /**
  * An auto-loadable module that installs Cayenne schema generation hooks in bootique-jdbc-test.
+ *
+ * @deprecated since 3.0.M1, as we are we phasing out JUnit 4 support in favor of JUnit 5
  */
+@Deprecated
 public class CayenneTestModule implements BQModule {
 
     /**

@@ -34,7 +34,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Manages a map of {@link io.bootique.jdbc.test.Table} objects matching each Cayenne DbEntity.
+ *
+ *  @deprecated since 3.0.M1, as we are we phasing out JUnit 4 support in favor of JUnit 5
  */
+@Deprecated
 public class CayenneTableManager {
 
     private DatabaseChannel channel;

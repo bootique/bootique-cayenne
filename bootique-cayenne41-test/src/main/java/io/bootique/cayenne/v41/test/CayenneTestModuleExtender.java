@@ -23,6 +23,10 @@ import io.bootique.ModuleExtender;
 import io.bootique.di.Binder;
 import io.bootique.di.SetBuilder;
 
+/**
+ * @deprecated since 3.0.M1, as we are we phasing out JUnit 4 support in favor of JUnit 5
+ */
+@Deprecated
 public class CayenneTestModuleExtender extends ModuleExtender<CayenneTestModuleExtender> {
 
     public CayenneTestModuleExtender(Binder binder) {

@@ -30,7 +30,7 @@
 	<artifactId>bootique-cayenne-test</artifactId>
 	<packaging>jar</packaging>
 
-	<name>bootique-cayenne-test: Helper classes for unit tests with Cayenne stack</name>
+	<name>bootique-cayenne-test (deprecated): Helper classes for unit tests with Cayenne stack</name>
 	<description>Provides helper classes for unit tests with Cayenne stack</description>
 
 	<dependencyManagement>

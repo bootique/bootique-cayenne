@@ -28,6 +28,10 @@ import java.util.Collection;
 
 import static java.util.Arrays.asList;
 
+/**
+ * @deprecated since 3.0.M1, as we are we phasing out JUnit 4 support in favor of JUnit 5
+ */
+@Deprecated
 public class CayenneTestModuleProvider implements BQModuleProvider {
 
     @Override

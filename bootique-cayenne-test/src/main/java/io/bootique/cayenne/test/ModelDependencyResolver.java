@@ -26,6 +26,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @deprecated since 3.0.M1, as we are we phasing out JUnit 4 support in favor of JUnit 5
+ */
+@Deprecated
 class ModelDependencyResolver {
 
     static Set<DbEntity> resolve(Collection<DbEntity> entities) {

@@ -23,7 +23,10 @@ import org.apache.cayenne.map.DataMap;
 
 /**
  * A listener that is called when the test DB schema is created.
+ *
+ * @deprecated since 3.0.M1, as we are we phasing out JUnit 4 support in favor of JUnit 5
  */
+@Deprecated
 public interface SchemaListener {
 
     void afterSchemaCreated(DataMap dataMap);

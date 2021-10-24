@@ -34,8 +34,11 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
- * Would create DB schema for DataSources matching those of a Cayenne runtime.
+ * Would create DB schema for DataSources matching those of a Cayenne runtime
+ *
+ * @deprecated since 3.0.M1, as we are we phasing out JUnit 4 support in favor of JUnit 5
  */
+@Deprecated
 public class SchemaCreationListener implements DataSourceListener {
 
     private List<Consumer<Collection<DataNode>>> schemaGenerators;

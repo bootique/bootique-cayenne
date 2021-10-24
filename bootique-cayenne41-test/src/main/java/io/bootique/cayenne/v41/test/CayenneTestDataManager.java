@@ -26,6 +26,10 @@ import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.exp.Property;
 
+/**
+ * @deprecated since 3.0.M1, as we are we phasing out JUnit 4 support in favor of JUnit 5
+ */
+@Deprecated
 public class CayenneTestDataManager extends TestDataManager {
 
     private CayenneTableManager tableManager;
