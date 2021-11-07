@@ -45,6 +45,11 @@
                 <artifactId>bootique-jdbc-test</artifactId>
                 <version>${bootique.version}</version>
             </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit4.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
