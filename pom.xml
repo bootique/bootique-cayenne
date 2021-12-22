@@ -28,7 +28,7 @@
 
     <groupId>io.bootique.cayenne</groupId>
     <artifactId>bootique-cayenne-parent</artifactId>
-    <version>1.3</version>
+    <version>1.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>bootique-cayenne-parent: parent of Bootique/Cayenne integration modules</name>
@@ -57,7 +57,7 @@
     <scm>
         <developerConnection>scm:git:ssh://git@github.com/bootique/bootique-cayenne</developerConnection>
         <url>https://github.com/bootique/bootique-cayenne</url>
-        <tag>1.3</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <build>
