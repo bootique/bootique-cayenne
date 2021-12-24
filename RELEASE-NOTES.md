@@ -5,6 +5,7 @@
 ## 2.0.RC1
 
 * #94 Upgrade to Cayenne 4.2.B1
+* #95 Upgrade Cayenne "4.1" modules to v4.1.1 of Cayenne
 
 ## 2.0.B1
 
