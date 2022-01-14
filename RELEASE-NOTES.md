@@ -1,6 +1,7 @@
 ## 3.0.M1
 
 * #93 JUnit 4 support deprecation
+* #96 Stop supporting Cayenne 4.0
 
 ## 2.0
 
