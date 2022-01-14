@@ -22,8 +22,10 @@ cayenne:
   datasource: ds
   createSchema: true
   maps:
-    - location: classpath:datamap1.map.xml
+    m1:
+      location: classpath:datamap1.map.xml
       name: map1
       datasource: ds
-    - location: classpath:datamap2.map.xml
+    m2:
+      location: classpath:datamap2.map.xml
       name: map2

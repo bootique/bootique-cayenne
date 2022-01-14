@@ -32,7 +32,6 @@ import org.apache.cayenne.resource.URLResource;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,7 +43,7 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
     protected Provider<DataMapLoader> xmlDataMapLoaderProvider;
 
     @Inject
-    private List<DataMapConfig> dataMapConfigs;
+    private Map<String, DataMapConfig> dataMapConfigs;
 
     @Inject
     private DefaultDataSourceName defaultDatasource;
@@ -74,7 +73,7 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
 
         Map<String, DataNodeDescriptor> nodeDescriptors = new HashMap<>();
 
-        for (DataMapConfig config : dataMapConfigs) {
+        for (DataMapConfig config : dataMapConfigs.values()) {
 
             DataMap dataMap = loadDataMap(config);
             descriptor.getDataMaps().add(dataMap);

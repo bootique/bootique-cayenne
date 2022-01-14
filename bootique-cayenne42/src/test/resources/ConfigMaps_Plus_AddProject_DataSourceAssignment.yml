@@ -24,8 +24,10 @@ jdbc:
 cayenne:
   datasource: ds1
   maps:
-    - location: classpath:datamap2.map.xml
+    m1:
+      location: classpath:datamap2.map.xml
       name: map2
       datasource: ds2
-    - location: classpath:datamap3.map.xml
+    m2:
+      location: classpath:datamap3.map.xml
       name: map3
