@@ -42,13 +42,13 @@ public class ServerRuntimeFactory {
 
     private String name;
     private Collection<String> configs;
-    private List<DataMapConfig> maps;
+    private Map<String, DataMapConfig> maps;
     private String datasource;
     private boolean createSchema;
 
     public ServerRuntimeFactory() {
         this.configs = new ArrayList<>();
-        this.maps = new ArrayList<>();
+        this.maps = new HashMap<>();
     }
 
     public ServerRuntime createCayenneRuntime(
@@ -85,7 +85,7 @@ public class ServerRuntimeFactory {
 
             DefaultDataSourceName defaultDataSourceName = defaultDataSourceName(dataSourceFactory);
             binder.bind(Key.get(DefaultDataSourceName.class)).toInstance(defaultDataSourceName);
-            binder.bindList(DataMapConfig.class).addAll(maps);
+            binder.bindMap(DataMapConfig.class).putAll(maps);
 
             // provide default DataNode
             // TODO: copied from Cayenne, as the corresponding provider is not public or rather
@@ -151,14 +151,14 @@ public class ServerRuntimeFactory {
     }
 
     /**
-     * Sets a list of DataMaps that are included in the app runtime without an explicit refrence in  'cayenne-project.xml'.
+     * Sets a map of DataMaps that are included in the app runtime without an explicit refrence in  'cayenne-project.xml'.
      *
-     * @param maps list of DataMap configs
+     * @param maps map of DataMap configs
      * @since 0.18
      */
     @BQConfigProperty("A list of DataMaps that are included in the app runtime without an explicit refrence in " +
             "'cayenne-project.xml'.")
-    public void setMaps(List<DataMapConfig> maps) {
+    public void setMaps(Map<String, DataMapConfig> maps) {
         this.maps = maps;
     }
 
