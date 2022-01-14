@@ -2,6 +2,10 @@
 
 * #93 JUnit 4 support deprecation
 
+## 2.0
+
+* #97 Task 68 ("maps" config must be a dictionary) - was not ported to Cayenne 4.1 and 4.2
+
 ## 2.0.RC1
 
 * #94 Upgrade to Cayenne 4.2.B1
