@@ -37,6 +37,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -246,6 +247,9 @@ public class CayenneTester implements BQBeforeScopeCallback, BQBeforeMethodCallb
     }
 
     protected void resolveRuntimeManager(ServerRuntime runtime) {
+
+        Objects.requireNonNull(runtime, "Null ServerRuntime. Possibly due to no tester hooks installed. " +
+                "Make sure you pass the module produced via 'moduleWithTestHooks' to your test app");
 
         if (allTables) {
             this.runtimeManager = CayenneRuntimeManager
