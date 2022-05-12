@@ -33,11 +33,12 @@ import org.apache.cayenne.map.EntityResolver;
 import org.apache.cayenne.map.ObjEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -48,6 +49,8 @@ import java.util.function.Consumer;
  * @since 2.0
  */
 public class CayenneTester implements BQBeforeScopeCallback, BQBeforeMethodCallback {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CayenneTester.class);
 
     private boolean refreshCayenneCaches;
     private boolean deleteBeforeEachTest;
@@ -61,6 +64,7 @@ public class CayenneTester implements BQBeforeScopeCallback, BQBeforeMethodCallb
 
     private CayenneTesterBootiqueHook bootiqueHook;
     private CayenneRuntimeManager runtimeManager;
+    private boolean unattached;
     private CommitCounter commitCounter;
     private QueryCounter queryCounter;
 
@@ -79,6 +83,7 @@ public class CayenneTester implements BQBeforeScopeCallback, BQBeforeMethodCallb
         this.skipSchemaCreation = false;
         this.commitCounter = new CommitCounter();
         this.queryCounter = new QueryCounter();
+        this.unattached = true;
     }
 
     /**
@@ -248,8 +253,15 @@ public class CayenneTester implements BQBeforeScopeCallback, BQBeforeMethodCallb
 
     protected void resolveRuntimeManager(ServerRuntime runtime) {
 
-        Objects.requireNonNull(runtime, "Null ServerRuntime. Possibly due to no tester hooks installed. " +
-                "Make sure you pass the module produced via 'moduleWithTestHooks' to your test app");
+        if (runtime == null) {
+            LOGGER.warn("CayenneTester is not attached to a test app. "
+                    + "To take advantage of CayenneTester, pass the module "
+                    + "produced via 'moduleWithTestHooks' when assembling a test BQRuntime.");
+            this.unattached = true;
+            return;
+        }
+
+        this.unattached = false;
 
         if (allTables) {
             this.runtimeManager = CayenneRuntimeManager
@@ -270,18 +282,29 @@ public class CayenneTester implements BQBeforeScopeCallback, BQBeforeMethodCallb
     }
 
     protected void createSchema() {
-        if (!skipSchemaCreation) {
-            getRuntimeManager().createSchema();
+        if (skipSchemaCreation) {
+            return;
         }
+
+        if (unattached) {
+            LOGGER.warn("Won't create DB schema. CayenneTester is not attached to a test app");
+            return;
+        }
+
+        getRuntimeManager().createSchema();
     }
 
     @Override
-    public void beforeScope(BQTestScope scope, ExtensionContext context) throws Exception {
+    public void beforeScope(BQTestScope scope, ExtensionContext context) {
         bootiqueHook.initIfNeeded();
     }
 
     @Override
     public void beforeMethod(BQTestScope scope, ExtensionContext context) {
+
+        if (unattached) {
+            return;
+        }
 
         if (refreshCayenneCaches) {
             getRuntimeManager().refreshCaches();

@@ -2,6 +2,7 @@
 
 * #93 JUnit 4 support deprecation
 * #96 Stop supporting Cayenne 4.0
+* #98 CayenneTester: allow to operate unattached 
 
 ## 2.0
 
