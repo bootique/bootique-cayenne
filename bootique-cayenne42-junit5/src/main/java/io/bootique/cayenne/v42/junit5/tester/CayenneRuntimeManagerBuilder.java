@@ -30,11 +30,11 @@ import java.util.*;
  */
 public class CayenneRuntimeManagerBuilder {
 
-    private DataDomain domain;
+    private final DataDomain domain;
 
     // these two entity buckets are resolved independently and then intersected
-    private Set<DbEntity> entities;
-    private Set<DbEntity> entityGraphs;
+    private final Set<DbEntity> entities;
+    private final Set<DbEntity> entityGraphs;
 
     protected CayenneRuntimeManagerBuilder(DataDomain domain) {
         this.domain = domain;
