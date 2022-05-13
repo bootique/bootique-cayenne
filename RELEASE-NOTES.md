@@ -4,6 +4,7 @@
 * #96 Stop supporting Cayenne 4.0
 * #98 CayenneTester: allow to operate unattached 
 * #99 Add a hook to run custom actions after Cayenne startup
+* #100 CayenneTester: eager initialization breaks other test tools
 
 ## 2.0
 

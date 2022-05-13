@@ -56,9 +56,10 @@ public class CayenneTester_IndirectRuntimeAccessIT {
     @DisplayName("Eager init of BQRuntime must work without calling 'CayenneTester.getRuntime()'")
     public void testDBAccess() {
 
+        // schema is only created after the first access to ServerRuntime
+        app.getInstance(ServerRuntime.class);
         db.getTable("table1").matcher().assertNoMatches();
 
-        // not using 'cayenne.getRuntime()', still the tester must be initialized and active
         ObjectContext context = app.getInstance(ServerRuntime.class).newContext();
         Table1 t1 = context.newObject(Table1.class);
         t1.setA(5L);
