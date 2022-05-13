@@ -36,6 +36,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     private SetBuilder<Object> listeners;
     private SetBuilder<String> projects;
     private SetBuilder<Module> modules;
+    private SetBuilder<CayenneStartupListener> startupListeners;
 
     public CayenneModuleExtender(Binder binder) {
         super(binder);
@@ -48,6 +49,23 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
         contributeSyncFilters();
         contributeModules();
         contributeProjects();
+        contributeStartupListeners();
+        return this;
+    }
+
+    /**
+     * @since 3.0.M1
+     */
+    public CayenneModuleExtender addStartupListener(CayenneStartupListener listener) {
+        contributeStartupListeners().addInstance(listener);
+        return this;
+    }
+
+    /**
+     * @since 3.0.M1
+     */
+    public CayenneModuleExtender addStartupListener(Class<? extends CayenneStartupListener> listenerType) {
+        contributeStartupListeners().add(listenerType);
         return this;
     }
 
@@ -131,5 +149,9 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
 
     protected SetBuilder<Module> contributeModules() {
         return modules != null ? modules : (modules = newSet(Module.class));
+    }
+
+    protected SetBuilder<CayenneStartupListener> contributeStartupListeners() {
+        return startupListeners != null ? startupListeners : (startupListeners = newSet(CayenneStartupListener.class));
     }
 }

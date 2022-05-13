@@ -83,7 +83,8 @@ public class CayenneModule extends ConfigModule {
             Set<DataChannelQueryFilter> queryFilters,
             Set<DataChannelSyncFilter> syncFilters,
             CayenneConfigMerger configMerger,
-            @CayenneConfigs Set<String> injectedCayenneConfigs) {
+            @CayenneConfigs Set<String> injectedCayenneConfigs,
+            Set<CayenneStartupListener> startupCallbacks) {
 
         Collection<Module> extras = extraCayenneModules(customModules, queryFilters, syncFilters);
         ServerRuntime runtime = serverRuntimeFactory.createCayenneRuntime(
@@ -97,11 +98,13 @@ public class CayenneModule extends ConfigModule {
             runtime.shutdown();
         });
 
-        // TODO: listeners should be really contributable to Cayenne via DI, just like filters...
+        // TODO: listeners should be wrapped in a CayenneModule and added to Cayenne via DI, just like filters...
         if (!listeners.isEmpty()) {
             DataDomain domain = runtime.getDataDomain();
             listeners.forEach(domain::addListener);
         }
+
+        startupCallbacks.forEach(c -> c.onCayenneStarted(runtime));
 
         return runtime;
     }
