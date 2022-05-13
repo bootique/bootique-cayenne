@@ -286,11 +286,9 @@ public class CayenneTester implements BQBeforeMethodCallback, BQAfterMethodCallb
     }
 
     protected void createSchema() {
-        if (skipSchemaCreation) {
-            return;
+        if (!skipSchemaCreation) {
+            getRuntimeManager().createSchema();
         }
-
-        getRuntimeManager().createSchema();
     }
 
     protected void refreshCaches() {
