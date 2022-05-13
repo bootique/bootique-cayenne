@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * Manages various aspects of Cayenne stack (caching, schema generation, etc) for a subset of selected entities.
+ * Manages various aspects of Cayenne stack (caching, schema generation, etc.) for a subset of selected entities.
  *
  * @since 2.0
  */

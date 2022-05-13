@@ -23,8 +23,8 @@ import io.bootique.cayenne.v42.junit5.tester.*;
 import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 import io.bootique.junit5.BQTestScope;
+import io.bootique.junit5.scope.BQAfterMethodCallback;
 import io.bootique.junit5.scope.BQBeforeMethodCallback;
-import io.bootique.junit5.scope.BQBeforeScopeCallback;
 import org.apache.cayenne.Persistent;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.exp.property.Property;
@@ -33,12 +33,11 @@ import org.apache.cayenne.map.EntityResolver;
 import org.apache.cayenne.map.ObjEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -48,9 +47,7 @@ import java.util.function.Consumer;
  *
  * @since 2.0
  */
-public class CayenneTester implements BQBeforeScopeCallback, BQBeforeMethodCallback {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(CayenneTester.class);
+public class CayenneTester implements BQBeforeMethodCallback, BQAfterMethodCallback {
 
     private boolean refreshCayenneCaches;
     private boolean deleteBeforeEachTest;
@@ -62,9 +59,8 @@ public class CayenneTester implements BQBeforeScopeCallback, BQBeforeMethodCallb
     private Collection<String> tableGraphRoots;
     private Collection<RelatedEntity> relatedTables;
 
-    private CayenneTesterBootiqueHook bootiqueHook;
+    private final CayenneTesterLifecycleManager lifecycleManager;
     private CayenneRuntimeManager runtimeManager;
-    private boolean unattached;
     private CommitCounter commitCounter;
     private QueryCounter queryCounter;
 
@@ -74,23 +70,36 @@ public class CayenneTester implements BQBeforeScopeCallback, BQBeforeMethodCallb
 
     protected CayenneTester() {
 
-        this.bootiqueHook = new CayenneTesterBootiqueHook()
-                .onInit(r -> resolveRuntimeManager(r))
-                .onInit(r -> createSchema());
+        this.lifecycleManager = new CayenneTesterLifecycleManager()
+                .callback(this::createRuntimeManager, CayenneTesterCallbackType.onCayenneStartup)
+                .callback(r -> createSchema(), CayenneTesterCallbackType.onCayenneStartup)
+                .callback(r -> refreshCaches(), CayenneTesterCallbackType.beforeTestOrOnCayenneStartupWithinTest)
+                .callback(r -> deleteData(), CayenneTesterCallbackType.beforeTestOrOnCayenneStartupWithinTest)
+                .callback(r -> commitCounter.reset(), CayenneTesterCallbackType.beforeTestOrOnCayenneStartupWithinTest)
+                .callback(r -> queryCounter.reset(), CayenneTesterCallbackType.beforeTestOrOnCayenneStartupWithinTest);
 
         this.refreshCayenneCaches = true;
         this.deleteBeforeEachTest = false;
         this.skipSchemaCreation = false;
         this.commitCounter = new CommitCounter();
         this.queryCounter = new QueryCounter();
-        this.unattached = true;
+    }
+
+    @Override
+    public void beforeMethod(BQTestScope scope, ExtensionContext context) {
+        lifecycleManager.beforeMethod(scope, context);
+    }
+
+    @Override
+    public void afterMethod(BQTestScope scope, ExtensionContext context) {
+        lifecycleManager.afterMethod(scope, context);
     }
 
     /**
-     * @since 2.0.B1
+     * @since 2.0
      */
     public CayenneTester onInit(Consumer<ServerRuntime> callback) {
-        bootiqueHook.onInit(callback);
+        lifecycleManager.callback(callback, CayenneTesterCallbackType.onCayenneStartup);
         return this;
     }
 
@@ -191,18 +200,13 @@ public class CayenneTester implements BQBeforeScopeCallback, BQBeforeMethodCallb
     }
 
     protected void configure(Binder binder) {
-        CayenneModule.extend(binder).addSyncFilter(commitCounter).addQueryFilter(queryCounter);
-
-        binder.bind(CayenneTesterBootiqueHook.class)
-                // wrapping the hook in provider to be able to run the checks for when this tester is erroneously
-                // used for multiple runtimes
-                .toProviderInstance(new CayenneTesterBootiqueHookProvider(bootiqueHook))
-                // using "initOnStartup" to cause immediate Cayenne initialization. Any downsides?
-                .initOnStartup();
+        CayenneModule.extend(binder)
+                .addStartupListener(lifecycleManager)
+                .addSyncFilter(commitCounter).addQueryFilter(queryCounter);
     }
 
     public ServerRuntime getRuntime() {
-        return bootiqueHook.getRuntime();
+        return lifecycleManager.getRuntime();
     }
 
     protected CayenneRuntimeManager getRuntimeManager() {
@@ -223,8 +227,8 @@ public class CayenneTester implements BQBeforeScopeCallback, BQBeforeMethodCallb
      * Returns a name of a table related to a given entity via the specified relationship. Useful for navigation to
      * join tables that are not directly mapped to Java classes.
      *
-     * @param entity
-     * @param relationship
+     * @param entity persistent object type for the source of the relationship
+     * @param relationship a relationship that we'll traverse from the source entity to some target entity
      * @param tableIndex   An index in a list of tables spanned by 'relationship'. Index of 0 corresponds to the target
      *                     DbEntity of the first object in a chain of DbRelationships for a given ObjRelationship.
      * @return a name of a table related to a given entity via the specified relationship.
@@ -251,19 +255,13 @@ public class CayenneTester implements BQBeforeScopeCallback, BQBeforeMethodCallb
         queryCounter.assertCount(expected);
     }
 
-    protected void resolveRuntimeManager(ServerRuntime runtime) {
+    protected void createRuntimeManager(ServerRuntime runtime) {
 
-        if (runtime == null) {
-            LOGGER.warn("CayenneTester is not attached to a test app. "
-                    + "To take advantage of CayenneTester, pass the module "
-                    + "produced via 'moduleWithTestHooks' when assembling a test BQRuntime.");
-            this.unattached = true;
-            return;
-        }
+        Objects.requireNonNull(runtime, "CayenneTester is not attached to a test app. "
+                + "To take advantage of CayenneTester, pass the module "
+                + "produced via 'moduleWithTestHooks' when assembling a test BQRuntime.");
 
-        this.unattached = false;
-
-        if (allTables) {
+        if (this.allTables) {
             this.runtimeManager = CayenneRuntimeManager
                     .builder(runtime.getDataDomain())
                     .dbEntities(runtime.getDataDomain().getEntityResolver().getDbEntities())
@@ -286,35 +284,18 @@ public class CayenneTester implements BQBeforeScopeCallback, BQBeforeMethodCallb
             return;
         }
 
-        if (unattached) {
-            LOGGER.warn("Won't create DB schema. CayenneTester is not attached to a test app");
-            return;
-        }
-
         getRuntimeManager().createSchema();
     }
 
-    @Override
-    public void beforeScope(BQTestScope scope, ExtensionContext context) {
-        bootiqueHook.initIfNeeded();
-    }
-
-    @Override
-    public void beforeMethod(BQTestScope scope, ExtensionContext context) {
-
-        if (unattached) {
-            return;
-        }
-
+    protected void refreshCaches() {
         if (refreshCayenneCaches) {
             getRuntimeManager().refreshCaches();
         }
+    }
 
+    protected void deleteData() {
         if (deleteBeforeEachTest) {
             getRuntimeManager().deleteData();
         }
-
-        commitCounter.reset();
-        queryCounter.reset();
     }
 }

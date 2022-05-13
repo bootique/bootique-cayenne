@@ -18,33 +18,11 @@
  */
 package io.bootique.cayenne.v42.junit5.tester;
 
-import org.apache.cayenne.configuration.server.ServerRuntime;
+public enum CayenneTesterCallbackType {
 
-import javax.inject.Inject;
-import javax.inject.Provider;
+    // run when Cayenne runtime is started
+    onCayenneStartup,
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-/**
- * @since 2.0
- */
-public class CayenneTesterBootiqueHookProvider implements Provider<CayenneTesterBootiqueHook> {
-
-    @Inject
-    ServerRuntime runtime;
-
-    private CayenneTesterBootiqueHook instance;
-
-    public CayenneTesterBootiqueHookProvider(CayenneTesterBootiqueHook instance) {
-        this.instance = instance;
-    }
-
-    @Override
-    public CayenneTesterBootiqueHook get() {
-        assertNotNull(runtime, "ServerRuntime is not initialized");
-        instance.setRuntime(runtime);
-        return instance;
-    }
-
-
+    // run either before each test (when Cayenne is already started) or when Cayenne is started within a test
+    beforeTestOrOnCayenneStartupWithinTest;
 }
