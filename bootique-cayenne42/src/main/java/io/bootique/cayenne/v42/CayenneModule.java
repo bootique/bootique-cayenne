@@ -104,7 +104,7 @@ public class CayenneModule extends ConfigModule {
             listeners.forEach(domain::addListener);
         }
 
-        startupCallbacks.forEach(c -> c.onCayenneStarted(runtime));
+        startupCallbacks.forEach(c -> c.onRuntimeCreated(runtime));
 
         return runtime;
     }
