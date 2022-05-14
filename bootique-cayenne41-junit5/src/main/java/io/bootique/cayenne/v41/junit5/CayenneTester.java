@@ -18,6 +18,7 @@
  */
 package io.bootique.cayenne.v41.junit5;
 
+import io.bootique.BQCoreModule;
 import io.bootique.cayenne.v41.CayenneModule;
 import io.bootique.cayenne.v41.junit5.tester.*;
 import io.bootique.di.BQModule;
@@ -200,13 +201,18 @@ public class CayenneTester implements BQBeforeMethodCallback, BQAfterMethodCallb
     }
 
     protected void configure(Binder binder) {
+
+        BQCoreModule.extend(binder)
+                .addRuntimeListener(lifecycleManager);
+
         CayenneModule.extend(binder)
                 .addStartupListener(lifecycleManager)
-                .addSyncFilter(commitCounter).addQueryFilter(queryCounter);
+                .addSyncFilter(commitCounter)
+                .addQueryFilter(queryCounter);
     }
 
     public ServerRuntime getRuntime() {
-        return lifecycleManager.getRuntime();
+        return lifecycleManager.getCayenneRuntime();
     }
 
     protected CayenneRuntimeManager getRuntimeManager() {
@@ -227,7 +233,7 @@ public class CayenneTester implements BQBeforeMethodCallback, BQAfterMethodCallb
      * Returns a name of a table related to a given entity via the specified relationship. Useful for navigation to
      * join tables that are not directly mapped to Java classes.
      *
-     * @param entity persistent object type for the source of the relationship
+     * @param entity       persistent object type for the source of the relationship
      * @param relationship a relationship that we'll traverse from the source entity to some target entity
      * @param tableIndex   An index in a list of tables spanned by 'relationship'. Index of 0 corresponds to the target
      *                     DbEntity of the first object in a chain of DbRelationships for a given ObjRelationship.

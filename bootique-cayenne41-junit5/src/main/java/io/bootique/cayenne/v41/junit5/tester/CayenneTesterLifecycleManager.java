@@ -18,7 +18,10 @@
  */
 package io.bootique.cayenne.v41.junit5.tester;
 
+import io.bootique.BQRuntime;
+import io.bootique.BQRuntimeListener;
 import io.bootique.cayenne.v41.CayenneStartupListener;
+import io.bootique.di.DIRuntimeException;
 import io.bootique.junit5.BQTestScope;
 import io.bootique.junit5.scope.BQAfterMethodCallback;
 import io.bootique.junit5.scope.BQBeforeMethodCallback;
@@ -34,10 +37,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * @since 3.0.M1
  */
-public class CayenneTesterLifecycleManager implements CayenneStartupListener, BQBeforeMethodCallback, BQAfterMethodCallback {
+public class CayenneTesterLifecycleManager implements BQRuntimeListener, CayenneStartupListener, BQBeforeMethodCallback, BQAfterMethodCallback {
 
     private final Map<Consumer<ServerRuntime>, CayenneTesterCallbackType> callbacks;
-    private ServerRuntime runtime;
+    private BQRuntime bqRuntime;
+    private ServerRuntime cayenneRuntime;
     private boolean withinTestMethod;
 
     public CayenneTesterLifecycleManager() {
@@ -45,9 +49,20 @@ public class CayenneTesterLifecycleManager implements CayenneStartupListener, BQ
         this.callbacks = new LinkedHashMap<>();
     }
 
-    public ServerRuntime getRuntime() {
-        assertNotNull(runtime, "ServerRuntime is not initialized. Not connected to a Bootique runtime?");
-        return runtime;
+    public BQRuntime getBqRuntime() {
+        assertNotNull(bqRuntime, "BQRuntime is not initialized. Not connected to a Bootique runtime?");
+        return bqRuntime;
+    }
+
+    public ServerRuntime getCayenneRuntime() {
+
+        if (cayenneRuntime == null) {
+            // trigger immediate initialization
+            getBqRuntime().getInstance(ServerRuntime.class);
+        }
+
+        assertNotNull(cayenneRuntime, "Unexpected state - ServerRuntime is not initialized");
+        return cayenneRuntime;
     }
 
     /**
@@ -59,11 +74,17 @@ public class CayenneTesterLifecycleManager implements CayenneStartupListener, BQ
         return this;
     }
 
+    // Called by "bootique"
+    @Override
+    public void onRuntimeCreated(BQRuntime runtime) {
+        checkUnused(runtime);
+        this.bqRuntime = runtime;
+    }
+
     // Called by "bootique-cayenne"
     @Override
     public void onRuntimeCreated(ServerRuntime runtime) {
-        checkUnused(runtime);
-        this.runtime = runtime;
+        this.cayenneRuntime = runtime;
         callbacks.forEach((k, v) -> onCayenneStarted(runtime, k, v));
     }
 
@@ -75,7 +96,7 @@ public class CayenneTesterLifecycleManager implements CayenneStartupListener, BQ
         // TODO: prefilter callbacks collection of "beforeTestIfStarted" in a separate collection to avoid iteration
         //  on every run?
         if (isStarted()) {
-            callbacks.forEach((k, v) -> beforeTestIfStarted(runtime, k, v));
+            callbacks.forEach((k, v) -> beforeTestIfStarted(cayenneRuntime, k, v));
         }
     }
 
@@ -86,7 +107,7 @@ public class CayenneTesterLifecycleManager implements CayenneStartupListener, BQ
     }
 
     private boolean isStarted() {
-        return runtime != null;
+        return cayenneRuntime != null;
     }
 
     private void onCayenneStarted(ServerRuntime runtime, Consumer<ServerRuntime> callback, CayenneTesterCallbackType type) {
@@ -111,9 +132,9 @@ public class CayenneTesterLifecycleManager implements CayenneStartupListener, BQ
         }
     }
 
-    private void checkUnused(ServerRuntime runtime) {
-        if (this.runtime != null && this.runtime != runtime) {
-            throw new IllegalStateException("ServerRuntime is already initialized. " +
+    private void checkUnused(BQRuntime runtime) {
+        if (this.bqRuntime != null && this.bqRuntime != runtime) {
+            throw new DIRuntimeException("BQRuntime is already initialized. " +
                     "Likely this CayenneTester is already connected to another BQRuntime. " +
                     "To fix this error use one CayenneTester per BQRuntime.");
         }
