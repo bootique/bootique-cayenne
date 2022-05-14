@@ -54,7 +54,7 @@ public class CayenneTester_DependenciesIT {
             .createRuntime();
 
     private Set<String> getTables(CayenneTester ct) {
-        ct.resolveRuntimeManager(app.getInstance(ServerRuntime.class));
+        ct.createRuntimeManager(app.getInstance(ServerRuntime.class));
         Map<String, FilteredDataMap> entities = ct.getRuntimeManager().getManagedEntitiesByNode();
 
         assertEquals(1, entities.size());
