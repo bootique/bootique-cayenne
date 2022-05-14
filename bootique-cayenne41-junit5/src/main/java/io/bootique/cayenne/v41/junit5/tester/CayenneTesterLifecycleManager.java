@@ -61,7 +61,7 @@ public class CayenneTesterLifecycleManager implements CayenneStartupListener, BQ
 
     // Called by "bootique-cayenne"
     @Override
-    public void onCayenneStarted(ServerRuntime runtime) {
+    public void onRuntimeCreated(ServerRuntime runtime) {
         checkUnused(runtime);
         this.runtime = runtime;
         callbacks.forEach((k, v) -> onCayenneStarted(runtime, k, v));

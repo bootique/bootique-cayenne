@@ -26,7 +26,8 @@ import org.apache.cayenne.configuration.server.ServerRuntime;
  *
  * @since 3.0.M1
  */
+@FunctionalInterface
 public interface CayenneStartupListener {
 
-    void onCayenneStarted(ServerRuntime runtime);
+    void onRuntimeCreated(ServerRuntime runtime);
 }

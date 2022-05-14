@@ -72,7 +72,7 @@ public class CayenneStartupListenerIT {
         boolean invoked;
 
         @Override
-        public void onCayenneStarted(ServerRuntime runtime) {
+        public void onRuntimeCreated(ServerRuntime runtime) {
             assertNotNull(runtime);
             this.invoked = true;
         }
