@@ -1,6 +1,7 @@
 ## 2.0
 
 * #97 Task 68 ("maps" config must be a dictionary) - was not ported to Cayenne 4.1 and 4.2
+* #102 2.x: Upgrade Cayenne to 4.2.RC1
 
 ## 2.0.RC1
 
