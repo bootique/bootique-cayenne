@@ -6,6 +6,7 @@
 * #99 Add a hook to run custom actions after Cayenne startup
 * #100 CayenneTester: eager initialization breaks other test tools
 * #101 Upgrade Cayenne to 4.2.RC1
+* #104 Integrate "cayenne-commitlog" in 4.2 Bootique Cayenne module
 
 ## 2.0
 

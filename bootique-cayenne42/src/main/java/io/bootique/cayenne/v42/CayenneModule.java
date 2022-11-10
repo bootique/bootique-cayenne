@@ -22,8 +22,11 @@ package io.bootique.cayenne.v42;
 import io.bootique.ConfigModule;
 import io.bootique.cayenne.v42.annotation.CayenneConfigs;
 import io.bootique.cayenne.v42.annotation.CayenneListener;
+import io.bootique.cayenne.v42.commitlog.MappedCommitLogListener;
+import io.bootique.cayenne.v42.commitlog.MappedCommitLogListenerType;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.Binder;
+import io.bootique.di.Injector;
 import io.bootique.di.Provides;
 import io.bootique.jdbc.DataSourceFactory;
 import io.bootique.log.BootLogger;
@@ -31,14 +34,19 @@ import io.bootique.shutdown.ShutdownManager;
 import org.apache.cayenne.DataChannelQueryFilter;
 import org.apache.cayenne.DataChannelSyncFilter;
 import org.apache.cayenne.access.DataDomain;
+import org.apache.cayenne.commitlog.CommitLogFilter;
+import org.apache.cayenne.commitlog.CommitLogListener;
+import org.apache.cayenne.commitlog.meta.IncludeAllCommitLogEntityFactory;
 import org.apache.cayenne.configuration.server.ServerModule;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.di.ListBuilder;
 import org.apache.cayenne.di.Module;
+import org.apache.cayenne.tx.TransactionFilter;
 
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -74,6 +82,7 @@ public class CayenneModule extends ConfigModule {
     @Provides
     @Singleton
     protected ServerRuntime createCayenneRuntime(
+            Injector injector,
             ServerRuntimeFactory serverRuntimeFactory,
             DataSourceFactory dataSourceFactory,
             BootLogger bootLogger,
@@ -84,9 +93,18 @@ public class CayenneModule extends ConfigModule {
             Set<DataChannelSyncFilter> syncFilters,
             CayenneConfigMerger configMerger,
             @CayenneConfigs Set<String> injectedCayenneConfigs,
-            Set<CayenneStartupListener> startupCallbacks) {
+            Set<CayenneStartupListener> startupCallbacks,
+            Set<MappedCommitLogListener> commitLogListeners,
+            Set<MappedCommitLogListenerType> commitLogListenerTypes) {
 
-        Collection<Module> extras = extraCayenneModules(customModules, queryFilters, syncFilters);
+        Collection<Module> extras = extraCayenneModules(
+                injector,
+                customModules,
+                queryFilters,
+                syncFilters,
+                commitLogListeners,
+                commitLogListenerTypes);
+
         ServerRuntime runtime = serverRuntimeFactory.createCayenneRuntime(
                 dataSourceFactory,
                 configMerger,
@@ -110,9 +128,12 @@ public class CayenneModule extends ConfigModule {
     }
 
     protected Collection<Module> extraCayenneModules(
+            Injector injector,
             Set<Module> customModules,
             Set<DataChannelQueryFilter> queryFilters,
-            Set<DataChannelSyncFilter> syncFilters) {
+            Set<DataChannelSyncFilter> syncFilters,
+            Set<MappedCommitLogListener> commitLogListeners,
+            Set<MappedCommitLogListenerType> commitLogListenerTypes) {
 
         Collection<Module> extras = new ArrayList<>(customModules);
 
@@ -130,6 +151,95 @@ public class CayenneModule extends ConfigModule {
             });
         }
 
+        appendCommitLogModules(extras, injector, commitLogListeners, commitLogListenerTypes);
+
         return extras;
+    }
+
+    protected void appendCommitLogModules(
+            Collection<Module> modules,
+            Injector injector,
+            Set<MappedCommitLogListener> commitLogListeners,
+            Set<MappedCommitLogListenerType> commitLogListenerTypes) {
+
+        if (commitLogListeners.isEmpty() && commitLogListenerTypes.isEmpty()) {
+            return;
+        }
+
+        CommitLogModuleExtenders extenders = new CommitLogModuleExtenders(modules);
+
+        for (MappedCommitLogListener ml : commitLogListeners) {
+            extenders.get(ml.isIncludeInTransaction()).add(ml.getListener());
+        }
+
+        for (MappedCommitLogListenerType mlt : commitLogListenerTypes) {
+            CommitLogListener listener = injector.getInstance(mlt.getListenerType());
+            extenders.get(mlt.isIncludeInTransaction()).add(listener);
+        }
+
+        extenders.appendModules();
+    }
+
+    static class CommitLogModuleExtenders {
+
+        private final Collection<Module> modules;
+        private List<CommitLogListener> preTx;
+        private List<CommitLogListener> postTx;
+
+        CommitLogModuleExtenders(Collection<Module> modules) {
+            this.modules = modules;
+        }
+
+        void appendModules() {
+            if (preTx != null && !preTx.isEmpty()) {
+                modules.add(preTxModule());
+            }
+
+            if (postTx != null && !postTx.isEmpty()) {
+                modules.add(postTxModule());
+            }
+        }
+
+        List<CommitLogListener> get(boolean includeInTx) {
+            return includeInTx ? getPreTx() : getPostTx();
+        }
+
+        private List<CommitLogListener> getPreTx() {
+            if (preTx == null) {
+                preTx = new ArrayList<>();
+            }
+
+            return preTx;
+        }
+
+        private List<CommitLogListener> getPostTx() {
+            if (postTx == null) {
+                postTx = new ArrayList<>();
+            }
+
+            return postTx;
+        }
+
+        private Module preTxModule() {
+
+            // TODO: reimplementing CommitLogModuleExtender.module() to allow both pre and post commit filters.
+            //   Maybe this should go to Cayenne?
+
+            return binder -> {
+                CommitLogFilter filter = new CommitLogFilter(new IncludeAllCommitLogEntityFactory(), preTx);
+                ServerModule.contributeDomainSyncFilters(binder).insertBefore(filter, TransactionFilter.class);
+            };
+        }
+
+        private Module postTxModule() {
+
+            // TODO: reimplementing CommitLogModuleExtender.module() to allow both pre and post commit filters.
+            //   Maybe this should go to Cayenne?
+
+            return binder -> {
+                CommitLogFilter filter = new CommitLogFilter(new IncludeAllCommitLogEntityFactory(), postTx);
+                ServerModule.contributeDomainSyncFilters(binder).addAfter(filter, TransactionFilter.class);
+            };
+        }
     }
 }

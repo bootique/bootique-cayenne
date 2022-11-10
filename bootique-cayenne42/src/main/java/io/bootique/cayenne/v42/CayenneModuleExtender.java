@@ -22,11 +22,14 @@ package io.bootique.cayenne.v42;
 import io.bootique.ModuleExtender;
 import io.bootique.cayenne.v42.annotation.CayenneConfigs;
 import io.bootique.cayenne.v42.annotation.CayenneListener;
+import io.bootique.cayenne.v42.commitlog.MappedCommitLogListener;
+import io.bootique.cayenne.v42.commitlog.MappedCommitLogListenerType;
 import io.bootique.di.Binder;
 import io.bootique.di.Key;
 import io.bootique.di.SetBuilder;
 import org.apache.cayenne.DataChannelQueryFilter;
 import org.apache.cayenne.DataChannelSyncFilter;
+import org.apache.cayenne.commitlog.CommitLogListener;
 import org.apache.cayenne.di.Module;
 
 public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender> {
@@ -37,6 +40,8 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     private SetBuilder<String> projects;
     private SetBuilder<Module> modules;
     private SetBuilder<CayenneStartupListener> startupListeners;
+    private SetBuilder<MappedCommitLogListener> commitLogListeners;
+    private SetBuilder<MappedCommitLogListenerType> commitLogListenerTypes;
 
     public CayenneModuleExtender(Binder binder) {
         super(binder);
@@ -50,6 +55,8 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
         contributeModules();
         contributeProjects();
         contributeStartupListeners();
+        contributeCommitLogListeners();
+        contributeCommitLogListenerTypes();
         return this;
     }
 
@@ -131,6 +138,22 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
         return this;
     }
 
+    /**
+     * @since 3.0.M1
+     */
+    public CayenneModuleExtender addCommitLogListener(CommitLogListener listener, boolean includeInTransaction) {
+        contributeCommitLogListeners().addInstance(new MappedCommitLogListener(listener, includeInTransaction));
+        return this;
+    }
+
+    /**
+     * @since 3.0.M1
+     */
+    public CayenneModuleExtender addCommitLogListener(Class<? extends CommitLogListener> listenerType, boolean includeInTransaction) {
+        contributeCommitLogListenerTypes().addInstance(new MappedCommitLogListenerType(listenerType, includeInTransaction));
+        return this;
+    }
+
     protected SetBuilder<DataChannelQueryFilter> contributeQueryFilters() {
         return queryFilters != null ? queryFilters : (queryFilters = newSet(DataChannelQueryFilter.class));
     }
@@ -153,5 +176,13 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
 
     protected SetBuilder<CayenneStartupListener> contributeStartupListeners() {
         return startupListeners != null ? startupListeners : (startupListeners = newSet(CayenneStartupListener.class));
+    }
+
+    protected SetBuilder<MappedCommitLogListener> contributeCommitLogListeners() {
+        return commitLogListeners != null ? commitLogListeners : (commitLogListeners = newSet(MappedCommitLogListener.class));
+    }
+
+    protected SetBuilder<MappedCommitLogListenerType> contributeCommitLogListenerTypes() {
+        return commitLogListenerTypes != null ? commitLogListenerTypes : (commitLogListenerTypes = newSet(MappedCommitLogListenerType.class));
     }
 }
