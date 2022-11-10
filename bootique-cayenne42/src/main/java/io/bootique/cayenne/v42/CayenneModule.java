@@ -24,6 +24,8 @@ import io.bootique.cayenne.v42.annotation.CayenneConfigs;
 import io.bootique.cayenne.v42.annotation.CayenneListener;
 import io.bootique.cayenne.v42.commitlog.MappedCommitLogListener;
 import io.bootique.cayenne.v42.commitlog.MappedCommitLogListenerType;
+import io.bootique.cayenne.v42.syncfilter.MappedDataChannelSyncFilter;
+import io.bootique.cayenne.v42.syncfilter.MappedDataChannelSyncFilterType;
 import io.bootique.config.ConfigurationFactory;
 import io.bootique.di.Binder;
 import io.bootique.di.Injector;
@@ -90,20 +92,19 @@ public class CayenneModule extends ConfigModule {
             Set<Module> customModules,
             @CayenneListener Set<Object> listeners,
             Set<DataChannelQueryFilter> queryFilters,
-            Set<DataChannelSyncFilter> syncFilters,
+            Set<MappedDataChannelSyncFilter> syncFilters,
+            Set<MappedDataChannelSyncFilterType> syncFilterTypes,
             CayenneConfigMerger configMerger,
             @CayenneConfigs Set<String> injectedCayenneConfigs,
             Set<CayenneStartupListener> startupCallbacks,
             Set<MappedCommitLogListener> commitLogListeners,
             Set<MappedCommitLogListenerType> commitLogListenerTypes) {
 
-        Collection<Module> extras = extraCayenneModules(
-                injector,
-                customModules,
-                queryFilters,
-                syncFilters,
-                commitLogListeners,
-                commitLogListenerTypes);
+        Collection<Module> extras = new ArrayList<>(customModules);
+
+        appendQueryFiltersModule(extras, queryFilters);
+        appendSyncFiltersModule(extras, injector, syncFilters, syncFilterTypes);
+        appendCommitLogModules(extras, injector, commitLogListeners, commitLogListenerTypes);
 
         ServerRuntime runtime = serverRuntimeFactory.createCayenneRuntime(
                 dataSourceFactory,
@@ -127,33 +128,42 @@ public class CayenneModule extends ConfigModule {
         return runtime;
     }
 
-    protected Collection<Module> extraCayenneModules(
+    protected void appendQueryFiltersModule(
+            Collection<Module> modules,
+            Set<DataChannelQueryFilter> queryFilters) {
+
+        modules.add(b -> {
+            ListBuilder<DataChannelQueryFilter> listBinder = ServerModule.contributeDomainQueryFilters(b);
+            queryFilters.forEach(listBinder::add);
+        });
+    }
+
+    protected void appendSyncFiltersModule(
+            Collection<Module> modules,
             Injector injector,
-            Set<Module> customModules,
-            Set<DataChannelQueryFilter> queryFilters,
-            Set<DataChannelSyncFilter> syncFilters,
-            Set<MappedCommitLogListener> commitLogListeners,
-            Set<MappedCommitLogListenerType> commitLogListenerTypes) {
+            Set<MappedDataChannelSyncFilter> syncFilters,
+            Set<MappedDataChannelSyncFilterType> syncFilterTypes) {
 
-        Collection<Module> extras = new ArrayList<>(customModules);
-
-        if (!queryFilters.isEmpty()) {
-            extras.add(cayenneBinder -> {
-                ListBuilder<DataChannelQueryFilter> listBinder = ServerModule.contributeDomainQueryFilters(cayenneBinder);
-                queryFilters.forEach(listBinder::add);
-            });
+        if (syncFilters.isEmpty() && syncFilterTypes.isEmpty()) {
+            return;
         }
 
-        if (!syncFilters.isEmpty()) {
-            extras.add(cayenneBinder -> {
-                ListBuilder<DataChannelSyncFilter> listBinder = ServerModule.contributeDomainSyncFilters(cayenneBinder);
-                syncFilters.forEach(listBinder::add);
+        List<MappedDataChannelSyncFilter> combined = new ArrayList<>(syncFilters.size() + syncFilterTypes.size());
+        combined.addAll(syncFilters);
+        syncFilterTypes.stream()
+                .map(t -> new MappedDataChannelSyncFilter(injector.getInstance(t.getFilterType()), t.isIncludeInTransaction()))
+                .forEach(combined::add);
+
+        modules.add(b -> {
+            ListBuilder<DataChannelSyncFilter> listBinder = ServerModule.contributeDomainSyncFilters(b);
+            combined.forEach(mf -> {
+                if (mf.isIncludeInTransaction()) {
+                    listBinder.insertBefore(mf.getFilter(), TransactionFilter.class);
+                } else {
+                    listBinder.addAfter(mf.getFilter(), TransactionFilter.class);
+                }
             });
-        }
-
-        appendCommitLogModules(extras, injector, commitLogListeners, commitLogListenerTypes);
-
-        return extras;
+        });
     }
 
     protected void appendCommitLogModules(

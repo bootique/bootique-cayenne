@@ -7,6 +7,7 @@
 * #100 CayenneTester: eager initialization breaks other test tools
 * #101 Upgrade Cayenne to 4.2.RC1
 * #104 Integrate "cayenne-commitlog" in 4.2 Bootique Cayenne module
+* #105 API to control whether DataChannelSyncFilter is included or excluded from transactions
 
 ## 2.0
 

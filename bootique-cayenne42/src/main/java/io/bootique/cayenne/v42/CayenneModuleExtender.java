@@ -24,6 +24,8 @@ import io.bootique.cayenne.v42.annotation.CayenneConfigs;
 import io.bootique.cayenne.v42.annotation.CayenneListener;
 import io.bootique.cayenne.v42.commitlog.MappedCommitLogListener;
 import io.bootique.cayenne.v42.commitlog.MappedCommitLogListenerType;
+import io.bootique.cayenne.v42.syncfilter.MappedDataChannelSyncFilter;
+import io.bootique.cayenne.v42.syncfilter.MappedDataChannelSyncFilterType;
 import io.bootique.di.Binder;
 import io.bootique.di.Key;
 import io.bootique.di.SetBuilder;
@@ -34,7 +36,8 @@ import org.apache.cayenne.di.Module;
 
 public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender> {
 
-    private SetBuilder<DataChannelSyncFilter> syncFilters;
+    private SetBuilder<MappedDataChannelSyncFilter> syncFilters;
+    private SetBuilder<MappedDataChannelSyncFilterType> syncFilterTypes;
     private SetBuilder<DataChannelQueryFilter> queryFilters;
     private SetBuilder<Object> listeners;
     private SetBuilder<String> projects;
@@ -52,6 +55,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
         contributeListeners();
         contributeQueryFilters();
         contributeSyncFilters();
+        contributeSyncFilterTypes();
         contributeModules();
         contributeProjects();
         contributeStartupListeners();
@@ -78,17 +82,35 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
 
     /**
      * @since 1.1
+     * @deprecated in favor of {@link #addSyncFilter(DataChannelSyncFilter, boolean)}
      */
+    @Deprecated(since = "3.0")
     public CayenneModuleExtender addSyncFilter(DataChannelSyncFilter filter) {
-        contributeSyncFilters().addInstance(filter);
+        return addSyncFilter(filter, false);
+    }
+
+    /**
+     * @since 3.0.M1
+     */
+    public CayenneModuleExtender addSyncFilter(DataChannelSyncFilter filter, boolean includeInTransaction) {
+        contributeSyncFilters().addInstance(new MappedDataChannelSyncFilter(filter, includeInTransaction));
         return this;
     }
 
     /**
      * @since 1.1
+     * @deprecated in favor of {@link #addSyncFilter(Class, boolean)}
      */
+    @Deprecated(since = "3.0")
     public CayenneModuleExtender addSyncFilter(Class<? extends DataChannelSyncFilter> filterType) {
-        contributeSyncFilters().add(filterType);
+        return addSyncFilter(filterType, false);
+    }
+
+    /**
+     * @since 3.0.M1
+     */
+    public CayenneModuleExtender addSyncFilter(Class<? extends DataChannelSyncFilter> filterType, boolean includeInTransaction) {
+        contributeSyncFilterTypes().addInstance(new MappedDataChannelSyncFilterType(filterType, includeInTransaction));
         return this;
     }
 
@@ -158,8 +180,12 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
         return queryFilters != null ? queryFilters : (queryFilters = newSet(DataChannelQueryFilter.class));
     }
 
-    protected SetBuilder<DataChannelSyncFilter> contributeSyncFilters() {
-        return syncFilters != null ? syncFilters : (syncFilters = newSet(DataChannelSyncFilter.class));
+    protected SetBuilder<MappedDataChannelSyncFilter> contributeSyncFilters() {
+        return syncFilters != null ? syncFilters : (syncFilters = newSet(MappedDataChannelSyncFilter.class));
+    }
+
+    protected SetBuilder<MappedDataChannelSyncFilterType> contributeSyncFilterTypes() {
+        return syncFilterTypes != null ? syncFilterTypes : (syncFilterTypes = newSet(MappedDataChannelSyncFilterType.class));
     }
 
     protected SetBuilder<Object> contributeListeners() {

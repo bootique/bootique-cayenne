@@ -46,7 +46,7 @@ public class DataChannelSyncFilterIT {
 
         BQModule filtersModule = (binder) -> {
             CayenneModuleExtender extender = CayenneModule.extend(binder);
-            Arrays.asList(filters).forEach(extender::addSyncFilter);
+            Arrays.asList(filters).forEach(f -> extender.addSyncFilter(f, false));
         };
 
         return testFactory.app("--config=classpath:genericconfig.yml")
