@@ -18,6 +18,7 @@
  */
 package io.bootique.cayenne.v42.commitlog;
 
+import io.bootique.di.Injector;
 import org.apache.cayenne.commitlog.CommitLogListener;
 
 /**
@@ -27,17 +28,20 @@ public class MappedCommitLogListenerType {
 
     private final Class<? extends CommitLogListener> listenerType;
     private final boolean includeInTransaction;
+    private final Class<? extends CommitLogListener> after;
 
-    public MappedCommitLogListenerType(Class<? extends CommitLogListener> listenerType, boolean includeInTransaction) {
+    public MappedCommitLogListenerType(
+            Class<? extends CommitLogListener> listenerType,
+            boolean includeInTransaction,
+            Class<? extends CommitLogListener> after) {
+
         this.listenerType = listenerType;
         this.includeInTransaction = includeInTransaction;
+        this.after = after;
     }
 
-    public Class<? extends CommitLogListener> getListenerType() {
-        return listenerType;
-    }
-
-    public boolean isIncludeInTransaction() {
-        return includeInTransaction;
+    public MappedCommitLogListener resolve(Injector listenerResolver) {
+        CommitLogListener listener = listenerResolver.getInstance(listenerType);
+        return new MappedCommitLogListener(listener, includeInTransaction, after);
     }
 }

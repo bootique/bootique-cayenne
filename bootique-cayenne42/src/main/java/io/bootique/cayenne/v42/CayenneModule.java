@@ -22,6 +22,7 @@ package io.bootique.cayenne.v42;
 import io.bootique.ConfigModule;
 import io.bootique.cayenne.v42.annotation.CayenneConfigs;
 import io.bootique.cayenne.v42.annotation.CayenneListener;
+import io.bootique.cayenne.v42.commitlog.ListenerGraph;
 import io.bootique.cayenne.v42.commitlog.MappedCommitLogListener;
 import io.bootique.cayenne.v42.commitlog.MappedCommitLogListenerType;
 import io.bootique.cayenne.v42.syncfilter.MappedDataChannelSyncFilter;
@@ -179,12 +180,12 @@ public class CayenneModule extends ConfigModule {
         CommitLogModuleExtenders extenders = new CommitLogModuleExtenders(modules);
 
         for (MappedCommitLogListener ml : commitLogListeners) {
-            extenders.get(ml.isIncludeInTransaction()).add(ml.getListener());
+            extenders.get(ml.isIncludeInTransaction()).add(ml);
         }
 
         for (MappedCommitLogListenerType mlt : commitLogListenerTypes) {
-            CommitLogListener listener = injector.getInstance(mlt.getListenerType());
-            extenders.get(mlt.isIncludeInTransaction()).add(listener);
+            MappedCommitLogListener resolved = mlt.resolve(injector);
+            extenders.get(resolved.isIncludeInTransaction()).add(resolved);
         }
 
         extenders.appendModules();
@@ -193,8 +194,8 @@ public class CayenneModule extends ConfigModule {
     static class CommitLogModuleExtenders {
 
         private final Collection<Module> modules;
-        private List<CommitLogListener> preTx;
-        private List<CommitLogListener> postTx;
+        private List<MappedCommitLogListener> preTx;
+        private List<MappedCommitLogListener> postTx;
 
         CommitLogModuleExtenders(Collection<Module> modules) {
             this.modules = modules;
@@ -210,11 +211,11 @@ public class CayenneModule extends ConfigModule {
             }
         }
 
-        List<CommitLogListener> get(boolean includeInTx) {
+        List<MappedCommitLogListener> get(boolean includeInTx) {
             return includeInTx ? getPreTx() : getPostTx();
         }
 
-        private List<CommitLogListener> getPreTx() {
+        private List<MappedCommitLogListener> getPreTx() {
             if (preTx == null) {
                 preTx = new ArrayList<>();
             }
@@ -222,7 +223,7 @@ public class CayenneModule extends ConfigModule {
             return preTx;
         }
 
-        private List<CommitLogListener> getPostTx() {
+        private List<MappedCommitLogListener> getPostTx() {
             if (postTx == null) {
                 postTx = new ArrayList<>();
             }
@@ -232,22 +233,24 @@ public class CayenneModule extends ConfigModule {
 
         private Module preTxModule() {
 
-            // TODO: reimplementing CommitLogModuleExtender.module() to allow both pre and post commit filters.
-            //   Maybe this should go to Cayenne?
+            // reimplementing CommitLogModuleExtender.module() to allow both pre and post commit filters.
+            // TODO:  Maybe this should go to Cayenne?
 
             return binder -> {
-                CommitLogFilter filter = new CommitLogFilter(new IncludeAllCommitLogEntityFactory(), preTx);
+                List<CommitLogListener> listeners = ListenerGraph.resolveAndSort(preTx);
+                CommitLogFilter filter = new CommitLogFilter(new IncludeAllCommitLogEntityFactory(), listeners);
                 ServerModule.contributeDomainSyncFilters(binder).insertBefore(filter, TransactionFilter.class);
             };
         }
 
         private Module postTxModule() {
 
-            // TODO: reimplementing CommitLogModuleExtender.module() to allow both pre and post commit filters.
-            //   Maybe this should go to Cayenne?
+            // reimplementing CommitLogModuleExtender.module() to allow both pre and post commit filters.
+            // TODO:  Maybe this should go to Cayenne?
 
             return binder -> {
-                CommitLogFilter filter = new CommitLogFilter(new IncludeAllCommitLogEntityFactory(), postTx);
+                List<CommitLogListener> listeners = ListenerGraph.resolveAndSort(postTx);
+                CommitLogFilter filter = new CommitLogFilter(new IncludeAllCommitLogEntityFactory(), listeners);
                 ServerModule.contributeDomainSyncFilters(binder).addAfter(filter, TransactionFilter.class);
             };
         }

@@ -27,10 +27,16 @@ public class MappedCommitLogListener {
 
     private final CommitLogListener listener;
     private final boolean includeInTransaction;
+    private final Class<? extends CommitLogListener> after;
 
-    public MappedCommitLogListener(CommitLogListener listener, boolean includeInTransaction) {
+    public MappedCommitLogListener(CommitLogListener listener, boolean includeInTransaction, Class<? extends CommitLogListener> after) {
         this.listener = listener;
         this.includeInTransaction = includeInTransaction;
+        this.after = after;
+    }
+
+    public Class<? extends CommitLogListener> getAfter() {
+        return after;
     }
 
     public CommitLogListener getListener() {
