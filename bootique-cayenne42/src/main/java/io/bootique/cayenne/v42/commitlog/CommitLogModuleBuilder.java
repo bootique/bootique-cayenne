@@ -79,7 +79,7 @@ public class CommitLogModuleBuilder {
         // TODO:  Maybe this should go to Cayenne?
 
         return binder -> {
-            List<CommitLogListener> listeners = ListenerGraph.resolveAndSort(preTx);
+            List<CommitLogListener> listeners = CommitLogListenerGraph.resolveAndSort(preTx);
             CommitLogFilter filter = new CommitLogFilter(new IncludeAllCommitLogEntityFactory(), listeners);
             ServerModule.contributeDomainSyncFilters(binder).insertBefore(filter, TransactionFilter.class);
         };
@@ -91,7 +91,7 @@ public class CommitLogModuleBuilder {
         // TODO:  Maybe this should go to Cayenne?
 
         return binder -> {
-            List<CommitLogListener> listeners = ListenerGraph.resolveAndSort(postTx);
+            List<CommitLogListener> listeners = CommitLogListenerGraph.resolveAndSort(postTx);
             CommitLogFilter filter = new CommitLogFilter(new IncludeAllCommitLogEntityFactory(), listeners);
             ServerModule.contributeDomainSyncFilters(binder).addAfter(filter, TransactionFilter.class);
         };

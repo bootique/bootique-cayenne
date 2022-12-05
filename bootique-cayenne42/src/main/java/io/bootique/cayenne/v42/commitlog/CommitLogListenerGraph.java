@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 /**
  * @since 3.0.M1
  */
-class ListenerGraph {
+class CommitLogListenerGraph {
 
     static List<CommitLogListener> resolveAndSort(List<MappedCommitLogListener> unsorted) {
         if (unsorted.isEmpty()) {
@@ -62,7 +62,7 @@ class ListenerGraph {
             }
         });
 
-        ListenerGraph graph = new ListenerGraph(unsorted.size());
+        CommitLogListenerGraph graph = new CommitLogListenerGraph(unsorted.size());
         unsorted.forEach(l -> graph.add(l.getListener()));
         unsorted.stream()
                 .filter(l -> listenersByType.get(l.getAfter()) != null)
@@ -73,7 +73,7 @@ class ListenerGraph {
 
     private final Map<CommitLogListener, List<CommitLogListener>> neighbors;
 
-    ListenerGraph(int size) {
+    CommitLogListenerGraph(int size) {
         neighbors = new LinkedHashMap<>(size);
     }
 
