@@ -8,6 +8,7 @@
 * #101 Upgrade Cayenne to 4.2.RC1
 * #104 Integrate "cayenne-commitlog" in 4.2 Bootique Cayenne module
 * #105 API to control whether DataChannelSyncFilter is included or excluded from transactions
+* #106 Upgrade 4.2 to 4.2.RC2
 
 ## 2.0
 
