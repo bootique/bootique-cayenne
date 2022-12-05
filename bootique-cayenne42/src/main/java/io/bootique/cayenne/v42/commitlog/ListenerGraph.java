@@ -27,9 +27,9 @@ import java.util.stream.Collectors;
 /**
  * @since 3.0.M1
  */
-public class ListenerGraph {
+class ListenerGraph {
 
-    public static List<CommitLogListener> resolveAndSort(List<MappedCommitLogListener> unsorted) {
+    static List<CommitLogListener> resolveAndSort(List<MappedCommitLogListener> unsorted) {
         if (unsorted.isEmpty()) {
             return Collections.emptyList();
         } else if (unsorted.size() == 1) {
