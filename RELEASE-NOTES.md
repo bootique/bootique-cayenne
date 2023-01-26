@@ -1,3 +1,7 @@
+## 3.0.M2
+
+* #107 "lazyDataSource" config
+
 ## 3.0.M1
 
 * #93 JUnit 4 support deprecation
