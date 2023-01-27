@@ -32,12 +32,10 @@ public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
 
     private DataSourceFactory bqDataSourceFactory;
     private String defaultDataSourceName;
-    private final boolean lazyDataSource;
 
-    public BQCayenneDataSourceFactory(DataSourceFactory bqDataSourceFactory, String defaultDataSourceName, boolean lazyDataSource) {
+    public BQCayenneDataSourceFactory(DataSourceFactory bqDataSourceFactory, String defaultDataSourceName) {
         this.bqDataSourceFactory = bqDataSourceFactory;
         this.defaultDataSourceName = defaultDataSourceName;
-        this.lazyDataSource = lazyDataSource;
     }
 
     static String encodeDataSourceRef(String bqDataSource) {
@@ -50,12 +48,6 @@ public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
 
     @Override
     public DataSource getDataSource(DataNodeDescriptor nodeDescriptor) throws Exception {
-        return lazyDataSource
-                ? new LazyDataSource(() -> createDataSource(nodeDescriptor))
-                : createDataSource(nodeDescriptor);
-    }
-
-    protected DataSource createDataSource(DataNodeDescriptor nodeDescriptor) {
 
         DataSource dataSource;
 
@@ -66,12 +58,7 @@ public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
         }
 
         // 2. try loading from Cayenne XML
-        try {
-            dataSource = cayenneDataSource(nodeDescriptor);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
+        dataSource = cayenneDataSource(nodeDescriptor);
         if (dataSource != null) {
             return dataSource;
         }

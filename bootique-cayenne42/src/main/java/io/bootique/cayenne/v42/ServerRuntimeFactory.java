@@ -42,7 +42,6 @@ public class ServerRuntimeFactory {
     private Map<String, DataMapConfig> maps;
     private String datasource;
     private boolean createSchema;
-    private boolean lazyDataSource;
 
     public ServerRuntimeFactory() {
         this.configs = new ArrayList<>();
@@ -91,10 +90,7 @@ public class ServerRuntimeFactory {
             binder.bind(DataDomain.class).toProvider(SyntheticNodeDataDomainProvider.class);
 
             // Bootique DataSource hooks...
-            BQCayenneDataSourceFactory bqCayenneDSFactory = new BQCayenneDataSourceFactory(
-                    dataSourceFactory,
-                    datasource,
-                    lazyDataSource);
+            BQCayenneDataSourceFactory bqCayenneDSFactory = new BQCayenneDataSourceFactory(dataSourceFactory, datasource);
             binder.bind(org.apache.cayenne.configuration.server.DataSourceFactory.class).toInstance(bqCayenneDSFactory);
         };
     }
@@ -178,15 +174,6 @@ public class ServerRuntimeFactory {
             "default DataSource from 'bootique-jdbc' is used.")
     public void setDatasource(String datasource) {
         this.datasource = datasource;
-    }
-
-    /**
-     * @since 3.0
-     */
-    @BQConfigProperty("If 'true', ServerRuntime can start without fully resolving the DataSource. This is useful " +
-            "when the application needs to access Cayenne metadata without connecting to a DB")
-    public void setLazyDataSource(boolean lazyDataSource) {
-        this.lazyDataSource = lazyDataSource;
     }
 
     /**
