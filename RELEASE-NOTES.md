@@ -1,3 +1,7 @@
+## 3.0.M2
+
+* #108 4.2 Extender methods for adding ValueObjectTypes and ExtendedTypes
+
 ## 3.0.M1
 
 * #93 JUnit 4 support deprecation

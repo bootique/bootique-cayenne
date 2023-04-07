@@ -37,6 +37,8 @@ import io.bootique.shutdown.ShutdownManager;
 import org.apache.cayenne.DataChannelQueryFilter;
 import org.apache.cayenne.DataChannelSyncFilter;
 import org.apache.cayenne.access.DataDomain;
+import org.apache.cayenne.access.types.ExtendedType;
+import org.apache.cayenne.access.types.ValueObjectType;
 import org.apache.cayenne.configuration.server.ServerModule;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.di.ListBuilder;
@@ -96,9 +98,14 @@ public class CayenneModule extends ConfigModule {
             @CayenneConfigs Set<String> injectedCayenneConfigs,
             Set<CayenneStartupListener> startupCallbacks,
             Set<MappedCommitLogListener> commitLogListeners,
-            Set<MappedCommitLogListenerType> commitLogListenerTypes) {
+            Set<MappedCommitLogListenerType> commitLogListenerTypes,
+            Set<ExtendedType> extendedTypes,
+            Set<ValueObjectType> valueObjectTypes) {
 
         Collection<Module> extras = new ArrayList<>(customModules);
+
+        appendExtendedTypesModule(extras, extendedTypes);
+        appendValueObjectTypesModule(extras, valueObjectTypes);
 
         appendQueryFiltersModule(extras, queryFilters);
         appendSyncFiltersModule(extras, injector, syncFilters, syncFilterTypes);
@@ -124,6 +131,30 @@ public class CayenneModule extends ConfigModule {
         startupCallbacks.forEach(c -> c.onRuntimeCreated(runtime));
 
         return runtime;
+    }
+
+    protected void appendExtendedTypesModule(
+            Collection<Module> modules,
+            Set<ExtendedType> types) {
+
+        if(!types.isEmpty()) {
+            modules.add(b -> {
+                ListBuilder<ExtendedType> listBinder = ServerModule.contributeUserTypes(b);
+                types.forEach(listBinder::add);
+            });
+        }
+    }
+
+    protected void appendValueObjectTypesModule(
+            Collection<Module> modules,
+            Set<ValueObjectType> types) {
+
+        if(!types.isEmpty()) {
+            modules.add(b -> {
+                ListBuilder<ValueObjectType> listBinder = ServerModule.contributeValueObjectTypes(b);
+                types.forEach(listBinder::add);
+            });
+        }
     }
 
     protected void appendQueryFiltersModule(

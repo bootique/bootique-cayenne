@@ -31,6 +31,8 @@ import io.bootique.di.Key;
 import io.bootique.di.SetBuilder;
 import org.apache.cayenne.DataChannelQueryFilter;
 import org.apache.cayenne.DataChannelSyncFilter;
+import org.apache.cayenne.access.types.ExtendedType;
+import org.apache.cayenne.access.types.ValueObjectType;
 import org.apache.cayenne.commitlog.CommitLogListener;
 import org.apache.cayenne.di.Module;
 
@@ -45,6 +47,8 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     private SetBuilder<CayenneStartupListener> startupListeners;
     private SetBuilder<MappedCommitLogListener> commitLogListeners;
     private SetBuilder<MappedCommitLogListenerType> commitLogListenerTypes;
+    private SetBuilder<ExtendedType> extendedType;
+    private SetBuilder<ValueObjectType> valueObjectTypes;
 
     public CayenneModuleExtender(Binder binder) {
         super(binder);
@@ -61,6 +65,8 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
         contributeStartupListeners();
         contributeCommitLogListeners();
         contributeCommitLogListenerTypes();
+        contributeExtendedTypes();
+        contributeValueObjectTypes();
         return this;
     }
 
@@ -192,6 +198,38 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
         return this;
     }
 
+    /**
+     * @since 3.0.M2
+     */
+    public CayenneModuleExtender addExtendedType(ExtendedType<?> type) {
+        contributeExtendedTypes().addInstance(type);
+        return this;
+    }
+
+    /**
+     * @since 3.0.M2
+     */
+    public CayenneModuleExtender addExtendedType(Class<? extends ExtendedType<?>> type) {
+        contributeExtendedTypes().add(type);
+        return this;
+    }
+
+    /**
+     * @since 3.0.M2
+     */
+    public CayenneModuleExtender addValueObjectType(ValueObjectType<?, ?> type) {
+        contributeValueObjectTypes().addInstance(type);
+        return this;
+    }
+
+    /**
+     * @since 3.0.M2
+     */
+    public CayenneModuleExtender addValueObjectType(Class<? extends ValueObjectType<?, ?>> type) {
+        contributeValueObjectTypes().add(type);
+        return this;
+    }
+
     protected SetBuilder<DataChannelQueryFilter> contributeQueryFilters() {
         return queryFilters != null ? queryFilters : (queryFilters = newSet(DataChannelQueryFilter.class));
     }
@@ -226,5 +264,13 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
 
     protected SetBuilder<MappedCommitLogListenerType> contributeCommitLogListenerTypes() {
         return commitLogListenerTypes != null ? commitLogListenerTypes : (commitLogListenerTypes = newSet(MappedCommitLogListenerType.class));
+    }
+
+    protected SetBuilder<ExtendedType> contributeExtendedTypes() {
+        return extendedType != null ? extendedType : (extendedType = newSet(ExtendedType.class));
+    }
+
+    protected SetBuilder<ValueObjectType> contributeValueObjectTypes() {
+        return valueObjectTypes != null ? valueObjectTypes : (valueObjectTypes = newSet(ValueObjectType.class));
     }
 }
