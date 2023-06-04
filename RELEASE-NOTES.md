@@ -1,6 +1,7 @@
 ## 3.0.M2
 
 * #108 4.2 Extender methods for adding ValueObjectTypes and ExtendedTypes
+* #109 Upgrade Cayenne to 4.2 GA
 
 ## 3.0.M1
 
