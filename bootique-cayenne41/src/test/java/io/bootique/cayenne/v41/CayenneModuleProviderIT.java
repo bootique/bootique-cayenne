@@ -31,17 +31,17 @@ public class CayenneModuleProviderIT {
     final BQTestFactory testFactory = new BQTestFactory();
 
     @Test
-    public void testAutoLoadable() {
+    public void autoLoadable() {
         BQModuleProviderChecker.testAutoLoadable(CayenneModuleProvider.class);
     }
 
     @Test
-    public void testMetadata() {
+    public void metadata() {
         BQModuleProviderChecker.testMetadata(CayenneModuleProvider.class);
     }
 
     @Test
-    public void testModuleDeclaresDependencies() {
+    public void moduleDeclaresDependencies() {
         BQRuntime bqRuntime = testFactory.app().moduleProvider(new CayenneModuleProvider()).createRuntime();
         BQRuntimeChecker.testModulesLoaded(bqRuntime, JdbcModule.class);
     }

@@ -50,7 +50,7 @@ public class CayenneStartupListenerIT {
     }
 
     @Test
-    public void testOnSync() {
+    public void onSync() {
 
         TestStartupListener l1 = new TestStartupListener();
         TestStartupListener l2 = new TestStartupListener();

@@ -57,7 +57,7 @@ public class CayenneModule_DataChannelFiltersIT {
     }
 
     @Test
-    public void testFilters() {
+    public void filters() {
 
         DataChannelFilter f = mock(DataChannelFilter.class);
         when(f.onSync(any(), any(), anyInt(), (DataChannelSyncFilterChain) any())).thenReturn(mock(GraphDiff.class));

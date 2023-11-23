@@ -36,7 +36,7 @@ public class CayenneModuleIT {
     final BQTestFactory testFactory = new BQTestFactory();
 
     @Test
-    public void testDefaultConfig() {
+    public void defaultConfig() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:defaultconfig.yml")
                 .autoLoadModules()

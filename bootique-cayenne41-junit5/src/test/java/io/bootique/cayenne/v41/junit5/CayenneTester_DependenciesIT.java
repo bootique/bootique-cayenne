@@ -67,7 +67,7 @@ public class CayenneTester_DependenciesIT {
     }
 
     @Test
-    public void testDependentEntities1() {
+    public void dependentEntities1() {
 
         CayenneTester ct = CayenneTester.create().entitiesAndDependencies(P3T1.class);
         Set<String> tables = getTables(ct);
@@ -80,7 +80,7 @@ public class CayenneTester_DependenciesIT {
     }
 
     @Test
-    public void testDependentEntities2() {
+    public void dependentEntities2() {
         CayenneTester ct = CayenneTester.create().entitiesAndDependencies(P3T4.class);
         Set<String> tables = getTables(ct);
 
@@ -90,7 +90,7 @@ public class CayenneTester_DependenciesIT {
     }
 
     @Test
-    public void testDependentEntities3() {
+    public void dependentEntities3() {
         CayenneTester ct = CayenneTester.create().entitiesAndDependencies(P3T3.class);
         Set<String> tables = getTables(ct);
 
@@ -99,7 +99,7 @@ public class CayenneTester_DependenciesIT {
     }
 
     @Test
-    public void testDependentTables1() {
+    public void dependentTables1() {
         CayenneTester ct = CayenneTester.create().tablesAndDependencies("p3_t1_t4");
         Set<String> tables = getTables(ct);
 

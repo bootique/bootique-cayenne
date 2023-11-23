@@ -37,7 +37,7 @@ public class CayenneModelUtilsIT {
     public BQTestFactory testFactory = new BQTestFactory();
 
     @Test
-    public void testCreateTableModel() {
+    public void createTableModel() {
         BQRuntime runtime = testFactory.app("-c", "classpath:config1.yml")
                 .autoLoadModules()
                 .createRuntime();

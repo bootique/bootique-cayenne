@@ -32,7 +32,7 @@ public class CayenneTestDataManagerTxIT {
     public BQTestFactory testFactory = new BQTestFactory();
 
     @Test
-    public void testDataSourceDoesNotAutocommit() {
+    public void dataSourceDoesNotAutocommit() {
 
         BQRuntime runtime = testFactory.app("-c", "classpath:config-noautocommit.yml")
                 .autoLoadModules()

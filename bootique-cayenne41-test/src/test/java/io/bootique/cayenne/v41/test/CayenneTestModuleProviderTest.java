@@ -36,12 +36,12 @@ public class CayenneTestModuleProviderTest {
     public BQTestFactory testFactory = new BQTestFactory();
 
     @Test
-    public void testAutoLoadable() {
+    public void autoLoadable() {
         BQModuleProviderChecker.testAutoLoadable(CayenneTestModuleProvider.class);
     }
 
     @Test
-    public void testModuleDeclaresDependencies() {
+    public void moduleDeclaresDependencies() {
         final BQRuntime bqRuntime = testFactory
                 // add arguments and tomcat module,
                 // since DataSource required for CayenneTestModule

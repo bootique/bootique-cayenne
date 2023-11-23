@@ -64,7 +64,7 @@ public class CayenneTester_AllTablesIT {
     }
 
     @Test
-    public void testAllTables() {
+    public void allTables() {
 
         CayenneTester ct = CayenneTester.create().allTables();
         Set<String> tables = getTables(ct);

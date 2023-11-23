@@ -58,7 +58,7 @@ public class CayenneModule_ListenersIT {
     }
 
     @Test
-    public void testListeners() {
+    public void listeners() {
 
         L1 l1 = new L1();
 

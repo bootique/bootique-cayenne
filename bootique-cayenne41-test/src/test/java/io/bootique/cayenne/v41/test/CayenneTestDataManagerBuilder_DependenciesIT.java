@@ -50,7 +50,7 @@ public class CayenneTestDataManagerBuilder_DependenciesIT {
     }
 
     @Test
-    public void testDependentEntities1() {
+    public void dependentEntities1() {
         CayenneTestDataManager dm = CayenneTestDataManager
                 .builder(TEST_RUNTIME)
                 .entitiesAndDependencies(P3T1.class)
@@ -65,7 +65,7 @@ public class CayenneTestDataManagerBuilder_DependenciesIT {
     }
 
     @Test
-    public void testDependentEntities2() {
+    public void dependentEntities2() {
         CayenneTestDataManager dm = CayenneTestDataManager
                 .builder(TEST_RUNTIME)
                 .entitiesAndDependencies(P3T4.class)
@@ -78,7 +78,7 @@ public class CayenneTestDataManagerBuilder_DependenciesIT {
     }
 
     @Test
-    public void testDependentEntities3() {
+    public void dependentEntities3() {
         CayenneTestDataManager dm = CayenneTestDataManager
                 .builder(TEST_RUNTIME)
                 .entitiesAndDependencies(P3T3.class)
@@ -90,7 +90,7 @@ public class CayenneTestDataManagerBuilder_DependenciesIT {
     }
 
     @Test
-    public void testDependentTables1() {
+    public void dependentTables1() {
         CayenneTestDataManager dm = CayenneTestDataManager
                 .builder(TEST_RUNTIME)
                 .tablesAndDependencies("p3_t1_t4")

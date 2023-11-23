@@ -55,7 +55,7 @@ public class CayenneTester_DeleteBeforeEachTestIT {
             .createRuntime();
 
     @Test
-    public void testNoSuchTable() {
+    public void noSuchTable() {
         assertThrows(IllegalStateException.class, () -> cayenne.getTableName(Persistent.class));
     }
 

@@ -34,7 +34,7 @@ public class CayenneTestModuleIT {
     public BQTestFactory testFactory = new BQTestFactory();
 
     @Test
-    public void testSchemaListeners() {
+    public void schemaListeners() {
 
         SchemaListener listener = mock(SchemaListener.class);
 

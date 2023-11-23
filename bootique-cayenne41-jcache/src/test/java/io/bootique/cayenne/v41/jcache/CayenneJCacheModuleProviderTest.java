@@ -33,12 +33,12 @@ public class CayenneJCacheModuleProviderTest {
     public BQTestFactory testFactory = new BQTestFactory();
 
     @Test
-    public void testAutoLoadable() {
+    public void autoLoadable() {
         BQModuleProviderChecker.testAutoLoadable(CayenneJCacheModuleProvider.class);
     }
 
     @Test
-    public void testModuleDeclaresDependencies() {
+    public void moduleDeclaresDependencies() {
         BQRuntime bqRuntime = testFactory.app().moduleProvider(new CayenneJCacheModuleProvider()).createRuntime();
         BQRuntimeChecker.testModulesLoaded(bqRuntime,
                 CayenneModule.class,

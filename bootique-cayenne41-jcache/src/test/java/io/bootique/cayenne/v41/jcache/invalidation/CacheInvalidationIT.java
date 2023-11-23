@@ -68,7 +68,7 @@ public class CacheInvalidationIT {
             .createRuntime();
 
     @Test
-    public void testInvalidate_CustomHandler() {
+    public void invalidate_CustomHandler() {
 
         ObjectContext context = cayenne.getRuntime().newContext();
         // no explicit cache group must still work - it lands inside default cache called 'cayenne.default.cache'
@@ -107,7 +107,7 @@ public class CacheInvalidationIT {
     }
 
     @Test
-    public void testInvalidate_CacheGroup() {
+    public void invalidate_CacheGroup() {
 
         ObjectContext context = cayenne.getRuntime().newContext();
         ObjectSelect<Table2> g3 = ObjectSelect.query(Table2.class).localCache("cayenne3");
@@ -138,7 +138,7 @@ public class CacheInvalidationIT {
     }
 
     @Test
-    public void testInvalidate_CustomData() {
+    public void invalidate_CustomData() {
 
         ObjectContext context = cayenne.getRuntime().newContext();
 

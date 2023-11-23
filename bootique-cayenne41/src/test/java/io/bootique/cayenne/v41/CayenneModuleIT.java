@@ -43,7 +43,7 @@ public class CayenneModuleIT {
     final BQTestFactory testFactory = new BQTestFactory();
 
     @Test
-    public void testFullConfig() {
+    public void fullConfig() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:fullconfig.yml")
                 .autoLoadModules()
@@ -58,7 +58,7 @@ public class CayenneModuleIT {
     }
 
     @Test
-    public void testConfig_ExplicitMaps_SharedDataSource() {
+    public void config_ExplicitMaps_SharedDataSource() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:config_explicit_maps.yml")
                 .autoLoadModules()
@@ -75,7 +75,7 @@ public class CayenneModuleIT {
     }
 
     @Test
-    public void testConfig_ExplicitMaps_DifferentDataSources() {
+    public void config_ExplicitMaps_DifferentDataSources() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:config_explicit_maps_2.yml")
                 .autoLoadModules()
@@ -92,7 +92,7 @@ public class CayenneModuleIT {
     }
 
     @Test
-    public void testDefaultDataSource() throws SQLException {
+    public void defaultDataSource() throws SQLException {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:noconfig.yml")
                 .autoLoadModules()
@@ -109,7 +109,7 @@ public class CayenneModuleIT {
     }
 
     @Test
-    public void testUndefinedDataSource() {
+    public void undefinedDataSource() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:noconfig_2ds.yml")
                 .autoLoadModules()
@@ -125,7 +125,7 @@ public class CayenneModuleIT {
     }
 
     @Test
-    public void testUnmatchedDataSource() {
+    public void unmatchedDataSource() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:noconfig_2ds_unmatched.yml")
                 .autoLoadModules()
@@ -142,7 +142,7 @@ public class CayenneModuleIT {
     }
 
     @Test
-    public void testNoConfig() {
+    public void noConfig() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:noconfig.yml")
                 .autoLoadModules()
@@ -154,7 +154,7 @@ public class CayenneModuleIT {
     }
 
     @Test
-    public void testContributeModules() {
+    public void contributeModules() {
 
         Key<Object> key = Key.get(Object.class, "_test_");
         Object value = new Object();
@@ -174,7 +174,7 @@ public class CayenneModuleIT {
     }
 
     @Test
-    public void testMergeConfigs() {
+    public void mergeConfigs() {
 
         BQModule cayenneProjectModule = binder -> CayenneModule.extend(binder).addProject("cayenne-project2.xml");
 
@@ -189,7 +189,7 @@ public class CayenneModuleIT {
     }
 
     @Test
-    public void testConfigMaps_Plus_AddProject_DataSourceAssignment() {
+    public void configMaps_Plus_AddProject_DataSourceAssignment() {
 
         // see https://github.com/bootique/bootique-cayenne/issues/69
         // module-provided project has no DataNode .. must be assigned the default one
@@ -218,7 +218,7 @@ public class CayenneModuleIT {
     }
 
     @Test
-    public void testConfig_ExplicitMaps_DifferentConfig() {
+    public void config_ExplicitMaps_DifferentConfig() {
 
         ServerRuntime runtime = testFactory.app("--config=classpath:config_explicit_maps_2_1.yml"
                         , "--config=classpath:config_explicit_maps_2_2.yml")

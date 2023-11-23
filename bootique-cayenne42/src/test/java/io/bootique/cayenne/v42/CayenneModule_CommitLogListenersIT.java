@@ -56,7 +56,7 @@ public class CayenneModule_CommitLogListenersIT {
     }
 
     @Test
-    public void testListeners() {
+    public void listeners() {
 
         CayenneDataObject o1 = new CayenneDataObject();
         o1.setObjectId(ObjectId.of("T1"));

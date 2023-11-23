@@ -57,7 +57,7 @@ public class DataChannelSyncFilterIT {
     }
 
     @Test
-    public void testOnSync() {
+    public void onSync() {
 
         DataChannelSyncFilter f = mock(DataChannelSyncFilter.class);
         when(f.onSync(any(), any(), anyInt(), any())).thenReturn(mock(GraphDiff.class));

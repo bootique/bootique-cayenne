@@ -54,7 +54,7 @@ public class DataChannelQueryFilterIT {
     }
 
     @Test
-    public void testOnQuery() {
+    public void onQuery() {
 
         DataChannelQueryFilter f = mock(DataChannelQueryFilter.class);
         when(f.onQuery(any(), any(), any())).thenReturn(mock(QueryResponse.class));

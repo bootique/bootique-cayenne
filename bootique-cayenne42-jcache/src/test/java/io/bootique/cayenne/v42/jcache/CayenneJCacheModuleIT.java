@@ -57,13 +57,13 @@ public class CayenneJCacheModuleIT {
             .createRuntime();
 
     @Test
-    public void testCacheProvider() {
+    public void cacheProvider() {
         QueryCache cache = cayenne.getRuntime().getInjector().getInstance(QueryCache.class);
         assertTrue(cache instanceof JCacheQueryCache, "Unexpected cache type: " + cache.getClass().getName());
     }
 
     @Test
-    public void testCacheManager() {
+    public void cacheManager() {
         CacheManager cacheManager = runtime.getInstance(CacheManager.class);
         assertTrue(cacheManager.getClass().getName().startsWith("org.ehcache.jsr107"),
                 "Unexpected cache type: " + cacheManager.getClass().getName());
@@ -73,7 +73,7 @@ public class CayenneJCacheModuleIT {
     }
 
     @Test
-    public void testCachedQueries() {
+    public void cachedQueries() {
 
         ObjectContext context = cayenne.getRuntime().newContext();
         ObjectSelect<Table1> g1 = ObjectSelect.query(Table1.class).localCache("g1");
