@@ -52,7 +52,7 @@ public class CayenneTester_UnattachedIT {
 
     @Test
     @DisplayName("CayenneTester declared, but not attached to the app")
-    public void testDBAccess() {
+    public void dbAccess() {
         app.getInstance(ServerRuntime.class).newContext();
     }
 }

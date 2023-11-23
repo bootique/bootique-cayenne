@@ -54,7 +54,7 @@ public class CayenneTester_IndirectRuntimeAccessIT {
 
     @RepeatedTest(2)
     @DisplayName("Eager init of BQRuntime must work without calling 'CayenneTester.getRuntime()'")
-    public void testDBAccess() {
+    public void dbAccess() {
 
         // schema is only created after the first access to ServerRuntime
         app.getInstance(ServerRuntime.class);

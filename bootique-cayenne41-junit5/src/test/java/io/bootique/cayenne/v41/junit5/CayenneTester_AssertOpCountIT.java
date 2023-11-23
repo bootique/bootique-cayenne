@@ -52,7 +52,7 @@ public class CayenneTester_AssertOpCountIT {
             .createRuntime();
 
     @RepeatedTest(3)
-    public void testAssertCommitCount() {
+    public void commitCount() {
 
         // must be reset at every run
         cayenne.assertCommitCount(0);
@@ -67,7 +67,7 @@ public class CayenneTester_AssertOpCountIT {
     }
 
     @RepeatedTest(3)
-    public void testAssertQueryCount() {
+    public void queryCount() {
 
         // must be reset at every run
         cayenne.assertQueryCount(0);

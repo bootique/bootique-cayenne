@@ -61,7 +61,7 @@ public class CayenneTester_RunAppIT {
 
     @Test
     @DisplayName("Eager init of BQRuntime must work")
-    public void testDBAccess() {
+    public void dbAccess() {
         ObjectContext context = cayenne.getRuntime().newContext();
         Table1 t1 = context.newObject(Table1.class);
         t1.setA(5L);

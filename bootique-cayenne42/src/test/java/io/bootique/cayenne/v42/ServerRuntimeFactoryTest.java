@@ -50,7 +50,7 @@ public class ServerRuntimeFactoryTest {
 	}
 
 	@Test
-	public void testCreateCayenneRuntime_NoName() {
+    public void createCayenneRuntime_NoName() {
 		ServerRuntimeFactory factory = new ServerRuntimeFactory();
 		factory.setDatasource("ds1");
 
@@ -73,7 +73,7 @@ public class ServerRuntimeFactoryTest {
 	}
 
 	@Test
-	public void testCreateCayenneRuntime_Name() {
+    public void createCayenneRuntime_Name() {
 		ServerRuntimeFactory factory = new ServerRuntimeFactory();
 		factory.setConfigs(asList("cayenne-project1.xml"));
 		factory.setDatasource("ds1");
@@ -99,7 +99,7 @@ public class ServerRuntimeFactoryTest {
 	}
 
 	@Test
-	public void testCreateCayenneRuntime_Configs() {
+    public void createCayenneRuntime_Configs() {
 		ServerRuntimeFactory factory = new ServerRuntimeFactory();
 		factory.setDatasource("ds1");
 		factory.setConfigs(asList("cayenne-project2.xml", "cayenne-project1.xml"));
@@ -121,7 +121,7 @@ public class ServerRuntimeFactoryTest {
 	}
 
 	@Test
-	public void testCreateCayenneRuntime_NoConfig() {
+    public void createCayenneRuntime_NoConfig() {
 		ServerRuntimeFactory factory = new ServerRuntimeFactory();
 		factory.setDatasource("ds1");
 

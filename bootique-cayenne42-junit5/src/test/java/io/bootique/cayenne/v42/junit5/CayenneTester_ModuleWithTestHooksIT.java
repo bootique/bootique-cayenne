@@ -38,7 +38,7 @@ public class CayenneTester_ModuleWithTestHooksIT {
 
     @Test
     @DisplayName("Tester should work with BQTestFactory-produced runtimes")
-    public void testWithBQTestFactory() {
+    public void withBQTestFactory() {
         CayenneTester tester = CayenneTester.create();
         BQRuntime runtime = testFactory.app().autoLoadModules().module(tester.moduleWithTestHooks()).createRuntime();
         ServerRuntime cayenneRuntime = runtime.getInstance(ServerRuntime.class);
@@ -47,7 +47,7 @@ public class CayenneTester_ModuleWithTestHooksIT {
 
     @Test
     @DisplayName("Reusing tester for multiple runtimes must be disallowed")
-    public void testDisallowMultipleRuntimes() {
+    public void disallowMultipleRuntimes() {
         CayenneTester tester = CayenneTester.create();
         testFactory.app().autoLoadModules().module(tester.moduleWithTestHooks()).createRuntime();
 

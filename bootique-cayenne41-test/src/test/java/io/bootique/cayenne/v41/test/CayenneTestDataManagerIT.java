@@ -48,7 +48,7 @@ public class CayenneTestDataManagerIT {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testNoSuchTable() {
+    public void noSuchTable() {
         dataManager.getTable(String.class);
     }
 
