@@ -38,7 +38,7 @@ public class CayenneTestModuleProvider implements BQModuleProvider {
     public BuiltModule buildModule() {
         return BuiltModule.of(new CayenneTestModule())
                 .provider(this)
-                .description("Integrates Apache Cayenne 4.1 unit test extensions")
+                .description("Deprecated and should be replaced with 'bootique-cayenne42-junit5'.")
                 .build();
     }
 
