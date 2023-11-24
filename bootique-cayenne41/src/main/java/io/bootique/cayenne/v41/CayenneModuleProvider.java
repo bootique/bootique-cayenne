@@ -19,35 +19,22 @@
 
 package io.bootique.cayenne.v41;
 
-import io.bootique.BQModuleMetadata;
 import io.bootique.BQModuleProvider;
-import io.bootique.di.BQModule;
+import io.bootique.bootstrap.BuiltModule;
 import io.bootique.jdbc.JdbcModuleProvider;
 
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 
 public class CayenneModuleProvider implements BQModuleProvider {
 
 	@Override
-	public BQModule module() {
-		return new CayenneModule();
-	}
-
-	@Override
-	public Map<String, Type> configs() {
-		// TODO: config prefix is hardcoded. Refactor away from ConfigModule, and make provider
-		// generate config prefix, reusing it in metadata...
-		return Collections.singletonMap("cayenne", ServerRuntimeFactory.class);
-	}
-
-	@Override
-	public BQModuleMetadata.Builder moduleBuilder() {
-		return BQModuleProvider.super
-				.moduleBuilder()
-				.description("Provides integration with Apache Cayenne.");
+	public BuiltModule buildModule() {
+		return BuiltModule.of(new CayenneModule())
+				.provider(this)
+				.description("Integrates Apache Cayenne ORM, v4.1")
+				.config("cayenne", ServerRuntimeFactory.class)
+				.build();
 	}
 
 	@Override

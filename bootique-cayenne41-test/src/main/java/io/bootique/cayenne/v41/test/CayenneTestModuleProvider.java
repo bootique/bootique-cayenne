@@ -20,8 +20,8 @@
 package io.bootique.cayenne.v41.test;
 
 import io.bootique.BQModuleProvider;
+import io.bootique.bootstrap.BuiltModule;
 import io.bootique.cayenne.v41.CayenneModuleProvider;
-import io.bootique.di.BQModule;
 import io.bootique.jdbc.test.JdbcTestModuleProvider;
 
 import java.util.Collection;
@@ -35,8 +35,11 @@ import static java.util.Arrays.asList;
 public class CayenneTestModuleProvider implements BQModuleProvider {
 
     @Override
-    public BQModule module() {
-        return new CayenneTestModule();
+    public BuiltModule buildModule() {
+        return BuiltModule.of(new CayenneTestModule())
+                .provider(this)
+                .description("Integrates Apache Cayenne 4.1 unit test extensions")
+                .build();
     }
 
     @Override

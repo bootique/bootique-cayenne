@@ -20,8 +20,8 @@
 package io.bootique.cayenne.v42.jcache;
 
 import io.bootique.BQModuleProvider;
+import io.bootique.bootstrap.BuiltModule;
 import io.bootique.cayenne.v42.CayenneModuleProvider;
-import io.bootique.di.BQModule;
 import io.bootique.jcache.JCacheModuleProvider;
 
 import java.util.Collection;
@@ -31,8 +31,11 @@ import static java.util.Arrays.asList;
 public class CayenneJCacheModuleProvider implements BQModuleProvider {
 
     @Override
-    public BQModule module() {
-        return new CayenneJCacheModule();
+    public BuiltModule buildModule() {
+        return BuiltModule.of(new CayenneJCacheModule())
+                .provider(this)
+                .description("Integrates Apache Cayenne 4.2 JCache extensions")
+                .build();
     }
 
     @Override
