@@ -27,8 +27,11 @@ import java.lang.annotation.Target;
 
 /**
  * A binding annotation used for objects that are Cayenne project configs.
+ *
+ * @deprecated the users are encouraged to switch to Cayenne 4.2
  */
-@Target({ ElementType.PARAMETER, ElementType.FIELD })
+@Deprecated(since = "3.0", forRemoval = true)
+@Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier
 public @interface CayenneConfigs {

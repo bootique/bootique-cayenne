@@ -26,10 +26,12 @@ import java.util.*;
 /**
  * A DataMap decorator that provides access to a subset of DbEntities from another DataMap without changing their
  * parent. Unfortunately it is not easy tio just copy some entities from one DataMap to another, as the entities'
- * parent will get reset. Hence using thsi decorator.
+ * parent will get reset. Hence, using this decorator.
  *
  * @since 2.0
+ * @deprecated the users are encouraged to switch to Cayenne 4.2
  */
+@Deprecated(since = "3.0", forRemoval = true)
 public class FilteredDataMap extends DataMap {
 
     // expected to be in the insert order

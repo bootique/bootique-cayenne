@@ -35,9 +35,9 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Manages a map of {@link Table} objects matching each Cayenne DbEntity.
  *
- * @deprecated since 3.0.M1, as we are we phasing out JUnit 4 support in favor of JUnit 5
+ * @deprecated phasing out JUnit 4 support in favor of JUnit 5, same for Cayenne 4.1 in favor of 4.2
  */
-@Deprecated
+@Deprecated(since = "3.0", forRemoval = true)
 public class CayenneTableManager {
 
     private DatabaseChannel channel;

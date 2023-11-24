@@ -23,6 +23,10 @@ import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
 import io.bootique.resource.ResourceFactory;
 
+/**
+ * @deprecated the users are encouraged to switch to Cayenne 4.2
+ */
+@Deprecated(since = "3.0", forRemoval = true)
 @BQConfig("Includes a DataMap in the runtime directly, bypassing declaration in 'cayenne-project.xml'.")
 public class DataMapConfig {
 

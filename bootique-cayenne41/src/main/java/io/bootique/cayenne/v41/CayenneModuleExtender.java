@@ -30,6 +30,10 @@ import org.apache.cayenne.DataChannelQueryFilter;
 import org.apache.cayenne.DataChannelSyncFilter;
 import org.apache.cayenne.di.Module;
 
+/**
+ * @deprecated the users are encouraged to switch to Cayenne 4.2
+ */
+@Deprecated(since = "3.0", forRemoval = true)
 public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender> {
 
     private SetBuilder<DataChannelFilter> filters;

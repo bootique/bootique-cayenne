@@ -29,8 +29,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * @since 2.0.B1
+ * @since 2.0
+ * @deprecated the users are encouraged to switch to Cayenne 4.2
  */
+@Deprecated(since = "3.0", forRemoval = true)
 public class QueryCounter implements DataChannelQueryFilter {
 
     private AtomicInteger count;

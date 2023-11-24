@@ -26,6 +26,10 @@ import io.bootique.jdbc.JdbcModuleProvider;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * @deprecated the users are encouraged to switch to Cayenne 4.2
+ */
+@Deprecated(since = "3.0", forRemoval = true)
 public class CayenneModuleProvider implements BQModuleProvider {
 
 	@Override

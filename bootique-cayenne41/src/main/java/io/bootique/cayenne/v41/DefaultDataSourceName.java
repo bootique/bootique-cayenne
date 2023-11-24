@@ -21,7 +21,10 @@ package io.bootique.cayenne.v41;
 
 /**
  * A holder of an optional DefaultDataSource name.
+ *
+ * @deprecated the users are encouraged to switch to Cayenne 4.2
  */
+@Deprecated(since = "3.0", forRemoval = true)
 public class DefaultDataSourceName {
 
     private String optionalName;

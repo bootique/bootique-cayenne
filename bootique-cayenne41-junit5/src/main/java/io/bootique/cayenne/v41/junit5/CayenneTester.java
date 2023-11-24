@@ -46,7 +46,9 @@ import java.util.function.Consumer;
  * declare a separate CayenneTester for each one of them.
  *
  * @since 2.0
+ * @deprecated the users are encouraged to switch to Cayenne 4.2
  */
+@Deprecated(since = "3.0", forRemoval = true)
 public class CayenneTester implements BQBeforeMethodCallback, BQAfterMethodCallback {
 
 

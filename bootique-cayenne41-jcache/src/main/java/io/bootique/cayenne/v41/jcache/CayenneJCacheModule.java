@@ -39,7 +39,10 @@ import java.util.Set;
 
 /**
  * Bootique DI module integrating bootique-jcache to Cayenne.
+ *
+ * @deprecated the users are encouraged to switch to Cayenne 4.2
  */
+@Deprecated(since = "3.0", forRemoval = true)
 public class CayenneJCacheModule implements BQModule {
 
     /**

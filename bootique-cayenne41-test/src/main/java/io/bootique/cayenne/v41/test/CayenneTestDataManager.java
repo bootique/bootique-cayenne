@@ -27,9 +27,9 @@ import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.exp.Property;
 
 /**
- * @deprecated since 3.0.M1, as we are we phasing out JUnit 4 support in favor of JUnit 5
+ * @deprecated phasing out JUnit 4 support in favor of JUnit 5, same for Cayenne 4.1 in favor of 4.2
  */
-@Deprecated
+@Deprecated(since = "3.0", forRemoval = true)
 public class CayenneTestDataManager extends TestDataManager {
 
     private CayenneTableManager tableManager;
@@ -39,7 +39,7 @@ public class CayenneTestDataManager extends TestDataManager {
     /**
      * @param deleteData          whether all managed tables should be deleted before each test.
      * @param tableManager        an object that maps Cayenne DbEntities to Tables.
-     * @param tablesInInsertOrder a subset of of all tables managed by this object.
+     * @param tablesInInsertOrder a subset of all tables managed by this object.
      * @since 1.1
      */
     protected CayenneTestDataManager(

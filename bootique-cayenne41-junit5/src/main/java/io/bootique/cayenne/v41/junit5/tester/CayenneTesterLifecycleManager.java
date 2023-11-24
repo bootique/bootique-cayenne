@@ -35,8 +35,10 @@ import java.util.function.Consumer;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
- * @since 3.0.M1
+ * @since 3.0
+ * @deprecated the users are encouraged to switch to Cayenne 4.2
  */
+@Deprecated(since = "3.0", forRemoval = true)
 public class CayenneTesterLifecycleManager implements BQRuntimeListener, CayenneStartupListener, BQBeforeMethodCallback, BQAfterMethodCallback {
 
     private final Map<Consumer<ServerRuntime>, CayenneTesterCallbackType> callbacks;

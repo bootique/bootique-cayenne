@@ -24,7 +24,10 @@ import java.util.Objects;
 
 /**
  * A simple merger that uses "last wins" strategy, returning the last collection passed to the method.
+ *
+ * @deprecated the users are encouraged to switch to Cayenne 4.2
  */
+@Deprecated(since = "3.0", forRemoval = true)
 public class CayenneConfigMerger {
 
     public Collection<String> merge(Collection<String> configs1, Collection<String> configs2) {

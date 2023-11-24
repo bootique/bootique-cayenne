@@ -1,3 +1,7 @@
+## 3.0-M3
+
+* #110 Deprecate Cayenne 4.1 integration modules
+
 ## 3.0.M2
 
 * #108 4.2 Extender methods for adding ValueObjectTypes and ExtendedTypes

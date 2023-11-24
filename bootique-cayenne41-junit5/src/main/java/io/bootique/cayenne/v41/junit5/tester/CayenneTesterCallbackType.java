@@ -18,6 +18,10 @@
  */
 package io.bootique.cayenne.v41.junit5.tester;
 
+/**
+ * @deprecated the users are encouraged to switch to Cayenne 4.2
+ */
+@Deprecated(since = "3.0", forRemoval = true)
 public enum CayenneTesterCallbackType {
 
     // run when Cayenne runtime is started

@@ -26,6 +26,10 @@ import org.apache.cayenne.configuration.server.DelegatingDataSourceFactory;
 import javax.sql.DataSource;
 import java.util.Collection;
 
+/**
+ * @deprecated the users are encouraged to switch to Cayenne 4.2
+ */
+@Deprecated(since = "3.0", forRemoval = true)
 public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
 
     private static final String PARAM_PREFIX = "bqds:";

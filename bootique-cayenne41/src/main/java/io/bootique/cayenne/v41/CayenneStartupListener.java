@@ -24,8 +24,10 @@ import org.apache.cayenne.configuration.server.ServerRuntime;
  * An injectable callback invoked after Cayenne stack is started. Used to run explicit actions, such as creating DB
  * schema, etc. All other Cayenne extensions, such as service overrides, etc., should be contributed as Modules.
  *
- * @since 3.0.M1
+ * @since 3.0
+ * @deprecated the users are encouraged to switch to Cayenne 4.2
  */
+@Deprecated(since = "3.0", forRemoval = true)
 @FunctionalInterface
 public interface CayenneStartupListener {
 
