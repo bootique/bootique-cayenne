@@ -15,11 +15,9 @@
 
 jdbc:
   ds1:
-    url: jdbc:derby:target/derby/CayenneModuleIT1;create=true
-    initialSize: 1
+    jdbcUrl: jdbc:derby:target/derby/CayenneModuleIT1;create=true
   ds2:
-    url: jdbc:derby:target/derby/CayenneModuleIT2;create=true
-    initialSize: 1
+    jdbcUrl: jdbc:derby:target/derby/CayenneModuleIT2;create=true
 
 # notice that cayenne-project.xml is also on classpath. It should not be loaded.
 cayenne:

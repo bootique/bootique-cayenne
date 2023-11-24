@@ -15,8 +15,7 @@
 
 jdbc:
   ds1:
-    url: jdbc:derby:target/derby/bqjdbc_config_explicit_maps1;create=true
-    initialSize: 1
+    jdbcUrl: jdbc:derby:target/derby/bqjdbc_config_explicit_maps1;create=true
 
 # module 1
 cayenne:

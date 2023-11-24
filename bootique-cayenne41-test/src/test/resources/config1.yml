@@ -15,8 +15,7 @@
 
 jdbc:
   ds:
-    url: jdbc:derby:target/derby/derby1;create=true
-    initialSize: 1
+    jdbcUrl: jdbc:derby:target/derby/derby1;create=true
 
 cayenne:
   datasource: ds

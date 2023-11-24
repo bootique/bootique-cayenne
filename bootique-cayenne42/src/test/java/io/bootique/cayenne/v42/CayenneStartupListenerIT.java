@@ -38,8 +38,8 @@ public class CayenneStartupListenerIT {
 
     private BQRuntime runtimeWithCallbacks(CayenneStartupListener... callbacks) {
 
-        BQModule callbacksModule = (binder) -> {
-            CayenneModuleExtender extender = CayenneModule.extend(binder);
+        BQModule callbacksModule = b -> {
+            CayenneModuleExtender extender = CayenneModule.extend(b);
             Arrays.asList(callbacks).forEach(extender::addStartupListener);
         };
 

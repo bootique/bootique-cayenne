@@ -22,8 +22,8 @@ package io.bootique.cayenne.v41.test;
 import io.bootique.BQRuntime;
 import io.bootique.cayenne.v41.CayenneModule;
 import io.bootique.jdbc.JdbcModule;
+import io.bootique.jdbc.hikaricp.JdbcHikariCPModuleProvider;
 import io.bootique.jdbc.test.JdbcTestModule;
-import io.bootique.jdbc.tomcat.JdbcTomcatModuleProvider;
 import io.bootique.test.junit.BQModuleProviderChecker;
 import io.bootique.test.junit.BQRuntimeChecker;
 import io.bootique.test.junit.BQTestFactory;
@@ -46,7 +46,7 @@ public class CayenneTestModuleProviderTest {
                 // add arguments and tomcat module,
                 // since DataSource required for CayenneTestModule
                 .app("-c", "classpath:config4.yml")
-                .moduleProvider(new JdbcTomcatModuleProvider())
+                .moduleProvider(new JdbcHikariCPModuleProvider())
                 .moduleProvider(new CayenneTestModuleProvider())
                 .createRuntime();
 

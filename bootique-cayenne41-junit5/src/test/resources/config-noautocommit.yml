@@ -15,11 +15,8 @@
 
 jdbc:
   ds:
-    url: jdbc:derby:target/derby/derby3;create=true
-    initialSize: 1
-    # Per #44 these settings previously resulted in a lost schema:
-    rollbackOnReturn: true
-    defaultAutoCommit: false
+    jdbcUrl: jdbc:derby:target/derby/derby3;create=true
+    autoCommit: false
 
 cayenne:
   datasource: ds

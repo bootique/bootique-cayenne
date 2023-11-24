@@ -15,8 +15,7 @@
 
 jdbc:
   ds:
-    url: jdbc:derby:target/derby/bqjdbc_defaultconfig;create=true
-    initialSize: 1
+    jdbcUrl: jdbc:derby:target/derby/bqjdbc_defaultconfig;create=true
 
 cayenne:
   createSchema: true
