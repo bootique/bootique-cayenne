@@ -69,7 +69,7 @@ public class CayenneJCacheModule implements BQModule, BQModuleProvider {
     @Deprecated(since = "3.0", forRemoval = true)
     public Collection<BQModuleProvider> dependencies() {
         return asList(
-                new JCacheModuleProvider(),
+                new JCacheModule(),
                 new CayenneModule()
         );
     }
