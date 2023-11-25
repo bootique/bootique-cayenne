@@ -34,7 +34,7 @@ import io.bootique.di.Binder;
 import io.bootique.di.Injector;
 import io.bootique.di.Provides;
 import io.bootique.jdbc.DataSourceFactory;
-import io.bootique.jdbc.JdbcModuleProvider;
+import io.bootique.jdbc.JdbcModule;
 import io.bootique.log.BootLogger;
 import io.bootique.shutdown.ShutdownManager;
 import org.apache.cayenne.DataChannelQueryFilter;
@@ -78,7 +78,7 @@ public class CayenneModule implements BQModule, BQModuleProvider {
     @Override
     @Deprecated(since = "3.0", forRemoval = true)
     public Collection<BQModuleProvider> dependencies() {
-        return Collections.singletonList(new JdbcModuleProvider());
+        return Collections.singletonList(new JdbcModule());
     }
 
     @Override
