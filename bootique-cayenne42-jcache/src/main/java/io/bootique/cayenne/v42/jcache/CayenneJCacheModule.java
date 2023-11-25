@@ -26,7 +26,7 @@ import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 import io.bootique.di.Key;
 import io.bootique.di.Provides;
-import io.bootique.jcache.JCacheModuleProvider;
+import io.bootique.jcache.JCacheModule;
 import org.apache.cayenne.cache.invalidation.CacheInvalidationModule;
 import org.apache.cayenne.cache.invalidation.CacheInvalidationModuleExtender;
 import org.apache.cayenne.cache.invalidation.InvalidationHandler;

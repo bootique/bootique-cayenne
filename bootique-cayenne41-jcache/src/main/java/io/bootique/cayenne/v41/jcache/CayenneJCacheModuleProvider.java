@@ -22,7 +22,7 @@ package io.bootique.cayenne.v41.jcache;
 import io.bootique.BQModuleProvider;
 import io.bootique.bootstrap.BuiltModule;
 import io.bootique.cayenne.v41.CayenneModuleProvider;
-import io.bootique.jcache.JCacheModuleProvider;
+import io.bootique.jcache.JCacheModule;
 
 import java.util.Collection;
 
