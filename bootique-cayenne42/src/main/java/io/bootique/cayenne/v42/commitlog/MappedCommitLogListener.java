@@ -21,7 +21,7 @@ package io.bootique.cayenne.v42.commitlog;
 import org.apache.cayenne.commitlog.CommitLogListener;
 
 /**
- * @since 3.0.M1
+ * @since 3.0
  */
 public class MappedCommitLogListener {
 

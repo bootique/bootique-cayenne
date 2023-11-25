@@ -71,7 +71,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     /**
-     * @since 3.0.M1
+     * @since 3.0
      */
     public CayenneModuleExtender addStartupListener(CayenneStartupListener listener) {
         contributeStartupListeners().addInstance(listener);
@@ -79,7 +79,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     /**
-     * @since 3.0.M1
+     * @since 3.0
      */
     public CayenneModuleExtender addStartupListener(Class<? extends CayenneStartupListener> listenerType) {
         contributeStartupListeners().add(listenerType);
@@ -96,7 +96,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     /**
-     * @since 3.0.M1
+     * @since 3.0
      */
     public CayenneModuleExtender addSyncFilter(DataChannelSyncFilter filter, boolean includeInTransaction) {
         contributeSyncFilters().addInstance(new MappedDataChannelSyncFilter(filter, includeInTransaction));
@@ -113,7 +113,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     /**
-     * @since 3.0.M1
+     * @since 3.0
      */
     public CayenneModuleExtender addSyncFilter(Class<? extends DataChannelSyncFilter> filterType, boolean includeInTransaction) {
         contributeSyncFilterTypes().addInstance(new MappedDataChannelSyncFilterType(filterType, includeInTransaction));
@@ -167,7 +167,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     /**
-     * @since 3.0.M1
+     * @since 3.0
      */
     public CayenneModuleExtender addCommitLogListener(CommitLogListener listener, boolean includeInTransaction) {
         contributeCommitLogListeners().addInstance(new MappedCommitLogListener(listener, includeInTransaction, null));
@@ -175,7 +175,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     /**
-     * @since 3.0.M1
+     * @since 3.0
      */
     public CayenneModuleExtender addCommitLogListener(CommitLogListener listener, boolean includeInTransaction, Class<? extends CommitLogListener> after) {
         contributeCommitLogListeners().addInstance(new MappedCommitLogListener(listener, includeInTransaction, after));
@@ -183,7 +183,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     /**
-     * @since 3.0.M1
+     * @since 3.0
      */
     public CayenneModuleExtender addCommitLogListener(Class<? extends CommitLogListener> listenerType, boolean includeInTransaction) {
         contributeCommitLogListenerTypes().addInstance(new MappedCommitLogListenerType(listenerType, includeInTransaction, null));
@@ -191,7 +191,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     /**
-     * @since 3.0.M1
+     * @since 3.0
      */
     public CayenneModuleExtender addCommitLogListener(Class<? extends CommitLogListener> listenerType, boolean includeInTransaction, Class<? extends CommitLogListener> after) {
         contributeCommitLogListenerTypes().addInstance(new MappedCommitLogListenerType(listenerType, includeInTransaction, after));

@@ -35,7 +35,7 @@ import java.util.function.Consumer;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
- * @since 3.0.M1
+ * @since 3.0
  */
 public class CayenneTesterLifecycleManager implements BQRuntimeListener, CayenneStartupListener, BQBeforeMethodCallback, BQAfterMethodCallback {
 

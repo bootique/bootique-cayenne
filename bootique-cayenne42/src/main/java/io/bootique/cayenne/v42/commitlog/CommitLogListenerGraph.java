@@ -25,7 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @since 3.0.M1
+ * @since 3.0
  */
 class CommitLogListenerGraph {
 

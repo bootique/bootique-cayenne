@@ -61,7 +61,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     /**
-     * @since 3.0.M1
+     * @since 3.0
      */
     public CayenneModuleExtender addStartupListener(CayenneStartupListener listener) {
         contributeStartupListeners().addInstance(listener);
@@ -69,7 +69,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     /**
-     * @since 3.0.M1
+     * @since 3.0
      */
     public CayenneModuleExtender addStartupListener(Class<? extends CayenneStartupListener> listenerType) {
         contributeStartupListeners().add(listenerType);

@@ -21,7 +21,7 @@ package io.bootique.cayenne.v42.syncfilter;
 import org.apache.cayenne.DataChannelSyncFilter;
 
 /**
- * @since 3.0.M1
+ * @since 3.0
  */
 public class MappedDataChannelSyncFilterType {
 

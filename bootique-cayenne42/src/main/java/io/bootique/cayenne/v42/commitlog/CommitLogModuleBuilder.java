@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * A helper to conditionally build extensions related to Cayenne CommitLog module.
  *
- * @since 3.0.M1
+ * @since 3.0
  */
 public class CommitLogModuleBuilder {
 

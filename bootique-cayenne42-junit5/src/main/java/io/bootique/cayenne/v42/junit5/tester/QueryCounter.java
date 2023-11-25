@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * @since 2.0.B1
+ * @since 2.0
  */
 public class QueryCounter implements DataChannelQueryFilter {
 

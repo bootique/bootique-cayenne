@@ -117,7 +117,7 @@ public class CayenneTester implements BQBeforeMethodCallback, BQAfterMethodCallb
     }
 
     /**
-     * @since 2.0.B1
+     * @since 2.0
      */
     public final CayenneTester allTables() {
         this.allTables = true;
@@ -240,7 +240,7 @@ public class CayenneTester implements BQBeforeMethodCallback, BQAfterMethodCallb
      * @param tableIndex   An index in a list of tables spanned by 'relationship'. Index of 0 corresponds to the target
      *                     DbEntity of the first object in a chain of DbRelationships for a given ObjRelationship.
      * @return a name of a table related to a given entity via the specified relationship.
-     * @since 2.0.B1
+     * @since 2.0
      */
     public String getRelatedTableName(Class<? extends Persistent> entity, Property<?> relationship, int tableIndex) {
         EntityResolver entityResolver = getRuntime().getDataDomain().getEntityResolver();
@@ -257,7 +257,7 @@ public class CayenneTester implements BQBeforeMethodCallback, BQAfterMethodCallb
     /**
      * Checks whether Cayenne performed the expected number of DB queries within a single test method.
      *
-     * @since 2.0.B1
+     * @since 2.0
      */
     public void assertQueryCount(int expected) {
         queryCounter.assertCount(expected);
