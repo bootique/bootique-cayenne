@@ -38,7 +38,7 @@ public class CayenneJCacheModuleProvider implements BQModuleProvider {
     public BuiltModule buildModule() {
         return BuiltModule.of(new CayenneJCacheModule())
                 .provider(this)
-                .description("Deprecated and should be replaced with 'bootique-cayenne42-jcache'.")
+                .description("Deprecated and can be replaced with 'bootique-cayenne42-jcache'.")
                 .build();
     }
 
