@@ -68,7 +68,7 @@ public class CayenneModule implements BQModule, BQModuleProvider {
 
     @Override
     public BuiltModule buildModule() {
-        return BuiltModule.of(new CayenneModule())
+        return BuiltModule.of(this)
                 .provider(this)
                 .description("Integrates Apache Cayenne ORM, v4.2")
                 .config(CONFIG_PREFIX, ServerRuntimeFactory.class)

@@ -59,7 +59,7 @@ public class CayenneJCacheModule implements BQModule, BQModuleProvider {
 
     @Override
     public BuiltModule buildModule() {
-        return BuiltModule.of(new CayenneJCacheModule())
+        return BuiltModule.of(this)
                 .provider(this)
                 .description("Integrates Apache Cayenne 4.2 JCache extensions")
                 .build();
