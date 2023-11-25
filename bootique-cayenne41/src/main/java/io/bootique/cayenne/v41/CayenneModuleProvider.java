@@ -36,7 +36,7 @@ public class CayenneModuleProvider implements BQModuleProvider {
 	public BuiltModule buildModule() {
 		return BuiltModule.of(new CayenneModule())
 				.provider(this)
-				.description("Deprecated and can be replaced with 'bootique-cayenne42'.")
+				.description("Deprecated, can be replaced with 'bootique-cayenne42'.")
 				.config("cayenne", ServerRuntimeFactory.class)
 				.build();
 	}
