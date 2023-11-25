@@ -19,11 +19,14 @@
 
 package io.bootique.cayenne.v42.jcache;
 
+import io.bootique.BQModuleProvider;
+import io.bootique.bootstrap.BuiltModule;
 import io.bootique.cayenne.v42.CayenneModule;
 import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 import io.bootique.di.Key;
 import io.bootique.di.Provides;
+import io.bootique.jcache.JCacheModuleProvider;
 import org.apache.cayenne.cache.invalidation.CacheInvalidationModule;
 import org.apache.cayenne.cache.invalidation.CacheInvalidationModuleExtender;
 import org.apache.cayenne.cache.invalidation.InvalidationHandler;
@@ -35,12 +38,15 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Collection;
 import java.util.Set;
+
+import static java.util.Arrays.asList;
 
 /**
  * Bootique DI module integrating bootique-jcache to Cayenne.
  */
-public class CayenneJCacheModule implements BQModule {
+public class CayenneJCacheModule implements BQModule, BQModuleProvider {
 
     /**
      * @param binder DI binder passed to the Module that invokes this method.
@@ -49,6 +55,23 @@ public class CayenneJCacheModule implements BQModule {
      */
     public static CayenneJCacheModuleExtender extend(Binder binder) {
         return new CayenneJCacheModuleExtender(binder);
+    }
+
+    @Override
+    public BuiltModule buildModule() {
+        return BuiltModule.of(new CayenneJCacheModule())
+                .provider(this)
+                .description("Integrates Apache Cayenne 4.2 JCache extensions")
+                .build();
+    }
+
+    @Override
+    @Deprecated(since = "3.0", forRemoval = true)
+    public Collection<BQModuleProvider> dependencies() {
+        return asList(
+                new JCacheModuleProvider(),
+                new CayenneModule()
+        );
     }
 
     @Override
@@ -84,5 +107,4 @@ public class CayenneJCacheModule implements BQModule {
     @Qualifier
     @interface DefinedInCayenneJCache {
     }
-
 }

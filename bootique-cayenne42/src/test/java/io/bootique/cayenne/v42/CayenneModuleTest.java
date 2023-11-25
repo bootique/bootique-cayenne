@@ -25,24 +25,24 @@ import io.bootique.junit5.*;
 import org.junit.jupiter.api.Test;
 
 @BQTest
-public class CayenneModuleProviderIT {
+public class CayenneModuleTest {
 
     @BQTestTool
     final BQTestFactory testFactory = new BQTestFactory();
 
     @Test
     public void autoLoadable() {
-        BQModuleProviderChecker.testAutoLoadable(CayenneModuleProvider.class);
+        BQModuleProviderChecker.testAutoLoadable(CayenneModule.class);
     }
 
     @Test
     public void metadata() {
-        BQModuleProviderChecker.testMetadata(CayenneModuleProvider.class);
+        BQModuleProviderChecker.testMetadata(CayenneModule.class);
     }
 
     @Test
     public void moduleDeclaresDependencies() {
-        BQRuntime bqRuntime = testFactory.app().moduleProvider(new CayenneModuleProvider()).createRuntime();
+        BQRuntime bqRuntime = testFactory.app().moduleProvider(new CayenneModule()).createRuntime();
         BQRuntimeChecker.testModulesLoaded(bqRuntime, JdbcModule.class);
     }
 }

@@ -19,31 +19,31 @@
 
 package io.bootique.cayenne.v42.jcache;
 
-import io.bootique.BQModuleProvider;
-import io.bootique.bootstrap.BuiltModule;
-import io.bootique.cayenne.v42.CayenneModuleProvider;
-import io.bootique.jcache.JCacheModuleProvider;
+import io.bootique.BQRuntime;
+import io.bootique.cayenne.v42.CayenneModule;
+import io.bootique.jcache.JCacheModule;
+import io.bootique.jdbc.JdbcModule;
+import io.bootique.junit5.*;
+import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
+@BQTest
+public class CayenneJCacheModuleTest {
 
-import static java.util.Arrays.asList;
+    @BQTestTool
+    final BQTestFactory testFactory = new BQTestFactory();
 
-public class CayenneJCacheModuleProvider implements BQModuleProvider {
-
-    @Override
-    public BuiltModule buildModule() {
-        return BuiltModule.of(new CayenneJCacheModule())
-                .provider(this)
-                .description("Integrates Apache Cayenne 4.2 JCache extensions")
-                .build();
+    @Test
+    public void autoLoadable() {
+        BQModuleProviderChecker.testAutoLoadable(CayenneJCacheModule.class);
     }
 
-    @Override
-    @Deprecated(since = "3.0", forRemoval = true)
-    public Collection<BQModuleProvider> dependencies() {
-        return asList(
-                new JCacheModuleProvider(),
-                new CayenneModuleProvider()
+    @Test
+    public void moduleDeclaresDependencies() {
+        BQRuntime bqRuntime = testFactory.app().moduleProvider(new CayenneJCacheModule()).createRuntime();
+        BQRuntimeChecker.testModulesLoaded(bqRuntime,
+                CayenneModule.class,
+                JdbcModule.class,
+                JCacheModule.class
         );
     }
 }

@@ -19,7 +19,8 @@
 
 package io.bootique.cayenne.v42;
 
-import io.bootique.ConfigModule;
+import io.bootique.BQModuleProvider;
+import io.bootique.bootstrap.BuiltModule;
 import io.bootique.cayenne.v42.annotation.CayenneConfigs;
 import io.bootique.cayenne.v42.annotation.CayenneListener;
 import io.bootique.cayenne.v42.commitlog.CommitLogModuleBuilder;
@@ -28,10 +29,12 @@ import io.bootique.cayenne.v42.commitlog.MappedCommitLogListenerType;
 import io.bootique.cayenne.v42.syncfilter.MappedDataChannelSyncFilter;
 import io.bootique.cayenne.v42.syncfilter.MappedDataChannelSyncFilterType;
 import io.bootique.config.ConfigurationFactory;
+import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 import io.bootique.di.Injector;
 import io.bootique.di.Provides;
 import io.bootique.jdbc.DataSourceFactory;
+import io.bootique.jdbc.JdbcModuleProvider;
 import io.bootique.log.BootLogger;
 import io.bootique.shutdown.ShutdownManager;
 import org.apache.cayenne.DataChannelQueryFilter;
@@ -46,15 +49,14 @@ import org.apache.cayenne.di.Module;
 import org.apache.cayenne.tx.TransactionFilter;
 
 import javax.inject.Singleton;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @since 2.0
  */
-public class CayenneModule extends ConfigModule {
+public class CayenneModule implements BQModule, BQModuleProvider {
+
+    private static final String CONFIG_PREFIX = "cayenne";
 
     /**
      * @param binder DI binder passed to the Module that invokes this method.
@@ -62,6 +64,21 @@ public class CayenneModule extends ConfigModule {
      */
     public static CayenneModuleExtender extend(Binder binder) {
         return new CayenneModuleExtender(binder);
+    }
+
+    @Override
+    public BuiltModule buildModule() {
+        return BuiltModule.of(new CayenneModule())
+                .provider(this)
+                .description("Integrates Apache Cayenne ORM, v4.2")
+                .config(CONFIG_PREFIX, ServerRuntimeFactory.class)
+                .build();
+    }
+
+    @Override
+    @Deprecated(since = "3.0", forRemoval = true)
+    public Collection<BQModuleProvider> dependencies() {
+        return Collections.singletonList(new JdbcModuleProvider());
     }
 
     @Override
@@ -78,7 +95,7 @@ public class CayenneModule extends ConfigModule {
     @Provides
     @Singleton
     ServerRuntimeFactory createServerRuntimeFactory(ConfigurationFactory configFactory) {
-        return config(ServerRuntimeFactory.class, configFactory);
+        return configFactory.config(ServerRuntimeFactory.class, CONFIG_PREFIX);
     }
 
     @Provides
