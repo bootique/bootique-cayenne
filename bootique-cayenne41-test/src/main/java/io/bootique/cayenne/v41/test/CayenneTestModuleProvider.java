@@ -20,7 +20,7 @@
 package io.bootique.cayenne.v41.test;
 
 import io.bootique.BQModuleProvider;
-import io.bootique.bootstrap.BuiltModule;
+import io.bootique.ModuleCrate;
 import io.bootique.cayenne.v41.CayenneModuleProvider;
 import io.bootique.jdbc.test.JdbcTestModuleProvider;
 
@@ -35,8 +35,8 @@ import static java.util.Arrays.asList;
 public class CayenneTestModuleProvider implements BQModuleProvider {
 
     @Override
-    public BuiltModule buildModule() {
-        return BuiltModule.of(new CayenneTestModule())
+    public ModuleCrate moduleCrate() {
+        return ModuleCrate.of(new CayenneTestModule())
                 .provider(this)
                 .description("Deprecated, can be replaced with 'bootique-cayenne42-junit5'.")
                 .build();

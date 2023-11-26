@@ -20,7 +20,7 @@
 package io.bootique.cayenne.v41.jcache;
 
 import io.bootique.BQModuleProvider;
-import io.bootique.bootstrap.BuiltModule;
+import io.bootique.ModuleCrate;
 import io.bootique.cayenne.v41.CayenneModuleProvider;
 import io.bootique.jcache.JCacheModule;
 
@@ -35,8 +35,8 @@ import static java.util.Arrays.asList;
 public class CayenneJCacheModuleProvider implements BQModuleProvider {
 
     @Override
-    public BuiltModule buildModule() {
-        return BuiltModule.of(new CayenneJCacheModule())
+    public ModuleCrate moduleCrate() {
+        return ModuleCrate.of(new CayenneJCacheModule())
                 .provider(this)
                 .description("Deprecated, can be replaced with 'bootique-cayenne42-jcache'.")
                 .build();

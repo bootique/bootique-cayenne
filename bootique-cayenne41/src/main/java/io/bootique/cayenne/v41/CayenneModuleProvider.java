@@ -20,7 +20,7 @@
 package io.bootique.cayenne.v41;
 
 import io.bootique.BQModuleProvider;
-import io.bootique.bootstrap.BuiltModule;
+import io.bootique.ModuleCrate;
 import io.bootique.jdbc.JdbcModule;
 
 import java.util.Collection;
@@ -33,8 +33,8 @@ import java.util.Collections;
 public class CayenneModuleProvider implements BQModuleProvider {
 
 	@Override
-	public BuiltModule buildModule() {
-		return BuiltModule.of(new CayenneModule())
+	public ModuleCrate moduleCrate() {
+		return ModuleCrate.of(new CayenneModule())
 				.provider(this)
 				.description("Deprecated, can be replaced with 'bootique-cayenne42'.")
 				.config("cayenne", ServerRuntimeFactory.class)

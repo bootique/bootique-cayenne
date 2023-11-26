@@ -20,7 +20,7 @@
 package io.bootique.cayenne.v42;
 
 import io.bootique.BQModuleProvider;
-import io.bootique.bootstrap.BuiltModule;
+import io.bootique.ModuleCrate;
 import io.bootique.cayenne.v42.annotation.CayenneConfigs;
 import io.bootique.cayenne.v42.annotation.CayenneListener;
 import io.bootique.cayenne.v42.commitlog.CommitLogModuleBuilder;
@@ -67,8 +67,8 @@ public class CayenneModule implements BQModule, BQModuleProvider {
     }
 
     @Override
-    public BuiltModule buildModule() {
-        return BuiltModule.of(this)
+    public ModuleCrate moduleCrate() {
+        return ModuleCrate.of(this)
                 .provider(this)
                 .description("Integrates Apache Cayenne ORM, v4.2")
                 .config(CONFIG_PREFIX, ServerRuntimeFactory.class)
