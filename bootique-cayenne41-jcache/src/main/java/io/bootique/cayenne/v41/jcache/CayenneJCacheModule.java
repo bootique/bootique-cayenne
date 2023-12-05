@@ -19,10 +19,11 @@
 
 package io.bootique.cayenne.v41.jcache;
 
+import io.bootique.ModuleCrate;
 import io.bootique.cayenne.v41.CayenneModule;
 import io.bootique.di.Binder;
 import io.bootique.di.Key;
-import io.bootique.di.BQModule;
+import io.bootique.BQModule;
 import io.bootique.di.Provides;
 import org.apache.cayenne.cache.invalidation.CacheInvalidationModule;
 import org.apache.cayenne.cache.invalidation.CacheInvalidationModuleExtender;
@@ -52,6 +53,13 @@ public class CayenneJCacheModule implements BQModule {
      */
     public static CayenneJCacheModuleExtender extend(Binder binder) {
         return new CayenneJCacheModuleExtender(binder);
+    }
+
+    @Override
+    public ModuleCrate crate() {
+        return ModuleCrate.of(this)
+                .description("Deprecated, can be replaced with 'bootique-cayenne42-jcache'.")
+                .build();
     }
 
     @Override

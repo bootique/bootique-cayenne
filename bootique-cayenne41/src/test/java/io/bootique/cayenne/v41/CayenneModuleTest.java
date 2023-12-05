@@ -19,31 +19,15 @@
 
 package io.bootique.cayenne.v41;
 
-import io.bootique.BQModuleProvider;
-import io.bootique.ModuleCrate;
-import io.bootique.jdbc.JdbcModule;
+import io.bootique.junit5.BQModuleTester;
+import io.bootique.junit5.BQTest;
+import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
-import java.util.Collections;
+@BQTest
+public class CayenneModuleTest {
 
-/**
- * @deprecated the users are encouraged to switch to Cayenne 4.2
- */
-@Deprecated(since = "3.0", forRemoval = true)
-public class CayenneModuleProvider implements BQModuleProvider {
-
-	@Override
-	public ModuleCrate moduleCrate() {
-		return ModuleCrate.of(new CayenneModule())
-				.provider(this)
-				.description("Deprecated, can be replaced with 'bootique-cayenne42'.")
-				.config("cayenne", ServerRuntimeFactory.class)
-				.build();
-	}
-
-	@Override
-	@Deprecated(since = "3.0", forRemoval = true)
-	public Collection<BQModuleProvider> dependencies() {
-		return Collections.singletonList(new JdbcModule());
-	}
+    @Test
+    public void check() {
+        BQModuleTester.of(CayenneModule.class).testAutoLoadable().testConfig();
+    }
 }

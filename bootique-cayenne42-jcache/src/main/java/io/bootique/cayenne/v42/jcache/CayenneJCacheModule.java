@@ -19,14 +19,12 @@
 
 package io.bootique.cayenne.v42.jcache;
 
-import io.bootique.BQModuleProvider;
+import io.bootique.BQModule;
 import io.bootique.ModuleCrate;
 import io.bootique.cayenne.v42.CayenneModule;
-import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 import io.bootique.di.Key;
 import io.bootique.di.Provides;
-import io.bootique.jcache.JCacheModule;
 import org.apache.cayenne.cache.invalidation.CacheInvalidationModule;
 import org.apache.cayenne.cache.invalidation.CacheInvalidationModuleExtender;
 import org.apache.cayenne.cache.invalidation.InvalidationHandler;
@@ -38,15 +36,12 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Collection;
 import java.util.Set;
-
-import static java.util.Arrays.asList;
 
 /**
  * Bootique DI module integrating bootique-jcache to Cayenne.
  */
-public class CayenneJCacheModule implements BQModule, BQModuleProvider {
+public class CayenneJCacheModule implements BQModule {
 
     /**
      * @param binder DI binder passed to the Module that invokes this method.
@@ -58,20 +53,10 @@ public class CayenneJCacheModule implements BQModule, BQModuleProvider {
     }
 
     @Override
-    public ModuleCrate moduleCrate() {
+    public ModuleCrate crate() {
         return ModuleCrate.of(this)
-                .provider(this)
                 .description("Integrates Apache Cayenne 4.2 JCache extensions")
                 .build();
-    }
-
-    @Override
-    @Deprecated(since = "3.0", forRemoval = true)
-    public Collection<BQModuleProvider> dependencies() {
-        return asList(
-                new JCacheModule(),
-                new CayenneModule()
-        );
     }
 
     @Override

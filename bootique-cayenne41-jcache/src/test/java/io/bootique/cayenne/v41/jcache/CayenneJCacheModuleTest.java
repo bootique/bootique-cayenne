@@ -19,31 +19,15 @@
 
 package io.bootique.cayenne.v41.jcache;
 
-import io.bootique.BQRuntime;
-import io.bootique.cayenne.v41.CayenneModule;
-import io.bootique.jcache.JCacheModule;
-import io.bootique.jdbc.JdbcModule;
-import io.bootique.junit5.*;
+import io.bootique.junit5.BQModuleTester;
+import io.bootique.junit5.BQTest;
 import org.junit.jupiter.api.Test;
 
 @BQTest
-public class CayenneJCacheModuleProviderTest {
-
-    @BQTestTool
-    public BQTestFactory testFactory = new BQTestFactory();
+public class CayenneJCacheModuleTest {
 
     @Test
-    public void autoLoadable() {
-        BQModuleProviderChecker.testAutoLoadable(CayenneJCacheModuleProvider.class);
-    }
-
-    @Test
-    public void moduleDeclaresDependencies() {
-        BQRuntime bqRuntime = testFactory.app().moduleProvider(new CayenneJCacheModuleProvider()).createRuntime();
-        BQRuntimeChecker.testModulesLoaded(bqRuntime,
-                CayenneModule.class,
-                JdbcModule.class,
-                JCacheModule.class
-        );
+    public void check() {
+        BQModuleTester.of(CayenneJCacheModule.class).testAutoLoadable().testConfig();
     }
 }

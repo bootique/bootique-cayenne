@@ -20,6 +20,7 @@
 package io.bootique.cayenne.v41;
 
 import io.bootique.ConfigModule;
+import io.bootique.ModuleCrate;
 import io.bootique.cayenne.v41.annotation.CayenneConfigs;
 import io.bootique.cayenne.v41.annotation.CayenneListener;
 import io.bootique.config.ConfigurationFactory;
@@ -54,6 +55,14 @@ public class CayenneModule extends ConfigModule {
      */
     public static CayenneModuleExtender extend(Binder binder) {
         return new CayenneModuleExtender(binder);
+    }
+
+    @Override
+    public ModuleCrate crate() {
+        return ModuleCrate.of(this)
+                .description("Deprecated, can be replaced with 'bootique-cayenne42'.")
+                .config("cayenne", ServerRuntimeFactory.class)
+                .build();
     }
 
     @Override

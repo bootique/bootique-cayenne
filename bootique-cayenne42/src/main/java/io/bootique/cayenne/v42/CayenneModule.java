@@ -19,7 +19,7 @@
 
 package io.bootique.cayenne.v42;
 
-import io.bootique.BQModuleProvider;
+import io.bootique.BQModule;
 import io.bootique.ModuleCrate;
 import io.bootique.cayenne.v42.annotation.CayenneConfigs;
 import io.bootique.cayenne.v42.annotation.CayenneListener;
@@ -29,12 +29,10 @@ import io.bootique.cayenne.v42.commitlog.MappedCommitLogListenerType;
 import io.bootique.cayenne.v42.syncfilter.MappedDataChannelSyncFilter;
 import io.bootique.cayenne.v42.syncfilter.MappedDataChannelSyncFilterType;
 import io.bootique.config.ConfigurationFactory;
-import io.bootique.di.BQModule;
 import io.bootique.di.Binder;
 import io.bootique.di.Injector;
 import io.bootique.di.Provides;
 import io.bootique.jdbc.DataSourceFactory;
-import io.bootique.jdbc.JdbcModule;
 import io.bootique.log.BootLogger;
 import io.bootique.shutdown.ShutdownManager;
 import org.apache.cayenne.DataChannelQueryFilter;
@@ -49,12 +47,15 @@ import org.apache.cayenne.di.Module;
 import org.apache.cayenne.tx.TransactionFilter;
 
 import javax.inject.Singleton;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @since 2.0
  */
-public class CayenneModule implements BQModule, BQModuleProvider {
+public class CayenneModule implements BQModule {
 
     private static final String CONFIG_PREFIX = "cayenne";
 
@@ -67,18 +68,11 @@ public class CayenneModule implements BQModule, BQModuleProvider {
     }
 
     @Override
-    public ModuleCrate moduleCrate() {
+    public ModuleCrate crate() {
         return ModuleCrate.of(this)
-                .provider(this)
                 .description("Integrates Apache Cayenne ORM, v4.2")
                 .config(CONFIG_PREFIX, ServerRuntimeFactory.class)
                 .build();
-    }
-
-    @Override
-    @Deprecated(since = "3.0", forRemoval = true)
-    public Collection<BQModuleProvider> dependencies() {
-        return Collections.singletonList(new JdbcModule());
     }
 
     @Override

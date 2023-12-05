@@ -19,7 +19,8 @@
 
 package io.bootique.cayenne.v41.test;
 
-import io.bootique.di.BQModule;
+import io.bootique.BQModule;
+import io.bootique.ModuleCrate;
 import io.bootique.di.Binder;
 import io.bootique.di.Provides;
 import io.bootique.jdbc.JdbcModule;
@@ -44,6 +45,13 @@ public class CayenneTestModule implements BQModule {
      */
     public static CayenneTestModuleExtender extend(Binder binder) {
         return new CayenneTestModuleExtender(binder);
+    }
+
+    @Override
+    public ModuleCrate crate() {
+        return ModuleCrate.of(this)
+                .description("Deprecated, can be replaced with 'bootique-cayenne42-junit5'.")
+                .build();
     }
 
     @Override
