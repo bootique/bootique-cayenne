@@ -21,7 +21,7 @@ package io.bootique.cayenne.v41.junit5;
 import io.bootique.BQCoreModule;
 import io.bootique.cayenne.v41.CayenneModule;
 import io.bootique.cayenne.v41.junit5.tester.*;
-import io.bootique.di.BQModule;
+import io.bootique.BQModule;
 import io.bootique.di.Binder;
 import io.bootique.junit5.BQTestScope;
 import io.bootique.junit5.scope.BQAfterMethodCallback;
