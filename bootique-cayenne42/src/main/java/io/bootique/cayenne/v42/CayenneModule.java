@@ -33,7 +33,6 @@ import io.bootique.di.Binder;
 import io.bootique.di.Injector;
 import io.bootique.di.Provides;
 import io.bootique.jdbc.DataSourceFactory;
-import io.bootique.log.BootLogger;
 import io.bootique.shutdown.ShutdownManager;
 import org.apache.cayenne.DataChannelQueryFilter;
 import org.apache.cayenne.DataChannelSyncFilter;
@@ -98,7 +97,6 @@ public class CayenneModule implements BQModule {
             Injector injector,
             ServerRuntimeFactory serverRuntimeFactory,
             DataSourceFactory dataSourceFactory,
-            BootLogger bootLogger,
             ShutdownManager shutdownManager,
             Set<Module> customModules,
             @CayenneListener Set<Object> listeners,
@@ -128,10 +126,7 @@ public class CayenneModule implements BQModule {
                 extras,
                 injectedCayenneConfigs);
 
-        shutdownManager.addShutdownHook(() -> {
-            bootLogger.trace(() -> "shutting down Cayenne...");
-            runtime.shutdown();
-        });
+        shutdownManager.onShutdown(runtime, ServerRuntime::shutdown);
 
         // TODO: listeners should be wrapped in a CayenneModule and added to Cayenne via DI, just like filters...
         if (!listeners.isEmpty()) {
@@ -148,7 +143,7 @@ public class CayenneModule implements BQModule {
             Collection<Module> modules,
             Set<ExtendedType> types) {
 
-        if(!types.isEmpty()) {
+        if (!types.isEmpty()) {
             modules.add(b -> {
                 ListBuilder<ExtendedType> listBinder = ServerModule.contributeUserTypes(b);
                 types.forEach(listBinder::add);
@@ -160,7 +155,7 @@ public class CayenneModule implements BQModule {
             Collection<Module> modules,
             Set<ValueObjectType> types) {
 
-        if(!types.isEmpty()) {
+        if (!types.isEmpty()) {
             modules.add(b -> {
                 ListBuilder<ValueObjectType> listBinder = ServerModule.contributeValueObjectTypes(b);
                 types.forEach(listBinder::add);
