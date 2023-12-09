@@ -19,7 +19,7 @@
 
 package io.bootique.cayenne.v41;
 
-import io.bootique.ConfigModule;
+import io.bootique.BQModule;
 import io.bootique.ModuleCrate;
 import io.bootique.cayenne.v41.annotation.CayenneConfigs;
 import io.bootique.cayenne.v41.annotation.CayenneListener;
@@ -46,7 +46,9 @@ import java.util.Set;
  * @deprecated the users are encouraged to switch to Cayenne 4.2
  */
 @Deprecated(since = "3.0", forRemoval = true)
-public class CayenneModule extends ConfigModule {
+public class CayenneModule implements BQModule {
+
+    private static final String CONFIG_PREFIX = "cayenne";
 
     /**
      * @param binder DI binder passed to the Module that invokes this method.
@@ -60,7 +62,7 @@ public class CayenneModule extends ConfigModule {
     public ModuleCrate crate() {
         return ModuleCrate.of(this)
                 .description("Deprecated, can be replaced with 'bootique-cayenne42'.")
-                .config("cayenne", ServerRuntimeFactory.class)
+                .config(CONFIG_PREFIX, ServerRuntimeFactory.class)
                 .build();
     }
 
@@ -78,7 +80,7 @@ public class CayenneModule extends ConfigModule {
     @Provides
     @Singleton
     ServerRuntimeFactory createServerRuntimeFactory(ConfigurationFactory configFactory) {
-        return config(ServerRuntimeFactory.class, configFactory);
+        return configFactory.config(ServerRuntimeFactory.class, CONFIG_PREFIX);
     }
 
     @Provides
