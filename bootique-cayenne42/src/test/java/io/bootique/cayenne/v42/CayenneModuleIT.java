@@ -43,9 +43,36 @@ public class CayenneModuleIT {
     final BQTestFactory testFactory = new BQTestFactory();
 
     @Test
-    public void fullConfig() {
+    public void noConfig() {
 
-        ServerRuntime runtime = testFactory.app("--config=classpath:fullconfig.yml")
+        ServerRuntime runtime = testFactory.app("-c", "classpath:noconfig.yml")
+                .autoLoadModules()
+                .createRuntime()
+                .getInstance(ServerRuntime.class);
+
+        DataDomain domain = runtime.getDataDomain();
+        assertEquals("cayenne", domain.getName());
+        assertEquals("cayenne", domain.getDefaultNode().getName());
+
+        assertTrue(domain.getEntityResolver().getDbEntities().isEmpty());
+    }
+
+    @Test
+    public void noConfig_Name() {
+
+        ServerRuntime runtime = testFactory.app("-c", "classpath:noconfig-named.yml")
+                .autoLoadModules()
+                .createRuntime()
+                .getInstance(ServerRuntime.class);
+
+        DataDomain domain = runtime.getDataDomain();
+        assertEquals("my", domain.getName());
+        assertEquals("my", domain.getDefaultNode().getName());
+    }
+
+    @Test
+    public void fullConfig() {
+        ServerRuntime runtime = testFactory.app("-c", "classpath:fullconfig.yml")
                 .autoLoadModules()
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
@@ -58,9 +85,24 @@ public class CayenneModuleIT {
     }
 
     @Test
+    public void twoConfigs() {
+        ServerRuntime runtime = testFactory.app("-c", "classpath:twoconfigs.yml")
+                .autoLoadModules()
+                .createRuntime()
+                .getInstance(ServerRuntime.class);
+
+        DataDomain domain = runtime.getDataDomain();
+        assertNotNull(domain.getEntityResolver().getDbEntity("db_entity"));
+        assertNotNull(domain.getEntityResolver().getDbEntity("db_entity2"));
+
+        // trigger a DB op
+        SQLSelect.dataRowQuery("SELECT * FROM db_entity2").select(runtime.newContext());
+    }
+
+    @Test
     public void config_ExplicitMaps_SharedDataSource() {
 
-        ServerRuntime runtime = testFactory.app("--config=classpath:config_explicit_maps.yml")
+        ServerRuntime runtime = testFactory.app("-c", "classpath:config_explicit_maps.yml")
                 .autoLoadModules()
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
@@ -77,7 +119,7 @@ public class CayenneModuleIT {
     @Test
     public void config_ExplicitMaps_DifferentDataSources() {
 
-        ServerRuntime runtime = testFactory.app("--config=classpath:config_explicit_maps_2.yml")
+        ServerRuntime runtime = testFactory.app("-c", "classpath:config_explicit_maps_2.yml")
                 .autoLoadModules()
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
@@ -94,7 +136,7 @@ public class CayenneModuleIT {
     @Test
     public void defaultDataSource() throws SQLException {
 
-        ServerRuntime runtime = testFactory.app("--config=classpath:noconfig.yml")
+        ServerRuntime runtime = testFactory.app("-c", "classpath:noconfig.yml")
                 .autoLoadModules()
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
@@ -111,7 +153,7 @@ public class CayenneModuleIT {
     @Test
     public void undefinedDataSource() {
 
-        ServerRuntime runtime = testFactory.app("--config=classpath:noconfig_2ds.yml")
+        ServerRuntime runtime = testFactory.app("-c", "classpath:noconfig_2ds.yml")
                 .autoLoadModules()
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
@@ -127,7 +169,7 @@ public class CayenneModuleIT {
     @Test
     public void unmatchedDataSource() {
 
-        ServerRuntime runtime = testFactory.app("--config=classpath:noconfig_2ds_unmatched.yml")
+        ServerRuntime runtime = testFactory.app("-c", "classpath:noconfig_2ds_unmatched.yml")
                 .autoLoadModules()
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
@@ -142,18 +184,6 @@ public class CayenneModuleIT {
     }
 
     @Test
-    public void noConfig() {
-
-        ServerRuntime runtime = testFactory.app("--config=classpath:noconfig.yml")
-                .autoLoadModules()
-                .createRuntime()
-                .getInstance(ServerRuntime.class);
-
-        DataDomain domain = runtime.getDataDomain();
-        assertTrue(domain.getEntityResolver().getDbEntities().isEmpty());
-    }
-
-    @Test
     public void contributeModules() {
 
         Key<Object> key = Key.get(Object.class, "_test_");
@@ -164,7 +194,7 @@ public class CayenneModuleIT {
             CayenneModule.extend(b).addModule(cayenneModule);
         };
 
-        ServerRuntime runtime = testFactory.app("--config=classpath:fullconfig.yml")
+        ServerRuntime runtime = testFactory.app("-c", "classpath:fullconfig.yml")
                 .autoLoadModules()
                 .module(bqModule)
                 .createRuntime()
@@ -178,7 +208,7 @@ public class CayenneModuleIT {
 
         BQModule cayenneProjectModule = binder -> CayenneModule.extend(binder).addProject("cayenne-project2.xml");
 
-        ServerRuntime runtime = testFactory.app("--config=classpath:noconfig.yml")
+        ServerRuntime runtime = testFactory.app("-c", "classpath:noconfig.yml")
                 .autoLoadModules()
                 .module(cayenneProjectModule)
                 .createRuntime()
@@ -220,8 +250,9 @@ public class CayenneModuleIT {
     @Test
     public void config_ExplicitMaps_DifferentConfig() {
 
-        ServerRuntime runtime = testFactory.app("--config=classpath:config_explicit_maps_2_1.yml"
-                        , "--config=classpath:config_explicit_maps_2_2.yml")
+        ServerRuntime runtime = testFactory.app(
+                        "-c", "classpath:config_explicit_maps_2_1.yml",
+                        "-c", "classpath:config_explicit_maps_2_2.yml")
                 .autoLoadModules()
                 .createRuntime()
                 .getInstance(ServerRuntime.class);

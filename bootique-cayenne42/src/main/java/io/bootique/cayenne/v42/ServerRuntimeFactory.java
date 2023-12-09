@@ -21,15 +21,32 @@ package io.bootique.cayenne.v42;
 
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
+import io.bootique.cayenne.v42.annotation.CayenneConfigs;
+import io.bootique.cayenne.v42.annotation.CayenneListener;
+import io.bootique.cayenne.v42.commitlog.CommitLogModuleBuilder;
+import io.bootique.cayenne.v42.commitlog.MappedCommitLogListener;
+import io.bootique.cayenne.v42.commitlog.MappedCommitLogListenerType;
+import io.bootique.cayenne.v42.syncfilter.MappedDataChannelSyncFilter;
+import io.bootique.cayenne.v42.syncfilter.MappedDataChannelSyncFilterType;
+import io.bootique.di.Injector;
 import io.bootique.jdbc.DataSourceFactory;
+import io.bootique.shutdown.ShutdownManager;
+import org.apache.cayenne.DataChannelQueryFilter;
+import org.apache.cayenne.DataChannelSyncFilter;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.access.dbsync.CreateIfNoSchemaStrategy;
 import org.apache.cayenne.access.dbsync.SchemaUpdateStrategyFactory;
+import org.apache.cayenne.access.types.ExtendedType;
+import org.apache.cayenne.access.types.ValueObjectType;
+import org.apache.cayenne.configuration.server.ServerModule;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
 import org.apache.cayenne.di.Key;
+import org.apache.cayenne.di.ListBuilder;
 import org.apache.cayenne.di.Module;
+import org.apache.cayenne.tx.TransactionFilter;
 
+import javax.inject.Inject;
 import java.util.*;
 
 @BQConfig("Configures Cayenne stack, providing injectable ServerRuntime.")
@@ -37,101 +54,62 @@ public class ServerRuntimeFactory {
 
     private static final String DEFAULT_CONFIG = "cayenne-project.xml";
 
+    private final Injector injector;
+    private final ShutdownManager shutdownManager;
+    private final DataSourceFactory dataSourceFactory;
+    private final CayenneConfigMerger configMerger;
+    private final Set<String> injectedCayenneConfigs;
+    private final Set<Module> customModules;
+    private final Set<Object> listeners;
+    private final Set<DataChannelQueryFilter> queryFilters;
+    private final Set<MappedDataChannelSyncFilter> syncFilters;
+    private final Set<MappedDataChannelSyncFilterType> syncFilterTypes;
+    private final Set<CayenneStartupListener> startupCallbacks;
+    private final Set<MappedCommitLogListener> commitLogListeners;
+    private final Set<MappedCommitLogListenerType> commitLogListenerTypes;
+    private final Set<ExtendedType> extendedTypes;
+    private final Set<ValueObjectType> valueObjectTypes;
+
     private String name;
     private Collection<String> configs;
     private Map<String, DataMapConfig> maps;
     private String datasource;
     private boolean createSchema;
 
-    public ServerRuntimeFactory() {
-        this.configs = new ArrayList<>();
-        this.maps = new HashMap<>();
-    }
-
-    public ServerRuntime createCayenneRuntime(
+    @Inject
+    public ServerRuntimeFactory(
+            Injector injector,
+            ShutdownManager shutdownManager,
             DataSourceFactory dataSourceFactory,
             CayenneConfigMerger configMerger,
-            Collection<Module> extraModules,
-            Collection<String> extraConfigs) {
+            @CayenneConfigs Set<String> injectedCayenneConfigs,
+            Set<Module> customModules,
+            @CayenneListener Set<Object> listeners,
+            Set<DataChannelQueryFilter> queryFilters,
+            Set<MappedDataChannelSyncFilter> syncFilters,
+            Set<MappedDataChannelSyncFilterType> syncFilterTypes,
+            Set<CayenneStartupListener> startupCallbacks,
+            Set<MappedCommitLogListener> commitLogListeners,
+            Set<MappedCommitLogListenerType> commitLogListenerTypes,
+            Set<ExtendedType> extendedTypes,
+            Set<ValueObjectType> valueObjectTypes) {
 
-        Collection<String> factoryConfigs = configs();
+        this.injector = injector;
 
-        return cayenneBuilder(dataSourceFactory)
-                .addConfigs(configMerger.merge(factoryConfigs, extraConfigs))
-                .addModules(extraModules)
-                .build();
-    }
-
-    /**
-     * Creates and returns a preconfigured {@link ServerRuntimeBuilder} with Cayenne config, name, Java8 integration
-     * module and a DataSource. Override to add custom modules, extra projects, etc.
-     *
-     * @param dataSourceFactory injected Bootique {@link DataSourceFactory}
-     * @return a {@link ServerRuntimeBuilder} that can be extended in subclasses.
-     */
-    protected ServerRuntimeBuilder cayenneBuilder(DataSourceFactory dataSourceFactory) {
-        return ServerRuntime.builder(name).addModule(factoryModule(dataSourceFactory));
-    }
-
-    protected Module factoryModule(DataSourceFactory dataSourceFactory) {
-        return binder -> {
-            // provide schema creation hook
-            if (createSchema) {
-                binder.bind(SchemaUpdateStrategyFactory.class).toInstance(descriptor -> new CreateIfNoSchemaStrategy());
-            }
-
-            DefaultDataSourceName defaultDataSourceName = defaultDataSourceName(dataSourceFactory);
-            binder.bind(Key.get(DefaultDataSourceName.class)).toInstance(defaultDataSourceName);
-            binder.bindMap(DataMapConfig.class).putAll(maps);
-
-            // provide default DataNode
-            // TODO: copied from Cayenne, as the corresponding provider is not public or rather
-            // until https://issues.apache.org/jira/browse/CAY-2095 is implemented
-            binder.bind(DataDomain.class).toProvider(SyntheticNodeDataDomainProvider.class);
-
-            // Bootique DataSource hooks...
-            BQCayenneDataSourceFactory bqCayenneDSFactory = new BQCayenneDataSourceFactory(dataSourceFactory, datasource);
-            binder.bind(org.apache.cayenne.configuration.server.DataSourceFactory.class).toInstance(bqCayenneDSFactory);
-        };
-    }
-
-    Collection<String> configs() {
-
-        // order is important, so using ordered set...
-        Collection<String> configs = new LinkedHashSet<>();
-
-        if (this.configs != null) {
-            configs.addAll(this.configs);
-        }
-
-        return configs.isEmpty() ? defaultConfigs() : configs;
-    }
-
-    Collection<String> defaultConfigs() {
-
-        // #54: if "maps" are specified explicitly, default config should be ignored
-
-        if (maps != null && !maps.isEmpty()) {
-            return Collections.emptySet();
-        }
-
-        return getClass().getClassLoader().getResource(DEFAULT_CONFIG) != null
-                ? Collections.singleton(DEFAULT_CONFIG)
-                : Collections.emptySet();
-    }
-
-    DefaultDataSourceName defaultDataSourceName(DataSourceFactory dataSourceFactory) {
-
-        if (datasource != null) {
-            return new DefaultDataSourceName(datasource);
-        }
-
-        Collection<String> allNames = dataSourceFactory.allNames();
-        if (allNames.size() == 1) {
-            return new DefaultDataSourceName(allNames.iterator().next());
-        }
-
-        return new DefaultDataSourceName(null);
+        this.shutdownManager = shutdownManager;
+        this.dataSourceFactory = dataSourceFactory;
+        this.configMerger = configMerger;
+        this.injectedCayenneConfigs = injectedCayenneConfigs;
+        this.customModules = customModules;
+        this.listeners = listeners;
+        this.queryFilters = queryFilters;
+        this.syncFilters = syncFilters;
+        this.syncFilterTypes = syncFilterTypes;
+        this.startupCallbacks = startupCallbacks;
+        this.commitLogListeners = commitLogListeners;
+        this.commitLogListenerTypes = commitLogListenerTypes;
+        this.extendedTypes = extendedTypes;
+        this.valueObjectTypes = valueObjectTypes;
     }
 
     /**
@@ -186,5 +164,178 @@ public class ServerRuntimeFactory {
             "'false'. Automatic schema creation is often used in unit tests.")
     public void setCreateSchema(boolean createSchema) {
         this.createSchema = createSchema;
+    }
+
+    public ServerRuntime create() {
+
+        Collection<String> factoryConfigs = configs();
+
+        Collection<Module> extras = new ArrayList<>(customModules);
+
+        appendExtendedTypesModule(extras, extendedTypes);
+        appendValueObjectTypesModule(extras, valueObjectTypes);
+
+        appendQueryFiltersModule(extras, queryFilters);
+        appendSyncFiltersModule(extras, injector, syncFilters, syncFilterTypes);
+        appendCommitLogModules(extras, injector, commitLogListeners, commitLogListenerTypes);
+
+        ServerRuntime runtime = cayenneBuilder(dataSourceFactory)
+                .addConfigs(configMerger.merge(factoryConfigs, injectedCayenneConfigs))
+                .addModules(extras)
+                .build();
+
+        shutdownManager.onShutdown(runtime, ServerRuntime::shutdown);
+
+        // TODO: listeners should be wrapped in a CayenneModule and added to Cayenne via DI, just like filters...
+        if (!listeners.isEmpty()) {
+            DataDomain domain = runtime.getDataDomain();
+            listeners.forEach(domain::addListener);
+        }
+
+        startupCallbacks.forEach(c -> c.onRuntimeCreated(runtime));
+
+        return runtime;
+    }
+
+    /**
+     * Creates and returns a preconfigured {@link ServerRuntimeBuilder} with Cayenne config, name, Java8 integration
+     * module and a DataSource. Override to add custom modules, extra projects, etc.
+     *
+     * @param dataSourceFactory injected Bootique {@link DataSourceFactory}
+     * @return a {@link ServerRuntimeBuilder} that can be extended in subclasses.
+     */
+    protected ServerRuntimeBuilder cayenneBuilder(DataSourceFactory dataSourceFactory) {
+        return ServerRuntime.builder(name).addModule(factoryModule(dataSourceFactory));
+    }
+
+    protected Module factoryModule(DataSourceFactory dataSourceFactory) {
+        return binder -> {
+            // provide schema creation hook
+            if (createSchema) {
+                binder.bind(SchemaUpdateStrategyFactory.class).toInstance(descriptor -> new CreateIfNoSchemaStrategy());
+            }
+
+            DefaultDataSourceName defaultDataSourceName = defaultDataSourceName(dataSourceFactory);
+            binder.bind(Key.get(DefaultDataSourceName.class)).toInstance(defaultDataSourceName);
+            binder.bindMap(DataMapConfig.class).putAll(maps != null ? maps : Map.of());
+
+            // provide default DataNode
+            // TODO: copied from Cayenne, as the corresponding provider is not public or rather
+            // until https://issues.apache.org/jira/browse/CAY-2095 is implemented
+            binder.bind(DataDomain.class).toProvider(SyntheticNodeDataDomainProvider.class);
+
+            // Bootique DataSource hooks...
+            BQCayenneDataSourceFactory bqCayenneDSFactory = new BQCayenneDataSourceFactory(dataSourceFactory, datasource);
+            binder.bind(org.apache.cayenne.configuration.server.DataSourceFactory.class).toInstance(bqCayenneDSFactory);
+        };
+    }
+
+    Collection<String> configs() {
+
+        // order is important, so using ordered set...
+        Collection<String> configs = new LinkedHashSet<>();
+
+        if (this.configs != null) {
+            configs.addAll(this.configs);
+        }
+
+        return configs.isEmpty() ? defaultConfigs() : configs;
+    }
+
+    Collection<String> defaultConfigs() {
+
+        // #54: if "maps" are specified explicitly, default config should be ignored
+
+        if (maps != null && !maps.isEmpty()) {
+            return Collections.emptySet();
+        }
+
+        return getClass().getClassLoader().getResource(DEFAULT_CONFIG) != null
+                ? Collections.singleton(DEFAULT_CONFIG)
+                : Collections.emptySet();
+    }
+
+    DefaultDataSourceName defaultDataSourceName(DataSourceFactory dataSourceFactory) {
+
+        if (datasource != null) {
+            return new DefaultDataSourceName(datasource);
+        }
+
+        Collection<String> allNames = dataSourceFactory.allNames();
+        if (allNames.size() == 1) {
+            return new DefaultDataSourceName(allNames.iterator().next());
+        }
+
+        return new DefaultDataSourceName(null);
+    }
+
+    protected void appendExtendedTypesModule(Collection<Module> modules, Set<ExtendedType> types) {
+        if (!types.isEmpty()) {
+            modules.add(b -> {
+                ListBuilder<ExtendedType> listBinder = ServerModule.contributeUserTypes(b);
+                types.forEach(listBinder::add);
+            });
+        }
+    }
+
+    protected void appendValueObjectTypesModule(Collection<Module> modules, Set<ValueObjectType> types) {
+        if (!types.isEmpty()) {
+            modules.add(b -> {
+                ListBuilder<ValueObjectType> listBinder = ServerModule.contributeValueObjectTypes(b);
+                types.forEach(listBinder::add);
+            });
+        }
+    }
+
+    protected void appendQueryFiltersModule(Collection<Module> modules, Set<DataChannelQueryFilter> queryFilters) {
+        modules.add(b -> {
+            ListBuilder<DataChannelQueryFilter> listBinder = ServerModule.contributeDomainQueryFilters(b);
+            queryFilters.forEach(listBinder::add);
+        });
+    }
+
+    protected void appendSyncFiltersModule(
+            Collection<Module> modules,
+            Injector injector,
+            Set<MappedDataChannelSyncFilter> syncFilters,
+            Set<MappedDataChannelSyncFilterType> syncFilterTypes) {
+
+        if (syncFilters.isEmpty() && syncFilterTypes.isEmpty()) {
+            return;
+        }
+
+        List<MappedDataChannelSyncFilter> combined = new ArrayList<>(syncFilters.size() + syncFilterTypes.size());
+        combined.addAll(syncFilters);
+        syncFilterTypes.stream()
+                .map(t -> new MappedDataChannelSyncFilter(injector.getInstance(t.getFilterType()), t.isIncludeInTransaction()))
+                .forEach(combined::add);
+
+        modules.add(b -> {
+            ListBuilder<DataChannelSyncFilter> listBinder = ServerModule.contributeDomainSyncFilters(b);
+            combined.forEach(mf -> {
+                if (mf.isIncludeInTransaction()) {
+                    listBinder.insertBefore(mf.getFilter(), TransactionFilter.class);
+                } else {
+                    listBinder.addAfter(mf.getFilter(), TransactionFilter.class);
+                }
+            });
+        });
+    }
+
+    protected void appendCommitLogModules(
+            Collection<Module> modules,
+            Injector injector,
+            Set<MappedCommitLogListener> commitLogListeners,
+            Set<MappedCommitLogListenerType> commitLogListenerTypes) {
+
+        if (commitLogListeners.isEmpty() && commitLogListenerTypes.isEmpty()) {
+            return;
+        }
+
+        CommitLogModuleBuilder builder = new CommitLogModuleBuilder();
+        commitLogListeners.forEach(builder::add);
+        commitLogListenerTypes.forEach(t -> builder.add(t.resolve(injector)));
+
+        builder.appendModules(modules);
     }
 }

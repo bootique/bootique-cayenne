@@ -15,6 +15,9 @@
 
 jdbc:
   ds:
-    jdbcUrl: jdbc:derby:target/derby/bqjdbc_noconfig;create=true
+    jdbcUrl: jdbc:derby:target/derby/bqjdbc_fullconfig;create=true
 
-cayenne: {}
+cayenne:
+  configs:
+    - cayenne-project1.xml
+    - cayenne-project2.xml
