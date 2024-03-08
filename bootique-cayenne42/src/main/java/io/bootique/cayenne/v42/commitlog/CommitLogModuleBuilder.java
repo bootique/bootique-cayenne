@@ -18,16 +18,23 @@
  */
 package io.bootique.cayenne.v42.commitlog;
 
+import org.apache.cayenne.DataChannel;
 import org.apache.cayenne.commitlog.CommitLogFilter;
 import org.apache.cayenne.commitlog.CommitLogListener;
+import org.apache.cayenne.commitlog.meta.AnnotationCommitLogEntityFactory;
+import org.apache.cayenne.commitlog.meta.CommitLogEntityFactory;
 import org.apache.cayenne.commitlog.meta.IncludeAllCommitLogEntityFactory;
 import org.apache.cayenne.configuration.server.ServerModule;
+import org.apache.cayenne.di.DIRuntimeException;
+import org.apache.cayenne.di.Inject;
 import org.apache.cayenne.di.Module;
+import org.apache.cayenne.di.Provider;
 import org.apache.cayenne.tx.TransactionFilter;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A helper to conditionally build extensions related to Cayenne CommitLog module.
@@ -36,6 +43,7 @@ import java.util.List;
  */
 public class CommitLogModuleBuilder {
 
+    private boolean applyCommitLogAnnotation;
     private List<MappedCommitLogListener> preTx;
     private List<MappedCommitLogListener> postTx;
 
@@ -47,6 +55,10 @@ public class CommitLogModuleBuilder {
         if (postTx != null && !postTx.isEmpty()) {
             modules.add(postTxModule());
         }
+    }
+
+    public void applyCommitLogAnnotation() {
+        this.applyCommitLogAnnotation = true;
     }
 
     public void add(MappedCommitLogListener mappedListener) {
@@ -79,10 +91,11 @@ public class CommitLogModuleBuilder {
         // TODO:  Maybe this should go to Cayenne?
 
         return binder -> {
-            List<CommitLogListener> listeners = CommitLogListenerGraph.resolveAndSort(preTx);
-            CommitLogFilter filter = new CommitLogFilter(new IncludeAllCommitLogEntityFactory(), listeners);
-            ServerModule.contributeDomainSyncFilters(binder).insertBefore(filter, TransactionFilter.class);
+            binder.bind(PreTxCommitLogFilter.class).toProviderInstance(new PreTxCommitLogFilterProvider());
+            ServerModule
+                    .contributeDomainSyncFilters(binder).insertBefore(PreTxCommitLogFilter.class, TransactionFilter.class);
         };
+
     }
 
     private Module postTxModule() {
@@ -91,9 +104,63 @@ public class CommitLogModuleBuilder {
         // TODO:  Maybe this should go to Cayenne?
 
         return binder -> {
-            List<CommitLogListener> listeners = CommitLogListenerGraph.resolveAndSort(postTx);
-            CommitLogFilter filter = new CommitLogFilter(new IncludeAllCommitLogEntityFactory(), listeners);
-            ServerModule.contributeDomainSyncFilters(binder).addAfter(filter, TransactionFilter.class);
+            binder.bind(PostTxCommitLogFilter.class).toProviderInstance(new PostTxCommitLogFilterProvider());
+            ServerModule
+                    .contributeDomainSyncFilters(binder).addAfter(PostTxCommitLogFilter.class, TransactionFilter.class);
         };
+    }
+
+    private CommitLogEntityFactory createEntityFactory(Provider<DataChannel> dataChannelProvider) {
+        return applyCommitLogAnnotation
+                ? new AnnotationCommitLogEntityFactory(dataChannelProvider)
+                : new IncludeAllCommitLogEntityFactory();
+    }
+
+    // TODO: We need 4 classes to create what are essentially two instances of CommitLogFilter, because the filter
+    //  factory code needs access to both this Builder ivars and "Provider<DataChannel> dataChannelProvider" from the
+    //  Cayenne injection stack. So aside from moving this logic to Cayenne, Cayenne DI should do a better job bridging
+    //  between manually created and DI-created instances.
+
+    class PreTxCommitLogFilterProvider implements Provider<PreTxCommitLogFilter> {
+
+        @Inject
+        Provider<DataChannel> dataChannelProvider;
+
+        @Override
+        public PreTxCommitLogFilter get() throws DIRuntimeException {
+            Objects.requireNonNull(dataChannelProvider);
+
+            return new PreTxCommitLogFilter(
+                    createEntityFactory(dataChannelProvider),
+                    CommitLogListenerGraph.resolveAndSort(preTx));
+        }
+    }
+
+    class PostTxCommitLogFilterProvider implements Provider<PostTxCommitLogFilter> {
+
+        @Inject
+        Provider<DataChannel> dataChannelProvider;
+
+        @Override
+        public PostTxCommitLogFilter get() throws DIRuntimeException {
+            Objects.requireNonNull(dataChannelProvider);
+
+            return new PostTxCommitLogFilter(
+                    createEntityFactory(dataChannelProvider),
+                    CommitLogListenerGraph.resolveAndSort(postTx));
+        }
+    }
+
+    static class PreTxCommitLogFilter extends CommitLogFilter {
+
+        public PreTxCommitLogFilter(CommitLogEntityFactory entityFactory, List<CommitLogListener> listeners) {
+            super(entityFactory, listeners);
+        }
+    }
+
+    static class PostTxCommitLogFilter extends CommitLogFilter {
+        public PostTxCommitLogFilter(CommitLogEntityFactory entityFactory, List<CommitLogListener> listeners) {
+            super(entityFactory, listeners);
+        }
     }
 }

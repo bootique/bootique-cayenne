@@ -1,6 +1,7 @@
 ## 3.0-M3
 
 * #110 Deprecate Cayenne 4.1 integration modules
+* #111 Optionally recognize `@CommitLog` annotations
 
 ## 3.0.M2
 

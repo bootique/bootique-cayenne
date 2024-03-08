@@ -38,6 +38,8 @@ import org.apache.cayenne.di.Module;
 
 public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender> {
 
+    static final String COMMIT_LOG_ANNOTATION = CayenneModuleExtender.class.getPackageName() + ".commit_log_annotation";
+
     private SetBuilder<MappedDataChannelSyncFilter> syncFilters;
     private SetBuilder<MappedDataChannelSyncFilterType> syncFilterTypes;
     private SetBuilder<DataChannelQueryFilter> queryFilters;
@@ -195,6 +197,19 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
      */
     public CayenneModuleExtender addCommitLogListener(Class<? extends CommitLogListener> listenerType, boolean includeInTransaction, Class<? extends CommitLogListener> after) {
         contributeCommitLogListenerTypes().addInstance(new MappedCommitLogListenerType(listenerType, includeInTransaction, after));
+        return this;
+    }
+
+    /**
+     * Enables entity filtering and change event preprocessing for commit log events. If called, Cayenne will be
+     * configured to respect {@link org.apache.cayenne.commitlog.CommitLog} annotation on entities. This annotation
+     * allows to explicitly specify change tracking for a subset of entities, obfuscate confidential properties
+     * (such as passwords), etc.
+     *
+     * @since 3.0
+     */
+    public CayenneModuleExtender applyCommitLogAnnotation() {
+        binder.bind(Key.get(Boolean.class, COMMIT_LOG_ANNOTATION)).toInstance(Boolean.TRUE);
         return this;
     }
 

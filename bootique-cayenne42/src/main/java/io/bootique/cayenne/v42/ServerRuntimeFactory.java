@@ -336,6 +336,12 @@ public class ServerRuntimeFactory {
         commitLogListeners.forEach(builder::add);
         commitLogListenerTypes.forEach(t -> builder.add(t.resolve(injector)));
 
+        boolean applyCommitLogAnnotation = injector.hasProvider(
+                io.bootique.di.Key.get(Boolean.class, CayenneModuleExtender.COMMIT_LOG_ANNOTATION));
+        if (applyCommitLogAnnotation) {
+            builder.applyCommitLogAnnotation();
+        }
+
         builder.appendModules(modules);
     }
 }
