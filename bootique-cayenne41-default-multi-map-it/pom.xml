@@ -50,7 +50,6 @@
         <dependency>
             <groupId>io.bootique.cayenne</groupId>
             <artifactId>bootique-cayenne41</artifactId>
-            <scope>compile</scope>
         </dependency>
 
         <!-- Unit test dependencies -->

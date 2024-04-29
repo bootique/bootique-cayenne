@@ -48,12 +48,10 @@
         <dependency>
             <groupId>io.bootique.cayenne</groupId>
             <artifactId>bootique-cayenne42</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.bootique</groupId>
             <artifactId>bootique-junit5</artifactId>
-            <scope>compile</scope>
         </dependency>
 
         <!-- Unit test dependencies -->

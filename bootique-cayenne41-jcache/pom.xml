@@ -54,22 +54,18 @@
             <groupId>io.bootique.cayenne</groupId>
             <artifactId>bootique-cayenne41</artifactId>
             <version>${bootique.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.cayenne</groupId>
             <artifactId>cayenne-jcache</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.bootique.jcache</groupId>
             <artifactId>bootique-jcache</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.cayenne</groupId>
             <artifactId>cayenne-cache-invalidation</artifactId>
-            <scope>compile</scope>
         </dependency>
 
         <!-- Unit test dependencies -->

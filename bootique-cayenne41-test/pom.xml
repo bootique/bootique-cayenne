@@ -82,12 +82,10 @@
         <dependency>
             <groupId>io.bootique.cayenne</groupId>
             <artifactId>bootique-cayenne41</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.bootique.jdbc</groupId>
             <artifactId>bootique-jdbc-test</artifactId>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 

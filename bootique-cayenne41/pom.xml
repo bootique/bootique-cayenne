@@ -55,17 +55,14 @@
         <dependency>
             <groupId>io.bootique</groupId>
             <artifactId>bootique</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.bootique.jdbc</groupId>
             <artifactId>bootique-jdbc</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.cayenne</groupId>
             <artifactId>cayenne-server</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
