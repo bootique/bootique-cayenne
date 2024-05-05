@@ -39,6 +39,12 @@
                 <groupId>org.apache.cayenne</groupId>
                 <artifactId>cayenne-jcache</artifactId>
                 <version>${cayenne41.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.cache</groupId>
+                        <artifactId>cache-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.cayenne</groupId>

@@ -1,3 +1,7 @@
+## 3.0-M5
+
+* #112 Ensure Bootique-provided version of JCache is used
+
 ## 3.0-M3
 
 * #110 Deprecate Cayenne 4.1 integration modules
