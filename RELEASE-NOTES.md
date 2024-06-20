@@ -1,6 +1,7 @@
 ## 3.0-M5
 
 * #112 Ensure Bootique-provided version of JCache is used
+* #113 Upgrade Cayenne to 4.2.1
 
 ## 3.0-M3
 
