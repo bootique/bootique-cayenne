@@ -2,6 +2,7 @@
 
 * #112 Ensure Bootique-provided version of JCache is used
 * #113 Upgrade Cayenne to 4.2.1
+* #114 Support for Cayenne 5.0-M1
 
 ## 3.0-M3
 
