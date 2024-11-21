@@ -59,7 +59,7 @@
         <dependency>
             <groupId>io.bootique.cayenne</groupId>
             <artifactId>bootique-cayenne41</artifactId>
-            <version>${bootique.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.cayenne</groupId>
@@ -94,7 +94,7 @@
             <groupId>io.bootique.cayenne</groupId>
             <artifactId>bootique-cayenne41-junit5</artifactId>
             <scope>test</scope>
-            <version>${bootique.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.bootique.jdbc</groupId>
