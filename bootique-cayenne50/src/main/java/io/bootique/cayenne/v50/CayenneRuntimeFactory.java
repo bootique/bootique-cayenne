@@ -46,7 +46,7 @@ import org.apache.cayenne.runtime.CayenneRuntime;
 import org.apache.cayenne.runtime.CayenneRuntimeBuilder;
 import org.apache.cayenne.tx.TransactionFilter;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.*;
 
 @BQConfig("Configures Cayenne stack, providing injectable CayenneRuntime.")

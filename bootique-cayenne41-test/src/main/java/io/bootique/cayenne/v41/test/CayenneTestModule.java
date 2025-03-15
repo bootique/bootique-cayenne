@@ -27,8 +27,8 @@ import io.bootique.jdbc.JdbcModule;
 import io.bootique.jdbc.test.runtime.DatabaseChannelFactory;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.Set;
 
 /**

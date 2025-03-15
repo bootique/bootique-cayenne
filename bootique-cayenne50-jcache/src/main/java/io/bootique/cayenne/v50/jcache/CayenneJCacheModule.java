@@ -30,8 +30,8 @@ import org.apache.cayenne.cache.invalidation.CacheInvalidationModuleExtender;
 import org.apache.cayenne.cache.invalidation.InvalidationHandler;
 
 import javax.cache.CacheManager;
-import javax.inject.Qualifier;
-import javax.inject.Singleton;
+import jakarta.inject.Qualifier;
+import jakarta.inject.Singleton;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

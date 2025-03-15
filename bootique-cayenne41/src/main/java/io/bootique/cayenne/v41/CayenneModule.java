@@ -37,7 +37,7 @@ import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.di.ListBuilder;
 import org.apache.cayenne.di.Module;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;

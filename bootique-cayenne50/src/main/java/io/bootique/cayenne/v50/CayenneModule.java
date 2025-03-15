@@ -26,7 +26,7 @@ import io.bootique.di.Binder;
 import io.bootique.di.Provides;
 import org.apache.cayenne.runtime.CayenneRuntime;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 /**
  * @since 2.0
