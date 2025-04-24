@@ -207,7 +207,7 @@ public class CayenneTester implements BQBeforeMethodCallback, BQAfterMethodCallb
 
         CayenneModule.extend(binder)
                 .addStartupListener(lifecycleManager)
-                .addSyncFilter(commitCounter)
+                .addSyncFilter(commitCounter, false)
                 .addQueryFilter(queryCounter);
     }
 

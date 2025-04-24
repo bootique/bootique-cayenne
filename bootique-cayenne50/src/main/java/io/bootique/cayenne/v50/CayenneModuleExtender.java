@@ -89,29 +89,11 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     /**
-     * @since 1.1
-     * @deprecated in favor of {@link #addSyncFilter(DataChannelSyncFilter, boolean)}
-     */
-    @Deprecated(since = "3.0")
-    public CayenneModuleExtender addSyncFilter(DataChannelSyncFilter filter) {
-        return addSyncFilter(filter, false);
-    }
-
-    /**
      * @since 3.0
      */
     public CayenneModuleExtender addSyncFilter(DataChannelSyncFilter filter, boolean includeInTransaction) {
         contributeSyncFilters().addInstance(new MappedDataChannelSyncFilter(filter, includeInTransaction));
         return this;
-    }
-
-    /**
-     * @since 1.1
-     * @deprecated in favor of {@link #addSyncFilter(Class, boolean)}
-     */
-    @Deprecated(since = "3.0")
-    public CayenneModuleExtender addSyncFilter(Class<? extends DataChannelSyncFilter> filterType) {
-        return addSyncFilter(filterType, false);
     }
 
     /**
