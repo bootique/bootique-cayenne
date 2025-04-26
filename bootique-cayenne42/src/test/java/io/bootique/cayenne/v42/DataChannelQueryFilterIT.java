@@ -18,7 +18,7 @@
  */
 package io.bootique.cayenne.v42;
 
-import io.bootique.di.BQModule;
+import io.bootique.BQModule;
 import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
