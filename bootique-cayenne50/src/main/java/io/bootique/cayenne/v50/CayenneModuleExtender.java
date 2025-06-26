@@ -196,7 +196,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     /**
-     * @since 3.0.M2
+     * @since 3.0
      */
     public CayenneModuleExtender addExtendedType(ExtendedType<?> type) {
         contributeExtendedTypes().addInstance(type);
@@ -204,7 +204,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     /**
-     * @since 3.0.M2
+     * @since 3.0
      */
     public CayenneModuleExtender addExtendedType(Class<? extends ExtendedType<?>> type) {
         contributeExtendedTypes().add(type);
@@ -212,7 +212,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     /**
-     * @since 3.0.M2
+     * @since 3.0
      */
     public CayenneModuleExtender addValueObjectType(ValueObjectType<?, ?> type) {
         contributeValueObjectTypes().addInstance(type);
@@ -220,7 +220,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     /**
-     * @since 3.0.M2
+     * @since 3.0
      */
     public CayenneModuleExtender addValueObjectType(Class<? extends ValueObjectType<?, ?>> type) {
         contributeValueObjectTypes().add(type);
