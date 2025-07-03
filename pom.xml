@@ -23,7 +23,7 @@
     <parent>
         <groupId>io.bootique.modules.parent</groupId>
         <artifactId>bootique-modules-parent</artifactId>
-        <version>3.0.26</version>
+        <version>3.0.27</version>
     </parent>
 
     <groupId>io.bootique.cayenne</groupId>
@@ -121,15 +121,18 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <build>
         <plugins>
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <extensions>true</extensions>
                 <configuration>
-                    <!-- Deploy every module independently to be able to skip deployment for some of them -->
-                    <skipLocalStaging>true</skipLocalStaging>
+                    <publishingServerId>sonatype-central</publishingServerId>
+                    <excludeArtifacts>
+                        <excludeArtifact>bootique-cayenne41-default-it</excludeArtifact>
+                        <excludeArtifact>bootique-cayenne41-default-multi-map-it</excludeArtifact>
+                    </excludeArtifacts>
                 </configuration>
             </plugin>
         </plugins>
