@@ -47,7 +47,7 @@
     </modules>
 
     <properties>
-        <cayenne42.version>4.2.2</cayenne42.version>
+        <cayenne42.version>4.2.3</cayenne42.version>
         <cayenne50.version>5.0-M1</cayenne50.version>
         <ehcache.version>3.10.8</ehcache.version>
         <glassfish.jaxb3.version>4.0.5</glassfish.jaxb3.version>

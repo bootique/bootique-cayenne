@@ -1,6 +1,14 @@
+## 4.0-M2
+
+* #118 Upgrade Cayenne 4.2 to 4.2.3
+
 ## 4.0-M1
 
 * #116 Remove deprecated modules and APIs
+
+## 3.0-RC2
+
+* #118 Upgrade Cayenne 4.2 to 4.2.3
 
 ## 3.0-RC1
 
