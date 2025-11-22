@@ -1,3 +1,7 @@
+## 3.0-RC2
+
+* #118 Upgrade Cayenne 4.2 to 4.2.3
+
 ## 3.0-RC1
 
 * #115 Upgrade Cayenne 4.2 to 4.2.2
