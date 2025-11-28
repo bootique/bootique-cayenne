@@ -23,15 +23,17 @@ import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
 import org.apache.cayenne.DataChannelQueryFilter;
+import org.apache.cayenne.DataChannelQueryFilterChain;
+import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.QueryResponse;
 import org.apache.cayenne.query.ObjectSelect;
+import org.apache.cayenne.query.Query;
 import org.apache.cayenne.runtime.CayenneRuntime;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
 public class DataChannelQueryFilterIT {
@@ -56,8 +58,7 @@ public class DataChannelQueryFilterIT {
     @Test
     public void onQuery() {
 
-        DataChannelQueryFilter f = mock(DataChannelQueryFilter.class);
-        when(f.onQuery(any(), any(), any())).thenReturn(mock(QueryResponse.class));
+        TestFilter f = new TestFilter();
 
         CayenneRuntime runtime = runtimeWithFilters(f);
         try {
@@ -66,6 +67,16 @@ public class DataChannelQueryFilterIT {
             runtime.shutdown();
         }
 
-        verify(f).onQuery(any(), any(), any());
+        assertTrue(f.onQueryCalled);
+    }
+
+    static class TestFilter implements DataChannelQueryFilter {
+        boolean onQueryCalled;
+
+        @Override
+        public QueryResponse onQuery(ObjectContext objectContext, Query query, DataChannelQueryFilterChain dataChannelQueryFilterChain) {
+            onQueryCalled = true;
+            return dataChannelQueryFilterChain.onQuery(objectContext, query);
+        }
     }
 }

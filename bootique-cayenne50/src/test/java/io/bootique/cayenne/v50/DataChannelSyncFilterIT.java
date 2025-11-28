@@ -23,6 +23,7 @@ import io.bootique.junit5.BQTest;
 import io.bootique.junit5.BQTestFactory;
 import io.bootique.junit5.BQTestTool;
 import org.apache.cayenne.DataChannelSyncFilter;
+import org.apache.cayenne.DataChannelSyncFilterChain;
 import org.apache.cayenne.GenericPersistentObject;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.ObjectId;
@@ -32,9 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @BQTest
 public class DataChannelSyncFilterIT {
@@ -59,8 +58,7 @@ public class DataChannelSyncFilterIT {
     @Test
     public void onSync() {
 
-        DataChannelSyncFilter f = mock(DataChannelSyncFilter.class);
-        when(f.onSync(any(), any(), anyInt(), any())).thenReturn(mock(GraphDiff.class));
+        TestFilter f = new TestFilter();
 
         GenericPersistentObject o1 = new GenericPersistentObject();
         o1.setObjectId(ObjectId.of("T1"));
@@ -81,6 +79,16 @@ public class DataChannelSyncFilterIT {
             runtime.shutdown();
         }
 
-        verify(f).onSync(any(), any(), anyInt(), any());
+        assertTrue(f.onSyncCalled);
+    }
+
+    static class TestFilter implements DataChannelSyncFilter {
+        boolean onSyncCalled;
+
+        @Override
+        public GraphDiff onSync(ObjectContext objectContext, GraphDiff graphDiff, int i, DataChannelSyncFilterChain dataChannelSyncFilterChain) {
+            onSyncCalled = true;
+            return dataChannelSyncFilterChain.onSync(objectContext, graphDiff, i);
+        }
     }
 }
