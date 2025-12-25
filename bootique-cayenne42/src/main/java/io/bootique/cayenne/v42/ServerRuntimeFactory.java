@@ -181,26 +181,20 @@ public class ServerRuntimeFactory {
 
         ServerRuntimeBuilder builder = ServerRuntime.builder(name);
 
-        addFactoryModule(builder);
+        addBootiqueExtensions(builder);
         builder.addModules(customModules);
-        addExtendedTypesModule(builder);
-        addValueObjectTypesModule(builder);
-        addQueryFiltersModule(builder);
-        addSyncFiltersModule(builder);
-        addCommitLogModules(builder);
+        addExtendedTypes(builder);
+        addValueObjectTypes(builder);
+        addQueryFilters(builder);
+        addSyncFilters(builder);
+        addCommitLog(builder);
+        addListeners(builder);
 
         ServerRuntime runtime = builder
                 .addConfigs(configMerger.merge(factoryConfigs, injectedCayenneConfigs))
                 .build();
 
         shutdownManager.onShutdown(runtime, ServerRuntime::shutdown);
-
-        // TODO: listeners should be wrapped in a CayenneModule and added to Cayenne via DI, just like filters...
-        if (!listeners.isEmpty()) {
-            DataDomain domain = runtime.getDataDomain();
-            listeners.forEach(domain::addListener);
-        }
-
         startupCallbacks.forEach(c -> c.onRuntimeCreated(runtime));
 
         return runtime;
@@ -245,7 +239,7 @@ public class ServerRuntimeFactory {
         return new DefaultDataSourceName(null);
     }
 
-    void addFactoryModule(ServerRuntimeBuilder builder) {
+    void addBootiqueExtensions(ServerRuntimeBuilder builder) {
         DefaultDataSourceName defaultDataSourceName = defaultDataSourceName(dataSourceFactory);
 
         builder.addModule(b -> {
@@ -268,7 +262,7 @@ public class ServerRuntimeFactory {
         });
     }
 
-    void addExtendedTypesModule(ServerRuntimeBuilder builder) {
+    void addExtendedTypes(ServerRuntimeBuilder builder) {
         if (!extendedTypes.isEmpty()) {
             builder.addModule(b -> {
                 ListBuilder<ExtendedType> listBinder = ServerModule.contributeUserTypes(b);
@@ -277,7 +271,7 @@ public class ServerRuntimeFactory {
         }
     }
 
-    void addValueObjectTypesModule(ServerRuntimeBuilder builder) {
+    void addValueObjectTypes(ServerRuntimeBuilder builder) {
         if (!valueObjectTypes.isEmpty()) {
             builder.addModule(b -> {
                 ListBuilder<ValueObjectType> listBinder = ServerModule.contributeValueObjectTypes(b);
@@ -286,14 +280,14 @@ public class ServerRuntimeFactory {
         }
     }
 
-    void addQueryFiltersModule(ServerRuntimeBuilder builder) {
+    void addQueryFilters(ServerRuntimeBuilder builder) {
         builder.addModule(b -> {
             ListBuilder<DataChannelQueryFilter> listBinder = ServerModule.contributeDomainQueryFilters(b);
             queryFilters.forEach(listBinder::add);
         });
     }
 
-    void addSyncFiltersModule(ServerRuntimeBuilder builder) {
+    void addSyncFilters(ServerRuntimeBuilder builder) {
 
         if (syncFilters.isEmpty() && syncFilterTypes.isEmpty()) {
             return;
@@ -317,7 +311,7 @@ public class ServerRuntimeFactory {
         });
     }
 
-    void addCommitLogModules(ServerRuntimeBuilder builder) {
+    void addCommitLog(ServerRuntimeBuilder builder) {
 
         if (commitLogListeners.isEmpty() && commitLogListenerTypes.isEmpty()) {
             return;
@@ -334,5 +328,12 @@ public class ServerRuntimeFactory {
         }
 
         clmBuilder.addModules(builder);
+    }
+
+    void addListeners(ServerRuntimeBuilder builder) {
+        builder.addModule(b -> {
+            ListBuilder<Object> listBinder = ServerModule.contributeDomainListeners(b);
+            listeners.forEach(listBinder::add);
+        });
     }
 }
