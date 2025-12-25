@@ -25,6 +25,7 @@ import org.apache.cayenne.commitlog.meta.AnnotationCommitLogEntityFactory;
 import org.apache.cayenne.commitlog.meta.CommitLogEntityFactory;
 import org.apache.cayenne.commitlog.meta.IncludeAllCommitLogEntityFactory;
 import org.apache.cayenne.configuration.server.ServerModule;
+import org.apache.cayenne.configuration.server.ServerRuntimeBuilder;
 import org.apache.cayenne.di.DIRuntimeException;
 import org.apache.cayenne.di.Inject;
 import org.apache.cayenne.di.Module;
@@ -32,7 +33,6 @@ import org.apache.cayenne.di.Provider;
 import org.apache.cayenne.tx.TransactionFilter;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,13 +47,16 @@ public class CommitLogModuleBuilder {
     private List<MappedCommitLogListener> preTx;
     private List<MappedCommitLogListener> postTx;
 
-    public void appendModules(Collection<Module> modules) {
+    /**
+     * @since 4.0
+     */
+    public void addModules(ServerRuntimeBuilder builder) {
         if (preTx != null && !preTx.isEmpty()) {
-            modules.add(preTxModule());
+            builder.addModule(preTxModule());
         }
 
         if (postTx != null && !postTx.isEmpty()) {
-            modules.add(postTxModule());
+            builder.addModule(postTxModule());
         }
     }
 
