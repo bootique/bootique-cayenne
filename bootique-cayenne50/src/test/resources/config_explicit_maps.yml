@@ -20,11 +20,8 @@ jdbc:
 cayenne:
   datasource: ds
   createSchema: true
-  maps:
-    m1:
-      location: classpath:datamap1.map.xml
-      name: map1
-      datasource: ds
-    m2:
-      location: classpath:datamap2.map.xml
-      name: map2
+  locations:
+    - classpath:cayenne-project1.xml
+    - classpath:cayenne-project2.xml
+  mapDatasources:
+    datamap1: ds

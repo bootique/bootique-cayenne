@@ -20,6 +20,7 @@
 package io.bootique.cayenne.v42.annotation;
 
 import jakarta.inject.Qualifier;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -27,10 +28,13 @@ import java.lang.annotation.Target;
 
 /**
  * A binding annotation used for objects that are Cayenne project configs.
+ *
+ * @deprecated no longer in use by the framework
  */
-@Target({ ElementType.PARAMETER, ElementType.FIELD })
+@Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier
+@Deprecated(since = "4.0", forRemoval = true)
 public @interface CayenneConfigs {
 
 }

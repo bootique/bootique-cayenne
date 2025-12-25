@@ -1,6 +1,7 @@
 ## 4.0-M2
 
 * #118 Upgrade Cayenne 4.2 to 4.2.3
+* #119 Simpler, consistent project configuration
 
 ## 4.0-M1
 

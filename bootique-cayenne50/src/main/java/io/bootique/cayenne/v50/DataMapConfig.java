@@ -23,6 +23,10 @@ import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
 import io.bootique.resource.ResourceFactory;
 
+/**
+ * @deprecated Replaced with a new config model starting at "cayenne.projects"
+ */
+@Deprecated(since = "4.0", forRemoval = true)
 @BQConfig("Includes a DataMap in the runtime directly, bypassing declaration in 'cayenne-project.xml'.")
 public class DataMapConfig {
 

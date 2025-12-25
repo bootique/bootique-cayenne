@@ -16,21 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package io.bootique.cayenne.v42;
 
+import io.bootique.resource.ResourceFactory;
+import org.apache.cayenne.resource.Resource;
+import org.apache.cayenne.resource.ResourceLocator;
+import org.apache.cayenne.resource.URLResource;
+
 import java.util.Collection;
-import java.util.Objects;
 
 /**
- * A simple merger that uses "last wins" strategy, returning the last collection passed to the method.
- *
- * @deprecated unused
+ * @since 4.0
  */
-@Deprecated(since = "4.0", forRemoval = true)
-public class CayenneConfigMerger {
+public class BQResourceLocator implements ResourceLocator {
 
-    public Collection<String> merge(Collection<String> configs1, Collection<String> configs2) {
-        return configs2 == null || configs2.isEmpty() ? Objects.requireNonNull(configs1) : configs2;
+    @Override
+    public Collection<Resource> findResources(String name) {
+        return new ResourceFactory(name).getUrls().stream().map(u -> (Resource) new URLResource(u)).toList();
     }
 }

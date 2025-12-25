@@ -19,8 +19,8 @@
 
 package io.bootique.cayenne.v42;
 
+import io.bootique.BQCoreModule;
 import io.bootique.ModuleExtender;
-import io.bootique.cayenne.v42.annotation.CayenneConfigs;
 import io.bootique.cayenne.v42.annotation.CayenneListener;
 import io.bootique.cayenne.v42.commitlog.MappedCommitLogListener;
 import io.bootique.cayenne.v42.commitlog.MappedCommitLogListenerType;
@@ -35,8 +35,12 @@ import org.apache.cayenne.access.types.ExtendedType;
 import org.apache.cayenne.access.types.ValueObjectType;
 import org.apache.cayenne.commitlog.CommitLogListener;
 import org.apache.cayenne.di.Module;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CayenneModuleExtender.class);
 
     static final String COMMIT_LOG_ANNOTATION = CayenneModuleExtender.class.getPackageName() + ".commit_log_annotation";
 
@@ -44,7 +48,6 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     private SetBuilder<MappedDataChannelSyncFilterType> syncFilterTypes;
     private SetBuilder<DataChannelQueryFilter> queryFilters;
     private SetBuilder<Object> listeners;
-    private SetBuilder<String> projects;
     private SetBuilder<Module> modules;
     private SetBuilder<CayenneStartupListener> startupListeners;
     private SetBuilder<MappedCommitLogListener> commitLogListeners;
@@ -63,7 +66,6 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
         contributeSyncFilters();
         contributeSyncFilterTypes();
         contributeModules();
-        contributeProjects();
         contributeStartupListeners();
         contributeCommitLogListeners();
         contributeCommitLogListenerTypes();
@@ -130,8 +132,27 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
         return this;
     }
 
+    /**
+     * @deprecated in favor of adding projects in configuration or {@link #addLocation(String)} with "classpath:"
+     * prefix.
+     */
+    @Deprecated(since = "4.0", forRemoval = true)
     public CayenneModuleExtender addProject(String projectConfig) {
-        contributeProjects().addInstance(projectConfig);
+        String cpPrefix = "classpath:";
+        String uri = projectConfig.startsWith(cpPrefix) ? projectConfig : cpPrefix + projectConfig;
+
+        LOGGER.warn("""
+                ** Adding a project via deprecated API. Use addLocation("{}") instead""", uri);
+        return addLocation(uri);
+    }
+
+    /**
+     * Adds Cayenne project location, using the Bootique resource format.
+     *
+     * @since 4.0
+     */
+    public CayenneModuleExtender addLocation(String projectLocation) {
+        BQCoreModule.extend(binder).setProperty("bq.cayenne.locations[.length]", projectLocation);
         return this;
     }
 
@@ -241,10 +262,6 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
 
     protected SetBuilder<Object> contributeListeners() {
         return listeners != null ? listeners : (listeners = newSet(Object.class, CayenneListener.class));
-    }
-
-    protected SetBuilder<String> contributeProjects() {
-        return projects != null ? projects : (projects = newSet(String.class, CayenneConfigs.class));
     }
 
     protected SetBuilder<Module> contributeModules() {

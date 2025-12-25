@@ -21,7 +21,10 @@ package io.bootique.cayenne.v50;
 
 /**
  * A holder of an optional DefaultDataSource name.
+ *
+ * @deprecated unused
  */
+@Deprecated(since = "4.0", forRemoval = true)
 public class DefaultDataSourceName {
 
     private String optionalName;

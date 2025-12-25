@@ -58,6 +58,7 @@ public class CayenneModule implements BQModule {
 
     @Provides
     @Singleton
+    @Deprecated(since = "4.0", forRemoval = true)
     CayenneConfigMerger provideConfigMerger() {
         return new CayenneConfigMerger();
     }

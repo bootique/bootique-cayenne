@@ -20,173 +20,119 @@
 package io.bootique.cayenne.v42;
 
 import org.apache.cayenne.configuration.DataChannelDescriptor;
-import org.apache.cayenne.configuration.DataMapLoader;
 import org.apache.cayenne.configuration.DataNodeDescriptor;
 import org.apache.cayenne.configuration.server.DataDomainProvider;
-import org.apache.cayenne.di.Inject;
-import org.apache.cayenne.di.Provider;
 import org.apache.cayenne.map.DataMap;
-import org.apache.cayenne.resource.Resource;
-import org.apache.cayenne.resource.URLResource;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
 
-    static final String DEFAULT_NAME = "cayenne";
+    private final String defaultDatasourceName;
+    private final Map<String, String> mapsToDatasources;
 
-    @Inject
-    protected Provider<DataMapLoader> xmlDataMapLoaderProvider;
-
-    @Inject
-    private Map<String, DataMapConfig> dataMapConfigs;
-
-    @Inject
-    private DefaultDataSourceName defaultDatasource;
+    public SyntheticNodeDataDomainProvider(String defaultDatasourceName, Map<String, String> mapsToDatasources) {
+        this.defaultDatasourceName = defaultDatasourceName;
+        this.mapsToDatasources = mapsToDatasources;
+    }
 
     @Override
     protected DataChannelDescriptor loadDescriptor() {
-        DataChannelDescriptor d1 = super.loadDescriptor();
-        DataChannelDescriptor d2 = mergeExplicitMaps(d1);
-        DataChannelDescriptor d3 = resolveMissingDataNodes(d2);
-        return d3;
+        DataChannelDescriptor d = super.loadDescriptor();
+        return updateDataNodes(d);
     }
 
-    private DataChannelDescriptor mergeExplicitMaps(DataChannelDescriptor mainDescriptor) {
-        return dataMapConfigs.isEmpty()
-                ? mainDescriptor
-                : descriptorMerger.merge(mainDescriptor, loadExplicitMaps(mainDescriptor));
-    }
-
-    private DataChannelDescriptor loadExplicitMaps(DataChannelDescriptor mainDescriptor) {
-        DataChannelDescriptor descriptor = new DataChannelDescriptor();
-
-        // using the same name as main, to preserve the original name during merging
-        descriptor.setName(mainDescriptor.getName());
-
-        // clone properties from main to preserve the original properties during merging
-        descriptor.getProperties().putAll(mainDescriptor.getProperties());
-
-        Map<String, DataNodeDescriptor> nodeDescriptors = new HashMap<>();
-
-        for (DataMapConfig config : dataMapConfigs.values()) {
-
-            DataMap dataMap = loadDataMap(config);
-            descriptor.getDataMaps().add(dataMap);
-
-            String dataSourceName = config.getDatasource() != null
-                    ? config.getDatasource()
-                    : defaultDatasource.getOptionalName();
-
-            if (dataSourceName != null) {
-                createOrUpdateNodeDescriptor(nodeDescriptors, dataMap.getName(), dataSourceName);
-            }
-        }
-
-        descriptor.getNodeDescriptors().addAll(nodeDescriptors.values());
-
-        return descriptor;
-    }
-
-    private DataMap loadDataMap(DataMapConfig config) {
-
-        URL url = config.getLocation().getUrl();
-        String dataMapName = config.getName() != null ? config.getName() : url.toExternalForm();
-        Resource location = new URLResource(url);
-        DataMap dataMap = xmlDataMapLoaderProvider.get().load(location);
-        dataMap.setName(dataMapName);
-
-        return dataMap;
-    }
-
-    private DataChannelDescriptor resolveMissingDataNodes(DataChannelDescriptor descriptor) {
+    private DataChannelDescriptor updateDataNodes(DataChannelDescriptor cd) {
 
         // create a DataNode even if there are no maps...
-        if (descriptor.getDataMaps().isEmpty()
-                && descriptor.getNodeDescriptors().isEmpty()
-                && defaultDatasource.getOptionalName() != null) {
-            getOrCreateDefaultNodeDescriptor(descriptor);
-            return descriptor;
+        if (cd.getDataMaps().isEmpty() && cd.getNodeDescriptors().isEmpty() && defaultDatasourceName != null) {
+            addNodeDescriptor(cd, defaultDatasourceName, true);
+            return cd;
         }
 
-        Set<String> unresolvedMaps = new HashSet<>();
-        descriptor.getDataMaps().forEach(dm -> unresolvedMaps.add(dm.getName()));
-        descriptor.getNodeDescriptors().forEach(nd -> nd.getDataMapNames().forEach(unresolvedMaps::remove));
+        Map<String, DataNodeDescriptor> bqDataNodes = new HashMap<>();
 
-        if (!unresolvedMaps.isEmpty()) {
-            getOrCreateDefaultNodeDescriptor(descriptor).getDataMapNames().addAll(unresolvedMaps);
-        }
+        // all maps present in "mapsToDatasources" must get the exact requested DataNodes
+        for (Map.Entry<String, String> e : mapsToDatasources.entrySet()) {
+            DataMap dm = cd.getDataMap(e.getKey());
+            if (dm != null) {
 
-        return descriptor;
-    }
-
-    private void createOrUpdateNodeDescriptor(
-            Map<String, DataNodeDescriptor> nodes,
-            String dataMapName,
-            String dataSourceName) {
-
-        // not assigning parent channel to new DataNodeDescriptor, as this object is going to get cloned on merge anyways,
-        // with the right final parent assigned..
-
-        nodes
-                .computeIfAbsent(dataSourceName, k -> createDataNodeDescriptor(dataSourceName))
-                .getDataMapNames()
-                .add(dataMapName);
-    }
-
-    private DataNodeDescriptor createDataNodeDescriptor(String dataSourceName) {
-        DataNodeDescriptor descriptor = new DataNodeDescriptor(createSyntheticDataNodeName(dataSourceName));
-        descriptor.setParameters(BQCayenneDataSourceFactory.encodeDataSourceRef(dataSourceName));
-        return descriptor;
-    }
-
-    private DataNodeDescriptor getOrCreateDefaultNodeDescriptor(DataChannelDescriptor descriptor) {
-
-        if (defaultDatasource.getOptionalName() == null) {
-            // TODO: more diagnostics
-            throw new IllegalStateException("No default DataSources is available.");
-        }
-
-        // search for an existing node that has a matching DS ref
-        String parameters = BQCayenneDataSourceFactory.encodeDataSourceRef(defaultDatasource.getOptionalName());
-        for (DataNodeDescriptor existing : descriptor.getNodeDescriptors()) {
-            if (parameters.equals(existing.getParameters())) {
-
-                // TODO: should we renaming it to follow naming for default Node?
-                //  (see TODO on "createSyntheticDataNodeName" though.. this whole thing may be moot eventually)
-                return existing;
+                // Note that keys in "bqDataNodes" may be different from the created "DataNodeDescriptor.name".
+                // This is why we need a local map to see which ones need to be created
+                DataNodeDescriptor nd = bqDataNodes.computeIfAbsent(e.getValue(), ds -> addNodeDescriptor(cd, ds, false));
+                relinkDataMapToNode(cd, e.getKey(), nd.getName());
             }
         }
 
-        String name = createSyntheticDataNodeName(descriptor);
+        // any remaining stray maps should be linked to the default DataSource if it exists
+        if (defaultDatasourceName != null) {
+            Set<String> unresolvedMaps = new HashSet<>();
+            cd.getDataMaps().forEach(dm -> unresolvedMaps.add(dm.getName()));
+            cd.getNodeDescriptors().forEach(nd -> nd.getDataMapNames().forEach(unresolvedMaps::remove));
 
-        DataNodeDescriptor nodeDescriptor = new DataNodeDescriptor(name);
-        nodeDescriptor.setDataChannelDescriptor(descriptor);
-        nodeDescriptor.setParameters(parameters);
+            if (!unresolvedMaps.isEmpty()) {
+                DataNodeDescriptor nd = bqDataNodes.computeIfAbsent(defaultDatasourceName, ds -> addNodeDescriptor(cd, ds, true));
+                unresolvedMaps.forEach(mn -> relinkDataMapToNode(cd, mn, nd.getName()));
+            }
+        }
 
-        descriptor.getNodeDescriptors().add(nodeDescriptor);
-        descriptor.setDefaultNodeName(name);
+        // any unlinked DataNodes should be removed
+        // TODO: Those are likely the nodes abandoned due to explicit relinking of their DataMaps. Is this too invasive
+        //  to get rid of them?
+        cd.getNodeDescriptors().removeIf(nd -> nd.getDataMapNames().isEmpty());
 
-        return nodeDescriptor;
+        return cd;
     }
 
-    // TODO: in 2.0 simplify the naming.. just use the DS name for nodes. This will be the least confusing approach
-    protected String createSyntheticDataNodeName(String datasource) {
-        return datasource + "_node";
+    private DataNodeDescriptor addNodeDescriptor(DataChannelDescriptor cd, String dataSourceName, boolean defaultNode) {
+
+        Objects.requireNonNull(dataSourceName);
+
+        // Using Domain's name for the node name. Distinguishing nodes by name may be useful in case of multiple
+        // stacks used in the same transaction...
+
+        String name = uniqueNodeName(cd, dataSourceName);
+
+        DataNodeDescriptor nd = new DataNodeDescriptor(name);
+        nd.setDataChannelDescriptor(cd);
+        nd.setParameters(BQCayenneDataSourceFactory.encodeDataSourceRef(dataSourceName));
+
+        cd.getNodeDescriptors().add(nd);
+
+        if (defaultNode) {
+            cd.setDefaultNodeName(name);
+        }
+
+        return nd;
     }
 
-    // TODO: in 2.0 simplify the naming.. just use the DS name for nodes. This will be the least confusing approach
-    protected String createSyntheticDataNodeName(DataChannelDescriptor descriptor) {
+    private void relinkDataMapToNode(DataChannelDescriptor cd, String dataMapName, String targetDataNodeName) {
+        DataNodeDescriptor targetNd = cd.getNodeDescriptor(targetDataNodeName);
+        cd.getNodeDescriptors().stream().filter(nd -> nd != targetNd).forEach(nd -> nd.getDataMapNames().remove(dataMapName));
+        if (!targetNd.getDataMapNames().contains(dataMapName)) {
+            targetNd.getDataMapNames().add(dataMapName);
+        }
+    }
 
-        // using Domain's name for the node name.. distinguishing nodes by name
-        // may be useful in case of multiple stacks used in the same
-        // transaction...
+    private String uniqueNodeName(DataChannelDescriptor cd, String prefix) {
 
-        return descriptor.getName() != null ? descriptor.getName() : DEFAULT_NAME;
+        if (cd.getNodeDescriptor(prefix) == null) {
+            return prefix;
+        }
+
+        int attempts = cd.getNodeDescriptors().size() + 1;
+        for (int i = 1; i <= attempts; i++) {
+            String name = prefix + i;
+            if (cd.getNodeDescriptor(name) == null) {
+                return name;
+            }
+        }
+
+        throw new IllegalStateException("Failed to generate a unique node name for prefix: " + prefix);
     }
 }
 

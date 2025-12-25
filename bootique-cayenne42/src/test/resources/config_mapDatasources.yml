@@ -14,13 +14,17 @@
 # limitations under the License.
 
 jdbc:
+  ds1:
+    jdbcUrl: jdbc:derby:target/derby/config_ExplicitMaps_DifferentConfig_ds1;create=true
   ds2:
-    jdbcUrl: jdbc:derby:target/derby/bqjdbc_config_explicit_maps2;create=true
+    jdbcUrl: jdbc:derby:target/derby/config_ExplicitMaps_DifferentConfig_ds2;create=true
 
-# module 2
 cayenne:
-  maps:
-    m2:
-      name: map2
-      datasource: ds2
-      location: "classpath:datamap2.map.xml"
+  createSchema: true
+  locations:
+    - classpath:cayenne-project1.xml
+    - classpath:cayenne-project2.xml
+  mapDatasources:
+    datamap1: ds1
+    datamap2: ds2
+

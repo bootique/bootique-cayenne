@@ -21,7 +21,6 @@ package io.bootique.cayenne.v50;
 
 import io.bootique.annotation.BQConfig;
 import io.bootique.annotation.BQConfigProperty;
-import io.bootique.cayenne.v50.annotation.CayenneConfigs;
 import io.bootique.cayenne.v50.annotation.CayenneListener;
 import io.bootique.cayenne.v50.commitlog.CommitLogModuleBuilder;
 import io.bootique.cayenne.v50.commitlog.MappedCommitLogListener;
@@ -40,17 +39,17 @@ import org.apache.cayenne.access.dbsync.SchemaUpdateStrategyFactory;
 import org.apache.cayenne.access.types.ExtendedType;
 import org.apache.cayenne.access.types.ValueObjectType;
 import org.apache.cayenne.configuration.runtime.CoreModule;
-import org.apache.cayenne.di.Key;
 import org.apache.cayenne.di.ListBuilder;
 import org.apache.cayenne.di.Module;
+import org.apache.cayenne.resource.ResourceLocator;
 import org.apache.cayenne.runtime.CayenneRuntime;
 import org.apache.cayenne.runtime.CayenneRuntimeBuilder;
 import org.apache.cayenne.tx.TransactionFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,13 +57,11 @@ import java.util.Set;
 @BQConfig("Configures Cayenne stack, providing injectable CayenneRuntime.")
 public class CayenneRuntimeFactory {
 
-    private static final String DEFAULT_CONFIG = "cayenne-project.xml";
+    private static final Logger LOGGER = LoggerFactory.getLogger(CayenneRuntimeFactory.class);
 
     private final Injector injector;
     private final ShutdownManager shutdownManager;
     private final DataSourceFactory dataSourceFactory;
-    private final CayenneConfigMerger configMerger;
-    private final Set<String> injectedCayenneConfigs;
     private final Set<Module> customModules;
     private final Set<Object> listeners;
     private final Set<DataChannelQueryFilter> queryFilters;
@@ -77,18 +74,16 @@ public class CayenneRuntimeFactory {
     private final Set<ValueObjectType> valueObjectTypes;
 
     private String name;
-    private Collection<String> configs;
-    private Map<String, DataMapConfig> maps;
     private String datasource;
     private boolean createSchema;
+    private List<String> locations;
+    private Map<String, String> mapDatasources;
 
     @Inject
     public CayenneRuntimeFactory(
             Injector injector,
             ShutdownManager shutdownManager,
             DataSourceFactory dataSourceFactory,
-            CayenneConfigMerger configMerger,
-            @CayenneConfigs Set<String> injectedCayenneConfigs,
             Set<Module> customModules,
             @CayenneListener Set<Object> listeners,
             Set<DataChannelQueryFilter> queryFilters,
@@ -104,8 +99,6 @@ public class CayenneRuntimeFactory {
 
         this.shutdownManager = shutdownManager;
         this.dataSourceFactory = dataSourceFactory;
-        this.configMerger = configMerger;
-        this.injectedCayenneConfigs = injectedCayenneConfigs;
         this.customModules = customModules;
         this.listeners = listeners;
         this.queryFilters = queryFilters;
@@ -119,26 +112,44 @@ public class CayenneRuntimeFactory {
     }
 
     /**
-     * Sets an optional collection of Cayenne projects to load in runtime. If missing, will try to locate a file
-     * 'cayenne-project.xml' on classpath.
-     *
-     * @param configs a collection of Cayenne config XML files.
+     * @since 4.0
      */
-    @BQConfigProperty("An optional collection of Cayenne projects to load in runtime. If missing, will try to locate a " +
-            "file 'cayenne-project.xml' on classpath.")
-    public void setConfigs(Collection<String> configs) {
-        this.configs = configs;
+    @BQConfigProperty("A list of Cayenne project file locations specified in Bootique resource format")
+    public void setLocations(List<String> locations) {
+        this.locations = locations;
     }
 
     /**
-     * Sets a map of DataMaps that are included in the app runtime without an explicit refrence in  'cayenne-project.xml'.
-     *
-     * @param maps map of DataMap configs
+     * @since 4.0
      */
-    @BQConfigProperty("A list of DataMaps that are included in the app runtime without an explicit reference in " +
-            "'cayenne-project.xml'.")
+    @BQConfigProperty("""
+            A map of Cayenne DataMaps to Bootique DataSource names. It allows to link DataMaps to DataSources as
+            well as override any DataNode mappings in Cayenne project files.""")
+    public void setMapDatasources(Map<String, String> mapDatasources) {
+        this.mapDatasources = mapDatasources;
+    }
+
+    @BQConfigProperty("** Deprecated and ignored. Use 'cayenne.locations' instead")
+    @Deprecated(since = "4.0", forRemoval = true)
+    public void setConfigs(Collection<String> configs) {
+        LOGGER.warn("""
+                ** 'cayenne.configs' configuration property is deprecated in favor of 'cayenne.locations' 
+                that are specified as Bootique resources""");
+
+        String cpPrefix = "classpath:";
+        List<String> locations = configs != null
+                ? configs.stream().map(c -> c.startsWith(cpPrefix) ? c : cpPrefix + c).toList()
+                : null;
+
+        setLocations(locations);
+    }
+
+    @BQConfigProperty("** Deprecated and ignored. Partially replaced by 'cayenne.mapDatasources'")
+    @Deprecated(since = "4.0", forRemoval = true)
     public void setMaps(Map<String, DataMapConfig> maps) {
-        this.maps = maps;
+        LOGGER.warn("""
+                ** 'cayenne.maps' configuration property is deprecated and ignored. It is partially replaced by
+                'cayenne.mapDatasources'""");
     }
 
     /**
@@ -176,8 +187,6 @@ public class CayenneRuntimeFactory {
 
     public CayenneRuntime create() {
 
-        Collection<String> factoryConfigs = configs();
-
         CayenneRuntimeBuilder builder = CayenneRuntime.builder(name);
 
         addCreateSchema(builder);
@@ -190,9 +199,8 @@ public class CayenneRuntimeFactory {
         addCommitLog(builder);
         addListeners(builder);
 
-        CayenneRuntime runtime = builder
-                .addConfigs(configMerger.merge(factoryConfigs, injectedCayenneConfigs))
-                .build();
+        addLocations(builder);
+        CayenneRuntime runtime = builder.build();
 
         shutdownManager.onShutdown(runtime, CayenneRuntime::shutdown);
         startupCallbacks.forEach(c -> c.onRuntimeCreated(runtime));
@@ -200,43 +208,18 @@ public class CayenneRuntimeFactory {
         return runtime;
     }
 
-    Collection<String> configs() {
-
-        // order is important, so using ordered set...
-        Collection<String> configs = new LinkedHashSet<>();
-
-        if (this.configs != null) {
-            configs.addAll(this.configs);
-        }
-
-        return configs.isEmpty() ? defaultConfigs() : configs;
-    }
-
-    Collection<String> defaultConfigs() {
-
-        // #54: if "maps" are specified explicitly, default config should be ignored
-
-        if (maps != null && !maps.isEmpty()) {
-            return Collections.emptySet();
-        }
-
-        return getClass().getClassLoader().getResource(DEFAULT_CONFIG) != null
-                ? Collections.singleton(DEFAULT_CONFIG)
-                : Collections.emptySet();
-    }
-
-    DefaultDataSourceName defaultDataSourceName() {
+    String defaultDataSourceName() {
 
         if (datasource != null) {
-            return new DefaultDataSourceName(datasource);
+            return datasource;
         }
 
         Collection<String> allNames = dataSourceFactory.allNames();
         if (allNames.size() == 1) {
-            return new DefaultDataSourceName(allNames.iterator().next());
+            return allNames.iterator().next();
         }
 
-        return new DefaultDataSourceName(null);
+        return null;
     }
 
     void addCreateSchema(CayenneRuntimeBuilder builder) {
@@ -246,21 +229,14 @@ public class CayenneRuntimeFactory {
     }
 
     void addBootiqueExtensions(CayenneRuntimeBuilder builder) {
-        DefaultDataSourceName defaultDataSourceName = defaultDataSourceName();
+        String defaultDS = defaultDataSourceName();
+        var ddProvider = new SyntheticNodeDataDomainProvider(defaultDS, mapDatasources != null ? mapDatasources : Map.of());
+        var dsFactory = new BQCayenneDataSourceFactory(dataSourceFactory, datasource);
 
         builder.addModule(b -> {
-
-            b.bind(Key.get(DefaultDataSourceName.class)).toInstance(defaultDataSourceName);
-            b.bindMap(DataMapConfig.class).putAll(maps != null ? maps : Map.of());
-
-            // provide default DataNode
-            // TODO: copied from Cayenne, as the corresponding provider is not public or rather
-            // until https://issues.apache.org/jira/browse/CAY-2095 is implemented
-            b.bind(DataDomain.class).toProvider(SyntheticNodeDataDomainProvider.class);
-
-            // Bootique DataSource hooks...
-            BQCayenneDataSourceFactory bqCayenneDSFactory = new BQCayenneDataSourceFactory(dataSourceFactory, datasource);
-            b.bind(org.apache.cayenne.configuration.runtime.DataSourceFactory.class).toInstance(bqCayenneDSFactory);
+            b.bind(ResourceLocator.class).to(BQResourceLocator.class);
+            b.bind(DataDomain.class).toProviderInstance(ddProvider);
+            b.bind(org.apache.cayenne.configuration.runtime.DataSourceFactory.class).toInstance(dsFactory);
         });
     }
 
@@ -337,5 +313,11 @@ public class CayenneRuntimeFactory {
             ListBuilder<Object> lb = CoreModule.contributeDomainListeners(b);
             listeners.forEach(lb::add);
         });
+    }
+
+    void addLocations(CayenneRuntimeBuilder builder) {
+        if (locations != null) {
+            builder.addConfigs(locations);
+        }
     }
 }

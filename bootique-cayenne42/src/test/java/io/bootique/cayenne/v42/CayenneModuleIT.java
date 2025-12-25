@@ -52,7 +52,7 @@ public class CayenneModuleIT {
 
         DataDomain domain = runtime.getDataDomain();
         assertEquals("cayenne", domain.getName());
-        assertEquals("cayenne", domain.getDefaultNode().getName());
+        assertEquals("ds", domain.getDefaultNode().getName());
 
         assertTrue(domain.getEntityResolver().getDbEntities().isEmpty());
     }
@@ -67,7 +67,7 @@ public class CayenneModuleIT {
 
         DataDomain domain = runtime.getDataDomain();
         assertEquals("my", domain.getName());
-        assertEquals("my", domain.getDefaultNode().getName());
+        assertEquals("ds", domain.getDefaultNode().getName());
     }
 
     @Test
@@ -112,8 +112,8 @@ public class CayenneModuleIT {
         assertNotNull(domain.getEntityResolver().getDbEntity("db_entity2"));
 
         // trigger a DB op
-        SQLSelect.dataRowQuery("map1", "SELECT * FROM db_entity").select(runtime.newContext());
-        SQLSelect.dataRowQuery("map2", "SELECT * FROM db_entity2").select(runtime.newContext());
+        SQLSelect.dataRowQuery("datamap1", "SELECT * FROM db_entity").select(runtime.newContext());
+        SQLSelect.dataRowQuery("datamap2", "SELECT * FROM db_entity2").select(runtime.newContext());
     }
 
     @Test
@@ -129,8 +129,8 @@ public class CayenneModuleIT {
         assertNotNull(domain.getEntityResolver().getDbEntity("db_entity2"));
 
         // trigger a DB op
-        SQLSelect.dataRowQuery("map1", "SELECT * FROM db_entity").select(runtime.newContext());
-        SQLSelect.dataRowQuery("map2", "SELECT * FROM db_entity2").select(runtime.newContext());
+        SQLSelect.dataRowQuery("datamap1", "SELECT * FROM db_entity").select(runtime.newContext());
+        SQLSelect.dataRowQuery("datamap2", "SELECT * FROM db_entity2").select(runtime.newContext());
     }
 
     @Test
@@ -142,9 +142,9 @@ public class CayenneModuleIT {
                 .getInstance(ServerRuntime.class);
 
         DataDomain domain = runtime.getDataDomain();
-        assertNotNull(domain.getDataNode("cayenne"));
+        assertNotNull(domain.getDataNode("ds"));
 
-        try (Connection c = domain.getDataNode("cayenne").getDataSource().getConnection()) {
+        try (Connection c = domain.getDataNode("ds").getDataSource().getConnection()) {
             DatabaseMetaData md = c.getMetaData();
             assertEquals("jdbc:derby:target/derby/bqjdbc_noconfig", md.getURL());
         }
@@ -227,7 +227,7 @@ public class CayenneModuleIT {
         ServerRuntime runtime = testFactory
                 .app("--config=classpath:ConfigMaps_Plus_AddProject_DataSourceAssignment.yml")
                 .autoLoadModules()
-                .module(b -> CayenneModule.extend(b).addProject("cayenne-project1.xml"))
+                .module(b -> CayenneModule.extend(b).addLocation("classpath:cayenne-project1.xml"))
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
 
@@ -235,24 +235,22 @@ public class CayenneModuleIT {
 
         assertEquals(3, domain.getDataMaps().size());
         assertNotNull(domain.getDataMap("datamap1"));
-        assertNotNull(domain.getDataMap("map2"));
-        assertNotNull(domain.getDataMap("map3"));
+        assertNotNull(domain.getDataMap("datamap2"));
+        assertNotNull(domain.getDataMap("datamap3"));
 
         assertEquals(2, domain.getDataNodes().size());
-        assertNotNull(domain.getDataNode("ds1_node"));
-        assertNotNull(domain.getDataNode("ds2_node"));
+        assertNotNull(domain.getDataNode("ds1"));
+        assertNotNull(domain.getDataNode("ds2"));
 
-        assertSame(domain.getDataNode("ds1_node"), domain.lookupDataNode(domain.getDataMap("datamap1")));
-        assertSame(domain.getDataNode("ds2_node"), domain.lookupDataNode(domain.getDataMap("map2")));
-        assertSame(domain.getDataNode("ds1_node"), domain.lookupDataNode(domain.getDataMap("map3")));
+        assertSame(domain.getDataNode("ds1"), domain.lookupDataNode(domain.getDataMap("datamap1")));
+        assertSame(domain.getDataNode("ds2"), domain.lookupDataNode(domain.getDataMap("datamap2")));
+        assertSame(domain.getDataNode("ds1"), domain.lookupDataNode(domain.getDataMap("datamap3")));
     }
 
     @Test
     public void config_ExplicitMaps_DifferentConfig() {
 
-        ServerRuntime runtime = testFactory.app(
-                        "-c", "classpath:config_explicit_maps_2_1.yml",
-                        "-c", "classpath:config_explicit_maps_2_2.yml")
+        ServerRuntime runtime = testFactory.app("-c", "classpath:config_mapDatasources.yml")
                 .autoLoadModules()
                 .createRuntime()
                 .getInstance(ServerRuntime.class);
@@ -262,7 +260,7 @@ public class CayenneModuleIT {
         assertNotNull(domain.getEntityResolver().getDbEntity("db_entity2"));
 
         // trigger a DB op
-        SQLSelect.dataRowQuery("map1", "SELECT * FROM db_entity").select(runtime.newContext());
-        SQLSelect.dataRowQuery("map2", "SELECT * FROM db_entity2").select(runtime.newContext());
+        SQLSelect.dataRowQuery("datamap1", "SELECT * FROM db_entity").select(runtime.newContext());
+        SQLSelect.dataRowQuery("datamap2", "SELECT * FROM db_entity2").select(runtime.newContext());
     }
 }
