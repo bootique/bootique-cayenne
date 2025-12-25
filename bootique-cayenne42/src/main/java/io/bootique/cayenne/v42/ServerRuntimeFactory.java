@@ -31,6 +31,7 @@ import io.bootique.cayenne.v42.syncfilter.MappedDataChannelSyncFilterType;
 import io.bootique.di.Injector;
 import io.bootique.jdbc.DataSourceFactory;
 import io.bootique.shutdown.ShutdownManager;
+import jakarta.inject.Inject;
 import org.apache.cayenne.DataChannelQueryFilter;
 import org.apache.cayenne.DataChannelSyncFilter;
 import org.apache.cayenne.access.DataDomain;
@@ -46,8 +47,13 @@ import org.apache.cayenne.di.ListBuilder;
 import org.apache.cayenne.di.Module;
 import org.apache.cayenne.tx.TransactionFilter;
 
-import jakarta.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @BQConfig("Configures Cayenne stack, providing injectable ServerRuntime.")
 public class ServerRuntimeFactory {
@@ -141,15 +147,17 @@ public class ServerRuntimeFactory {
      *
      * @param name a name of Cayenne stack created by the factory.
      */
-    @BQConfigProperty("An optional name of the Cayenne stack we are created. This will be the name assigned to Cayenne" +
-            " DataDomain and used in event dispatches, etc.")
+    @BQConfigProperty("""
+            An optional name of the Cayenne stack we are created. This will be the name assigned to Cayenne DataDomain 
+            and used in event dispatches, etc.""")
     public void setName(String name) {
         this.name = name;
     }
 
-    @BQConfigProperty("An optional name of the DataSource to use in Cayenne. A DataSource with the matching name " +
-            "must be defined in 'bootique-jdbc' configuration. If missing, a DataSource from Cayenne project or a " +
-            "default DataSource from 'bootique-jdbc' is used.")
+    @BQConfigProperty("""
+            An optional name of the DataSource to use in Cayenne. A DataSource with the matching name
+            must be defined in 'bootique-jdbc' configuration. If missing, a DataSource from Cayenne project or a
+            default DataSource from 'bootique-jdbc' is used.""")
     public void setDatasource(String datasource) {
         this.datasource = datasource;
     }
@@ -160,8 +168,9 @@ public class ServerRuntimeFactory {
      *
      * @param createSchema if true, Cayenne will attempt to create database schema if it is missing.
      */
-    @BQConfigProperty("Whether to attempt creation of the DB schema on startup based on Cayenne mapping. The default is " +
-            "'false'. Automatic schema creation is often used in unit tests.")
+    @BQConfigProperty("""
+            Whether to attempt creation of the DB schema on startup based on Cayenne mapping. The default is
+            'false'. Automatic schema creation is often used in unit tests.""")
     public void setCreateSchema(boolean createSchema) {
         this.createSchema = createSchema;
     }
