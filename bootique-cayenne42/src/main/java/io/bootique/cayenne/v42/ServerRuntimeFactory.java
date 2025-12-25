@@ -226,7 +226,7 @@ public class ServerRuntimeFactory {
                 : Collections.emptySet();
     }
 
-    DefaultDataSourceName defaultDataSourceName(DataSourceFactory dataSourceFactory) {
+    DefaultDataSourceName defaultDataSourceName() {
 
         if (datasource != null) {
             return new DefaultDataSourceName(datasource);
@@ -247,7 +247,7 @@ public class ServerRuntimeFactory {
     }
 
     void addBootiqueExtensions(ServerRuntimeBuilder builder) {
-        DefaultDataSourceName defaultDataSourceName = defaultDataSourceName(dataSourceFactory);
+        DefaultDataSourceName defaultDataSourceName = defaultDataSourceName();
 
         builder.addModule(b -> {
 

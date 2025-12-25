@@ -225,7 +225,7 @@ public class CayenneRuntimeFactory {
                 : Collections.emptySet();
     }
 
-    DefaultDataSourceName defaultDataSourceName(DataSourceFactory dataSourceFactory) {
+    DefaultDataSourceName defaultDataSourceName() {
 
         if (datasource != null) {
             return new DefaultDataSourceName(datasource);
@@ -246,7 +246,7 @@ public class CayenneRuntimeFactory {
     }
 
     void addBootiqueExtensions(CayenneRuntimeBuilder builder) {
-        DefaultDataSourceName defaultDataSourceName = defaultDataSourceName(dataSourceFactory);
+        DefaultDataSourceName defaultDataSourceName = defaultDataSourceName();
 
         builder.addModule(b -> {
 
