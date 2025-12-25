@@ -115,9 +115,9 @@ public class SyntheticNodeDataDomainProvider extends DataDomainProvider {
 
         Set<String> unresolvedMaps = new HashSet<>();
         descriptor.getDataMaps().forEach(dm -> unresolvedMaps.add(dm.getName()));
-        descriptor.getNodeDescriptors().forEach(nd -> nd.getDataMapNames().forEach(n -> unresolvedMaps.remove(n)));
+        descriptor.getNodeDescriptors().forEach(nd -> nd.getDataMapNames().forEach(unresolvedMaps::remove));
 
-        if (unresolvedMaps.size() > 0) {
+        if (!unresolvedMaps.isEmpty()) {
             getOrCreateDefaultNodeDescriptor(descriptor).getDataMapNames().addAll(unresolvedMaps);
         }
 
