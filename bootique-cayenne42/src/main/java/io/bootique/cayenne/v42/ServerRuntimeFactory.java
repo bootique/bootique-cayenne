@@ -181,6 +181,7 @@ public class ServerRuntimeFactory {
 
         ServerRuntimeBuilder builder = ServerRuntime.builder(name);
 
+        addCreateSchema(builder);
         addBootiqueExtensions(builder);
         builder.addModules(customModules);
         addExtendedTypes(builder);
@@ -239,14 +240,16 @@ public class ServerRuntimeFactory {
         return new DefaultDataSourceName(null);
     }
 
+    void addCreateSchema(ServerRuntimeBuilder builder) {
+        if (createSchema) {
+            builder.addModule(b -> b.bind(SchemaUpdateStrategyFactory.class).toInstance(descriptor -> new CreateIfNoSchemaStrategy()));
+        }
+    }
+
     void addBootiqueExtensions(ServerRuntimeBuilder builder) {
         DefaultDataSourceName defaultDataSourceName = defaultDataSourceName(dataSourceFactory);
 
         builder.addModule(b -> {
-            if (createSchema) {
-                b.bind(SchemaUpdateStrategyFactory.class).toInstance(descriptor -> new CreateIfNoSchemaStrategy());
-            }
-
 
             b.bind(Key.get(DefaultDataSourceName.class)).toInstance(defaultDataSourceName);
             b.bindMap(DataMapConfig.class).putAll(maps != null ? maps : Map.of());

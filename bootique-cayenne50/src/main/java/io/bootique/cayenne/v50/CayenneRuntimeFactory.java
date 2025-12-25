@@ -180,6 +180,7 @@ public class CayenneRuntimeFactory {
 
         CayenneRuntimeBuilder builder = CayenneRuntime.builder(name);
 
+        addCreateSchema(builder);
         addBootiqueExtensions(builder);
         builder.addModules(customModules);
         addExtendedTypes(builder);
@@ -238,13 +239,16 @@ public class CayenneRuntimeFactory {
         return new DefaultDataSourceName(null);
     }
 
+    void addCreateSchema(CayenneRuntimeBuilder builder) {
+        if (createSchema) {
+            builder.addModule(b -> b.bind(SchemaUpdateStrategyFactory.class).toInstance(descriptor -> new CreateIfNoSchemaStrategy()));
+        }
+    }
+
     void addBootiqueExtensions(CayenneRuntimeBuilder builder) {
         DefaultDataSourceName defaultDataSourceName = defaultDataSourceName(dataSourceFactory);
 
         builder.addModule(b -> {
-            if (createSchema) {
-                b.bind(SchemaUpdateStrategyFactory.class).toInstance(descriptor -> new CreateIfNoSchemaStrategy());
-            }
 
             b.bind(Key.get(DefaultDataSourceName.class)).toInstance(defaultDataSourceName);
             b.bindMap(DataMapConfig.class).putAll(maps != null ? maps : Map.of());
