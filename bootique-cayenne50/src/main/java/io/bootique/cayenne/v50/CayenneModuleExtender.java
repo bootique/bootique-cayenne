@@ -38,6 +38,9 @@ import org.apache.cayenne.di.Module;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @since 3.0
+ */
 public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CayenneModuleExtender.class);
@@ -74,49 +77,31 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
         return this;
     }
 
-    /**
-     * @since 3.0
-     */
     public CayenneModuleExtender addStartupListener(CayenneStartupListener listener) {
         contributeStartupListeners().addInstance(listener);
         return this;
     }
 
-    /**
-     * @since 3.0
-     */
     public CayenneModuleExtender addStartupListener(Class<? extends CayenneStartupListener> listenerType) {
         contributeStartupListeners().add(listenerType);
         return this;
     }
 
-    /**
-     * @since 3.0
-     */
     public CayenneModuleExtender addSyncFilter(DataChannelSyncFilter filter, boolean includeInTransaction) {
         contributeSyncFilters().addInstance(new MappedDataChannelSyncFilter(filter, includeInTransaction));
         return this;
     }
 
-    /**
-     * @since 3.0
-     */
     public CayenneModuleExtender addSyncFilter(Class<? extends DataChannelSyncFilter> filterType, boolean includeInTransaction) {
         contributeSyncFilterTypes().addInstance(new MappedDataChannelSyncFilterType(filterType, includeInTransaction));
         return this;
     }
 
-    /**
-     * @since 1.1
-     */
     public CayenneModuleExtender addQueryFilter(DataChannelQueryFilter filter) {
         contributeQueryFilters().addInstance(filter);
         return this;
     }
 
-    /**
-     * @since 1.1
-     */
     public CayenneModuleExtender addQueryFilter(Class<? extends DataChannelQueryFilter> filterType) {
         contributeQueryFilters().add(filterType);
         return this;
@@ -133,8 +118,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     /**
-     * @deprecated in favor of adding projects in configuration or {@link #addLocation(String)} with "classpath:"
-     * prefix.
+     * @deprecated in favor of {@link #addLocation(String)} with "classpath:" or "cayenne.locations" configuration.
      */
     @Deprecated(since = "4.0", forRemoval = true)
     public CayenneModuleExtender addProject(String projectConfig) {
@@ -171,33 +155,21 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
         return this;
     }
 
-    /**
-     * @since 3.0
-     */
     public CayenneModuleExtender addCommitLogListener(CommitLogListener listener, boolean includeInTransaction) {
         contributeCommitLogListeners().addInstance(new MappedCommitLogListener(listener, includeInTransaction, null));
         return this;
     }
 
-    /**
-     * @since 3.0
-     */
     public CayenneModuleExtender addCommitLogListener(CommitLogListener listener, boolean includeInTransaction, Class<? extends CommitLogListener> after) {
         contributeCommitLogListeners().addInstance(new MappedCommitLogListener(listener, includeInTransaction, after));
         return this;
     }
 
-    /**
-     * @since 3.0
-     */
     public CayenneModuleExtender addCommitLogListener(Class<? extends CommitLogListener> listenerType, boolean includeInTransaction) {
         contributeCommitLogListenerTypes().addInstance(new MappedCommitLogListenerType(listenerType, includeInTransaction, null));
         return this;
     }
 
-    /**
-     * @since 3.0
-     */
     public CayenneModuleExtender addCommitLogListener(Class<? extends CommitLogListener> listenerType, boolean includeInTransaction, Class<? extends CommitLogListener> after) {
         contributeCommitLogListenerTypes().addInstance(new MappedCommitLogListenerType(listenerType, includeInTransaction, after));
         return this;
@@ -208,83 +180,69 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
      * configured to respect {@link org.apache.cayenne.commitlog.CommitLog} annotation on entities. This annotation
      * allows to explicitly specify change tracking for a subset of entities, obfuscate confidential properties
      * (such as passwords), etc.
-     *
-     * @since 3.0
      */
     public CayenneModuleExtender applyCommitLogAnnotation() {
         binder.bind(Key.get(Boolean.class, COMMIT_LOG_ANNOTATION)).toInstance(Boolean.TRUE);
         return this;
     }
 
-    /**
-     * @since 3.0
-     */
     public CayenneModuleExtender addExtendedType(ExtendedType<?> type) {
         contributeExtendedTypes().addInstance(type);
         return this;
     }
 
-    /**
-     * @since 3.0
-     */
     public CayenneModuleExtender addExtendedType(Class<? extends ExtendedType<?>> type) {
         contributeExtendedTypes().add(type);
         return this;
     }
 
-    /**
-     * @since 3.0
-     */
     public CayenneModuleExtender addValueObjectType(ValueObjectType<?, ?> type) {
         contributeValueObjectTypes().addInstance(type);
         return this;
     }
 
-    /**
-     * @since 3.0
-     */
     public CayenneModuleExtender addValueObjectType(Class<? extends ValueObjectType<?, ?>> type) {
         contributeValueObjectTypes().add(type);
         return this;
     }
 
-    protected SetBuilder<DataChannelQueryFilter> contributeQueryFilters() {
+    SetBuilder<DataChannelQueryFilter> contributeQueryFilters() {
         return queryFilters != null ? queryFilters : (queryFilters = newSet(DataChannelQueryFilter.class));
     }
 
-    protected SetBuilder<MappedDataChannelSyncFilter> contributeSyncFilters() {
+    SetBuilder<MappedDataChannelSyncFilter> contributeSyncFilters() {
         return syncFilters != null ? syncFilters : (syncFilters = newSet(MappedDataChannelSyncFilter.class));
     }
 
-    protected SetBuilder<MappedDataChannelSyncFilterType> contributeSyncFilterTypes() {
+    SetBuilder<MappedDataChannelSyncFilterType> contributeSyncFilterTypes() {
         return syncFilterTypes != null ? syncFilterTypes : (syncFilterTypes = newSet(MappedDataChannelSyncFilterType.class));
     }
 
-    protected SetBuilder<Object> contributeListeners() {
+    SetBuilder<Object> contributeListeners() {
         return listeners != null ? listeners : (listeners = newSet(Object.class, CayenneListener.class));
     }
 
-    protected SetBuilder<Module> contributeModules() {
+    SetBuilder<Module> contributeModules() {
         return modules != null ? modules : (modules = newSet(Module.class));
     }
 
-    protected SetBuilder<CayenneStartupListener> contributeStartupListeners() {
+    SetBuilder<CayenneStartupListener> contributeStartupListeners() {
         return startupListeners != null ? startupListeners : (startupListeners = newSet(CayenneStartupListener.class));
     }
 
-    protected SetBuilder<MappedCommitLogListener> contributeCommitLogListeners() {
+    SetBuilder<MappedCommitLogListener> contributeCommitLogListeners() {
         return commitLogListeners != null ? commitLogListeners : (commitLogListeners = newSet(MappedCommitLogListener.class));
     }
 
-    protected SetBuilder<MappedCommitLogListenerType> contributeCommitLogListenerTypes() {
+    SetBuilder<MappedCommitLogListenerType> contributeCommitLogListenerTypes() {
         return commitLogListenerTypes != null ? commitLogListenerTypes : (commitLogListenerTypes = newSet(MappedCommitLogListenerType.class));
     }
 
-    protected SetBuilder<ExtendedType> contributeExtendedTypes() {
+    SetBuilder<ExtendedType> contributeExtendedTypes() {
         return extendedType != null ? extendedType : (extendedType = newSet(ExtendedType.class));
     }
 
-    protected SetBuilder<ValueObjectType> contributeValueObjectTypes() {
+    SetBuilder<ValueObjectType> contributeValueObjectTypes() {
         return valueObjectTypes != null ? valueObjectTypes : (valueObjectTypes = newSet(ValueObjectType.class));
     }
 }

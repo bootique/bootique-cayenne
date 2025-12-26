@@ -131,7 +131,7 @@ public class CayenneRuntimeFactory {
     @Deprecated(since = "4.0", forRemoval = true)
     public void setConfigs(Collection<String> configs) {
         LOGGER.warn("""
-                ** 'cayenne.configs' configuration property is deprecated in favor of 'cayenne.locations' 
+                ** 'cayenne.configs' configuration property is deprecated in favor of 'cayenne.locations'
                 that are specified as Bootique resources""");
 
         String cpPrefix = "classpath:";
@@ -291,9 +291,7 @@ public class CayenneRuntimeFactory {
         commitLogListeners.forEach(clmBuilder::add);
         commitLogListenerTypes.forEach(t -> clmBuilder.add(t.resolve(injector)));
 
-        boolean applyCommitLogAnnotation = injector.hasProvider(
-                io.bootique.di.Key.get(Boolean.class, CayenneModuleExtender.COMMIT_LOG_ANNOTATION));
-        if (applyCommitLogAnnotation) {
+        if (injector.hasProvider(io.bootique.di.Key.get(Boolean.class, CayenneModuleExtender.COMMIT_LOG_ANNOTATION))) {
             clmBuilder.applyCommitLogAnnotation();
         }
 
