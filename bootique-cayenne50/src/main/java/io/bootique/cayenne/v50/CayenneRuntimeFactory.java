@@ -32,19 +32,17 @@ import io.bootique.jdbc.DataSourceFactory;
 import io.bootique.shutdown.ShutdownManager;
 import jakarta.inject.Inject;
 import org.apache.cayenne.DataChannelQueryFilter;
-import org.apache.cayenne.DataChannelSyncFilter;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.access.dbsync.CreateIfNoSchemaStrategy;
 import org.apache.cayenne.access.dbsync.SchemaUpdateStrategyFactory;
 import org.apache.cayenne.access.types.ExtendedType;
 import org.apache.cayenne.access.types.ValueObjectType;
 import org.apache.cayenne.configuration.runtime.CoreModule;
-import org.apache.cayenne.di.ListBuilder;
+import org.apache.cayenne.configuration.runtime.CoreModuleExtender;
 import org.apache.cayenne.di.Module;
 import org.apache.cayenne.resource.ResourceLocator;
 import org.apache.cayenne.runtime.CayenneRuntime;
 import org.apache.cayenne.runtime.CayenneRuntimeBuilder;
-import org.apache.cayenne.tx.TransactionFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -243,8 +241,8 @@ public class CayenneRuntimeFactory {
     void addExtendedTypes(CayenneRuntimeBuilder builder) {
         if (!extendedTypes.isEmpty()) {
             builder.addModule(b -> {
-                ListBuilder<ExtendedType> lb = CoreModule.contributeUserTypes(b);
-                extendedTypes.forEach(lb::add);
+                CoreModuleExtender e = CoreModule.extend(b);
+                extendedTypes.forEach(e::addUserExtendedType);
             });
         }
     }
@@ -252,16 +250,16 @@ public class CayenneRuntimeFactory {
     void addValueObjectTypes(CayenneRuntimeBuilder builder) {
         if (!valueObjectTypes.isEmpty()) {
             builder.addModule(b -> {
-                ListBuilder<ValueObjectType> lb = CoreModule.contributeValueObjectTypes(b);
-                valueObjectTypes.forEach(lb::add);
+                CoreModuleExtender e = CoreModule.extend(b);
+                valueObjectTypes.forEach(e::addValueObjectType);
             });
         }
     }
 
     void addQueryFilters(CayenneRuntimeBuilder builder) {
         builder.addModule(b -> {
-            ListBuilder<DataChannelQueryFilter> lb = CoreModule.contributeDomainQueryFilters(b);
-            queryFilters.forEach(lb::add);
+            CoreModuleExtender e = CoreModule.extend(b);
+            queryFilters.forEach(e::addQueryFilter);
         });
     }
 
@@ -278,14 +276,8 @@ public class CayenneRuntimeFactory {
                 .forEach(combined::add);
 
         builder.addModule(b -> {
-            ListBuilder<DataChannelSyncFilter> lb = CoreModule.contributeDomainSyncFilters(b);
-            combined.forEach(mf -> {
-                if (mf.isIncludeInTransaction()) {
-                    lb.insertBefore(mf.getFilter(), TransactionFilter.class);
-                } else {
-                    lb.addAfter(mf.getFilter(), TransactionFilter.class);
-                }
-            });
+            CoreModuleExtender e = CoreModule.extend(b);
+            combined.forEach(mf -> e.addSyncFilter(mf.getFilter(), mf.isIncludeInTransaction()));
         });
     }
 
@@ -310,8 +302,8 @@ public class CayenneRuntimeFactory {
 
     void addListeners(CayenneRuntimeBuilder builder) {
         builder.addModule(b -> {
-            ListBuilder<Object> lb = CoreModule.contributeDomainListeners(b);
-            listeners.forEach(lb::add);
+            CoreModuleExtender e = CoreModule.extend(b);
+            listeners.forEach(e::addListener);
         });
     }
 
