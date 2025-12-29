@@ -324,9 +324,11 @@ public class ServerRuntimeFactory {
     }
 
     void addLocations(ServerRuntimeBuilder builder) {
-        builder.addConfigs(injectedLocations);
 
-        // config locations may override the injected ones...
+        // there's no preference of injectedLocations vs config locations. They are simply combined together.
+        // CayenneRuntimeBuilder ensures location uniqueness.
+
+        builder.addConfigs(injectedLocations);
         if (locations != null) {
             builder.addConfigs(locations);
         }

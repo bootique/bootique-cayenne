@@ -310,9 +310,12 @@ public class CayenneRuntimeFactory {
     }
 
     void addLocations(CayenneRuntimeBuilder builder) {
+        
+        // there's no preference of injectedLocations vs config locations. They are simply combined together.
+        // CayenneRuntimeBuilder ensures location uniqueness.
+
         builder.addConfigs(injectedLocations);
 
-        // config locations may override the injected ones...
         if (locations != null) {
             builder.addConfigs(locations);
         }
