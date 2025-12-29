@@ -17,4 +17,5 @@ jdbc:
   ds:
     jdbcUrl: jdbc:derby:target/derby/bqjdbc_noconfig;create=true
 
-cayenne: {}
+cayenne:
+  createSchema: true

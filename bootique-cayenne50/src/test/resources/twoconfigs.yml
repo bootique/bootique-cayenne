@@ -18,6 +18,7 @@ jdbc:
     jdbcUrl: jdbc:derby:target/derby/bqjdbc_fullconfig;create=true
 
 cayenne:
+  createSchema: true
   configs:
     - cayenne-project1.xml
     - cayenne-project2.xml

@@ -85,6 +85,27 @@ public class CayenneModuleIT {
     }
 
     @Test
+    public void addLocation_2Locations() {
+
+        BQModule cayenneProjectModule = binder -> CayenneModule.extend(binder)
+                .addLocation("classpath:cayenne-project2.xml")
+                .addLocation("classpath:cayenne-project1.xml");
+
+        CayenneRuntime runtime = testFactory.app("-c", "classpath:noconfig.yml")
+                .autoLoadModules()
+                .module(cayenneProjectModule)
+                .createRuntime()
+                .getInstance(CayenneRuntime.class);
+
+        DataDomain domain = runtime.getDataDomain();
+        assertNotNull(domain.getEntityResolver().getDbEntity("db_entity"));
+        assertNotNull(domain.getEntityResolver().getDbEntity("db_entity2"));
+
+        // trigger a DB op
+        SQLSelect.dataRowQuery("SELECT * FROM db_entity2").select(runtime.newContext());
+    }
+
+    @Test
     public void twoConfigs() {
         CayenneRuntime runtime = testFactory.app("-c", "classpath:twoconfigs.yml")
                 .autoLoadModules()

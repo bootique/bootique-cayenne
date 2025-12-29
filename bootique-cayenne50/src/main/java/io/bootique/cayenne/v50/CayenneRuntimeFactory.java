@@ -31,6 +31,7 @@ import io.bootique.di.Injector;
 import io.bootique.jdbc.DataSourceFactory;
 import io.bootique.shutdown.ShutdownManager;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.apache.cayenne.DataChannelQueryFilter;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.access.dbsync.CreateIfNoSchemaStrategy;
@@ -60,6 +61,7 @@ public class CayenneRuntimeFactory {
     private final Injector injector;
     private final ShutdownManager shutdownManager;
     private final DataSourceFactory dataSourceFactory;
+    private final Set<String> injectedLocations;
     private final Set<Module> customModules;
     private final Set<Object> listeners;
     private final Set<DataChannelQueryFilter> queryFilters;
@@ -82,6 +84,7 @@ public class CayenneRuntimeFactory {
             Injector injector,
             ShutdownManager shutdownManager,
             DataSourceFactory dataSourceFactory,
+            @Named(CayenneModule.LOCATIONS_BINDING) Set<String> injectedLocations,
             Set<Module> customModules,
             @CayenneListener Set<Object> listeners,
             Set<DataChannelQueryFilter> queryFilters,
@@ -97,6 +100,7 @@ public class CayenneRuntimeFactory {
 
         this.shutdownManager = shutdownManager;
         this.dataSourceFactory = dataSourceFactory;
+        this.injectedLocations = injectedLocations;
         this.customModules = customModules;
         this.listeners = listeners;
         this.queryFilters = queryFilters;
@@ -306,6 +310,9 @@ public class CayenneRuntimeFactory {
     }
 
     void addLocations(CayenneRuntimeBuilder builder) {
+        builder.addConfigs(injectedLocations);
+
+        // config locations may override the injected ones...
         if (locations != null) {
             builder.addConfigs(locations);
         }

@@ -19,7 +19,6 @@
 
 package io.bootique.cayenne.v50;
 
-import io.bootique.BQCoreModule;
 import io.bootique.ModuleExtender;
 import io.bootique.cayenne.v50.annotation.CayenneListener;
 import io.bootique.cayenne.v50.commitlog.MappedCommitLogListener;
@@ -51,6 +50,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     private SetBuilder<MappedDataChannelSyncFilterType> syncFilterTypes;
     private SetBuilder<DataChannelQueryFilter> queryFilters;
     private SetBuilder<Object> listeners;
+    private SetBuilder<String> locations;
     private SetBuilder<Module> modules;
     private SetBuilder<CayenneStartupListener> startupListeners;
     private SetBuilder<MappedCommitLogListener> commitLogListeners;
@@ -69,6 +69,7 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
         contributeSyncFilters();
         contributeSyncFilterTypes();
         contributeModules();
+        contributeLocations();
         contributeStartupListeners();
         contributeCommitLogListeners();
         contributeCommitLogListenerTypes();
@@ -131,12 +132,15 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
     }
 
     /**
-     * Adds Cayenne project location, using the Bootique resource format.
+     * Adds Cayenne project location, using the Bootique resource format. The locations added here will be merged with
+     * any extra locations added via configuration.
      *
      * @since 4.0
      */
     public CayenneModuleExtender addLocation(String projectLocation) {
-        BQCoreModule.extend(binder).setProperty("bq.cayenne.locations[.length]", projectLocation);
+        // Note that we can't simply stick it in "bq.cayenne.locations[.length]" property, as there can be multiple
+        // projects
+        contributeLocations().addInstance(projectLocation);
         return this;
     }
 
@@ -220,6 +224,10 @@ public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender>
 
     SetBuilder<Object> contributeListeners() {
         return listeners != null ? listeners : (listeners = newSet(Object.class, CayenneListener.class));
+    }
+
+    SetBuilder<String> contributeLocations() {
+        return locations != null ? locations : (locations = newSet(String.class, CayenneModule.LOCATIONS_BINDING));
     }
 
     SetBuilder<Module> contributeModules() {

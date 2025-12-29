@@ -34,6 +34,7 @@ import jakarta.inject.Singleton;
 public class CayenneModule implements BQModule {
 
     private static final String CONFIG_PREFIX = "cayenne";
+    static final String LOCATIONS_BINDING = "io.bootique.cayenne.locations";
 
     /**
      * @param binder DI binder passed to the Module that invokes this method.
