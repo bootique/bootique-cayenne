@@ -22,9 +22,9 @@ import io.bootique.BQRuntime;
 import io.bootique.BQRuntimeListener;
 import io.bootique.cayenne.v42.CayenneStartupListener;
 import io.bootique.di.DIRuntimeException;
-import io.bootique.junit5.BQTestScope;
-import io.bootique.junit5.scope.BQAfterMethodCallback;
-import io.bootique.junit5.scope.BQBeforeMethodCallback;
+import io.bootique.junit.BQTestScope;
+import io.bootique.junit.scope.BQAfterMethodCallback;
+import io.bootique.junit.scope.BQBeforeMethodCallback;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.junit.jupiter.api.extension.ExtensionContext;
 

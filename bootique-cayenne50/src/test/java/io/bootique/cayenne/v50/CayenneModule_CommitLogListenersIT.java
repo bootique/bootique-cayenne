@@ -21,8 +21,8 @@ package io.bootique.cayenne.v50;
 
 import io.bootique.BQRuntime;
 import io.bootique.Bootique;
-import io.bootique.junit5.BQApp;
-import io.bootique.junit5.BQTest;
+import io.bootique.junit.BQApp;
+import io.bootique.junit.BQTest;
 import org.apache.cayenne.*;
 import org.apache.cayenne.commitlog.CommitLogListener;
 import org.apache.cayenne.commitlog.model.ChangeMap;
