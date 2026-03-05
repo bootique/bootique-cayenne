@@ -39,11 +39,11 @@
     <modules>
         <module>bootique-cayenne42</module>
         <module>bootique-cayenne42-jcache</module>
-        <module>bootique-cayenne42-junit5</module>
+        <module>bootique-cayenne42-junit</module>
 
         <module>bootique-cayenne50</module>
         <module>bootique-cayenne50-jcache</module>
-        <module>bootique-cayenne50-junit5</module>
+        <module>bootique-cayenne50-junit</module>
     </modules>
 
     <properties>

@@ -27,28 +27,18 @@
         <version>4.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>bootique-cayenne50-jcache</artifactId>
+    <artifactId>bootique-cayenne42-junit</artifactId>
     <packaging>jar</packaging>
 
-    <name>bootique-cayenne50-jcache: Integrates bootique-cayenne with bootique-jcache</name>
-    <description>Integrates bootique-cayenne with bootique-jcache.</description>
+    <name>bootique-cayenne42-junit: JUnit-based helper classes for unit tests with Cayenne stack</name>
+    <description>Provides JUnit based helper classes for unit tests with Cayenne stack</description>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>io.bootique.cayenne</groupId>
-                <artifactId>bootique-cayenne50</artifactId>
+                <artifactId>bootique-cayenne42</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cayenne</groupId>
-                <artifactId>cayenne-jcache</artifactId>
-                <version>${cayenne50.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cayenne</groupId>
-                <artifactId>cayenne-cache-invalidation</artifactId>
-                <version>${cayenne50.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -57,60 +47,23 @@
         <!-- Compile dependencies -->
         <dependency>
             <groupId>io.bootique.cayenne</groupId>
-            <artifactId>bootique-cayenne50</artifactId>
+            <artifactId>bootique-cayenne42</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.cayenne</groupId>
-            <artifactId>cayenne-jcache</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.cache</groupId>
-                    <artifactId>cache-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>io.bootique.jcache</groupId>
-            <artifactId>bootique-jcache</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cayenne</groupId>
-            <artifactId>cayenne-cache-invalidation</artifactId>
+            <groupId>io.bootique</groupId>
+            <artifactId>bootique-junit</artifactId>
         </dependency>
 
         <!-- Unit test dependencies -->
-        <dependency>
-            <groupId>org.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <classifier>jakarta</classifier>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jakarta.xml.bind-api</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.bootique.cayenne</groupId>
-            <artifactId>bootique-cayenne50-junit</artifactId>
-            <scope>test</scope>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>io.bootique.jdbc</groupId>
             <artifactId>bootique-jdbc-junit-derby</artifactId>
             <scope>test</scope>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
