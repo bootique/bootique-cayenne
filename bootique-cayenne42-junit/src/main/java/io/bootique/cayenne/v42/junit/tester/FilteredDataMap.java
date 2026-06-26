@@ -29,7 +29,10 @@ import java.util.*;
  * parent will get reset. Hence using thsi decorator.
  *
  * @since 2.0
+ *
+ * @deprecated the users are encouraged to switch to Cayenne 5.0
  */
+@Deprecated(since = "4.0", forRemoval = true)
 public class FilteredDataMap extends DataMap {
 
     // expected to be in the insert order

@@ -26,7 +26,10 @@ import java.util.stream.Collectors;
 
 /**
  * @since 3.0
+ *
+ * @deprecated the users are encouraged to switch to Cayenne 5.0
  */
+@Deprecated(since = "4.0", forRemoval = true)
 class CommitLogListenerGraph {
 
     static List<CommitLogListener> resolveAndSort(List<MappedCommitLogListener> unsorted) {

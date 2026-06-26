@@ -47,7 +47,7 @@ public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
     }
 
     @Override
-    public DataSource getDataSource(DataNodeDescriptor nodeDescriptor) throws Exception {
+    public DataSource getDataSource(DataNodeDescriptor nodeDescriptor) {
 
         DataSource dataSource;
 
@@ -91,7 +91,7 @@ public class BQCayenneDataSourceFactory extends DelegatingDataSourceFactory {
                         "Available DataSources: %s", defaultDataSourceName, names));
     }
 
-    protected DataSource cayenneDataSource(DataNodeDescriptor nodeDescriptor) throws Exception {
+    protected DataSource cayenneDataSource(DataNodeDescriptor nodeDescriptor) {
 
         // trying to guess whether Cayenne will be able to provide a DataSource without our help...
         if (shouldConfigureDataSourceFromProperties(nodeDescriptor)

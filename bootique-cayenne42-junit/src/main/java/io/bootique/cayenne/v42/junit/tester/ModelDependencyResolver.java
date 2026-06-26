@@ -24,6 +24,10 @@ import org.apache.cayenne.map.DbRelationship;
 
 import java.util.Set;
 
+/**
+ * @deprecated the users are encouraged to switch to Cayenne 5.0
+ */
+@Deprecated(since = "4.0", forRemoval = true)
 class ModelDependencyResolver {
 
     static void resolve(Set<DbEntity> resolved, DbEntity entity) {

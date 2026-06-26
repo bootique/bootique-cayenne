@@ -33,7 +33,10 @@ import java.util.Map;
  * Manages various aspects of Cayenne stack (caching, schema generation, etc.) for a subset of selected entities.
  *
  * @since 2.0
+ *
+ * @deprecated the users are encouraged to switch to Cayenne 5.0
  */
+@Deprecated(since = "4.0", forRemoval = true)
 public class CayenneRuntimeManager {
 
     private DataDomain domain;

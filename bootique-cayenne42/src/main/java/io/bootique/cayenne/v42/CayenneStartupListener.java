@@ -25,8 +25,11 @@ import org.apache.cayenne.configuration.server.ServerRuntime;
  * schema, etc. All other Cayenne extensions, such as service overrides, etc., should be contributed as Modules.
  *
  * @since 3.0
+ *
+ * @deprecated the users are encouraged to switch to Cayenne 5.0
  */
 @FunctionalInterface
+@Deprecated(since = "4.0", forRemoval = true)
 public interface CayenneStartupListener {
 
     void onRuntimeCreated(ServerRuntime runtime);

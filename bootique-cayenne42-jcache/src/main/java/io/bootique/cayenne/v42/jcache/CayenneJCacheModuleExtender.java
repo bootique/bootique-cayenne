@@ -28,6 +28,10 @@ import org.apache.cayenne.jcache.JCacheConstants;
 
 import javax.cache.configuration.Configuration;
 
+/**
+ * @deprecated the users are encouraged to switch to Cayenne 5.0
+ */
+@Deprecated(since = "4.0", forRemoval = true)
 public class CayenneJCacheModuleExtender extends ModuleExtender<CayenneJCacheModuleExtender> {
 
     public CayenneJCacheModuleExtender(Binder binder) {

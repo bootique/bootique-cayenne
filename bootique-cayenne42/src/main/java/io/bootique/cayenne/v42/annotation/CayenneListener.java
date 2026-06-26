@@ -27,10 +27,13 @@ import java.lang.annotation.Target;
 
 /**
  * A binding annotation used for objects that are Cayenne listeners.
+ *
+ * @deprecated the users are encouraged to switch to Cayenne 5.0
  */
 @Target({ ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier
+@Deprecated(since = "4.0", forRemoval = true)
 public @interface CayenneListener {
 
 }

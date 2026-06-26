@@ -37,6 +37,10 @@ import org.apache.cayenne.di.Module;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @deprecated the users are encouraged to switch to Cayenne 5.0
+ */
+@Deprecated(since = "4.0", forRemoval = true)
 public class CayenneModuleExtender extends ModuleExtender<CayenneModuleExtender> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CayenneModuleExtender.class);

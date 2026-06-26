@@ -55,7 +55,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * @deprecated the users are encouraged to switch to Cayenne 5.0
+ */
 @BQConfig("Configures Cayenne stack, providing injectable ServerRuntime.")
+@Deprecated(since = "4.0", forRemoval = true)
 public class ServerRuntimeFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerRuntimeFactory.class);

@@ -40,7 +40,10 @@ import java.util.Set;
 
 /**
  * Bootique DI module integrating bootique-jcache to Cayenne.
+ *
+ * @deprecated the users are encouraged to switch to Cayenne 5.0
  */
+@Deprecated(since = "4.0", forRemoval = true)
 public class CayenneJCacheModule implements BQModule {
 
     /**
@@ -55,7 +58,8 @@ public class CayenneJCacheModule implements BQModule {
     @Override
     public ModuleCrate crate() {
         return ModuleCrate.of(this)
-                .description("Integrates Apache Cayenne 4.2 JCache extensions")
+                .description("Deprecated and should be replaced with 'bootique-cayenne50-jcache'.")
+                .deprecated(true)
                 .build();
     }
 

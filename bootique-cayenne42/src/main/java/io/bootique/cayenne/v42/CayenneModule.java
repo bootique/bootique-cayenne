@@ -30,7 +30,10 @@ import jakarta.inject.Singleton;
 
 /**
  * @since 2.0
+ *
+ * @deprecated the users are encouraged to switch to Cayenne 5.0
  */
+@Deprecated(since = "4.0", forRemoval = true)
 public class CayenneModule implements BQModule {
 
     private static final String CONFIG_PREFIX = "cayenne";
@@ -47,8 +50,9 @@ public class CayenneModule implements BQModule {
     @Override
     public ModuleCrate crate() {
         return ModuleCrate.of(this)
-                .description("Integrates Apache Cayenne ORM, v4.2")
+                .description("Deprecated and should be replaced with 'bootique-cayenne50'.")
                 .config(CONFIG_PREFIX, ServerRuntimeFactory.class)
+                .deprecated(true)
                 .build();
     }
 

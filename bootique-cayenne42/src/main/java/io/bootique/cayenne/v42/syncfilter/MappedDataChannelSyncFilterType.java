@@ -22,7 +22,10 @@ import org.apache.cayenne.DataChannelSyncFilter;
 
 /**
  * @since 3.0
+ *
+ * @deprecated the users are encouraged to switch to Cayenne 5.0
  */
+@Deprecated(since = "4.0", forRemoval = true)
 public class MappedDataChannelSyncFilterType {
 
     private final Class<? extends DataChannelSyncFilter> filterType;

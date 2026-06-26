@@ -40,7 +40,10 @@ import java.util.Objects;
  * A helper to conditionally build extensions related to Cayenne CommitLog module.
  *
  * @since 3.0
+ *
+ * @deprecated the users are encouraged to switch to Cayenne 5.0
  */
+@Deprecated(since = "4.0", forRemoval = true)
 public class CommitLogModuleBuilder {
 
     private boolean applyCommitLogAnnotation;

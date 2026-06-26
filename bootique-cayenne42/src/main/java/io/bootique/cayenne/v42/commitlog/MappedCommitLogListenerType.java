@@ -23,7 +23,10 @@ import org.apache.cayenne.commitlog.CommitLogListener;
 
 /**
  * @since 3.0
+ *
+ * @deprecated the users are encouraged to switch to Cayenne 5.0
  */
+@Deprecated(since = "4.0", forRemoval = true)
 public class MappedCommitLogListenerType {
 
     private final Class<? extends CommitLogListener> listenerType;
