@@ -18,7 +18,7 @@
   -->
 
 [![build test deploy](https://github.com/bootique/bootique-cayenne/actions/workflows/maven.yml/badge.svg)](https://github.com/bootique/bootique-cayenne/actions/workflows/maven.yml)
-[![Maven Central](https://img.shields.io/maven-central/v/io.bootique.cayenne/bootique-cayenne.svg?colorB=brightgreen)](https://search.maven.org/artifact/io.bootique.cayenne/bootique-cayenne/)
+[![Maven Central](https://img.shields.io/maven-central/v/io.bootique.cayenne/bootique-cayenne-parent.svg?colorB=brightgreen)](https://search.maven.org/artifact/io.bootique.cayenne/bootique-cayenne-parent/)
 
 
 [Apache Cayenne](http://cayenne.apache.org/) Integration Module for [Bootique](http://bootique.io).
