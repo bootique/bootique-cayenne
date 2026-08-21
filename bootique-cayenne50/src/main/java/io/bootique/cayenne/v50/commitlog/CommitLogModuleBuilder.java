@@ -18,7 +18,7 @@
  */
 package io.bootique.cayenne.v50.commitlog;
 
-import org.apache.cayenne.DataChannel;
+import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.commitlog.CommitLogFilter;
 import org.apache.cayenne.commitlog.CommitLogListener;
 import org.apache.cayenne.commitlog.meta.AnnotationCommitLogEntityFactory;
@@ -113,21 +113,21 @@ public class CommitLogModuleBuilder {
         };
     }
 
-    private CommitLogEntityFactory createEntityFactory(Provider<DataChannel> dataChannelProvider) {
+    private CommitLogEntityFactory createEntityFactory(Provider<DataDomain> dataChannelProvider) {
         return applyCommitLogAnnotation
                 ? new AnnotationCommitLogEntityFactory(dataChannelProvider)
                 : new IncludeAllCommitLogEntityFactory();
     }
 
     // TODO: We need 4 classes to create what are essentially two instances of CommitLogFilter, because the filter
-    //  factory code needs access to both this Builder ivars and "Provider<DataChannel> dataChannelProvider" from the
+    //  factory code needs access to both this Builder ivars and "Provider<DataDomain> dataChannelProvider" from the
     //  Cayenne injection stack. So aside from moving this logic to Cayenne, Cayenne DI should do a better job bridging
     //  between manually created and DI-created instances.
 
     class PreTxCommitLogFilterProvider implements Provider<PreTxCommitLogFilter> {
 
         @Inject
-        Provider<DataChannel> dataChannelProvider;
+        Provider<DataDomain> dataChannelProvider;
 
         @Override
         public PreTxCommitLogFilter get() throws DIRuntimeException {
@@ -142,7 +142,7 @@ public class CommitLogModuleBuilder {
     class PostTxCommitLogFilterProvider implements Provider<PostTxCommitLogFilter> {
 
         @Inject
-        Provider<DataChannel> dataChannelProvider;
+        Provider<DataDomain> dataChannelProvider;
 
         @Override
         public PostTxCommitLogFilter get() throws DIRuntimeException {

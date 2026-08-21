@@ -21,7 +21,7 @@ package io.bootique.cayenne.v50.junit.tester;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.access.DataNode;
 import org.apache.cayenne.access.DbGenerator;
-import org.apache.cayenne.access.util.DoNothingOperationObserver;
+import org.apache.cayenne.access.OperationObserver;
 import org.apache.cayenne.map.DataMap;
 import org.apache.cayenne.map.DbEntity;
 import org.apache.cayenne.query.SQLTemplate;
@@ -82,20 +82,23 @@ public class CayenneRuntimeManager {
 
     protected void deleteData(DataNode node, DbEntity entity) {
 
-        String name = node.getAdapter().getQuotingStrategy().quotedFullyQualifiedName(entity);
+        String name = node.getAdapter().getQuotingStrategy()
+                .quotedFQN(entity.getCatalog(), entity.getSchema(), entity.getName());
         String sql = "delete from " + name;
 
         // using SQLTemplate instead of SQLExec, as it can be executed directly on the DataNode
         SQLTemplate query = new SQLTemplate();
         query.setDefaultTemplate(sql);
-        node.performQueries(Collections.singleton(query), new DoNothingOperationObserver());
+        // an OperationObserver with all-default methods ignores the results
+        node.performQueries(Collections.singleton(query), new OperationObserver() {
+        });
     }
 
     protected void createSchema(String nodeName, DataMap map) {
 
         DataNode node = domain.getDataNode(nodeName);
 
-        DbGenerator generator = new DbGenerator(node.getAdapter(), map, node.getJdbcEventLogger());
+        DbGenerator generator = new DbGenerator(node.getAdapter(), map, node.getSqlLogger());
         generator.setShouldCreateTables(true);
         generator.setShouldDropTables(false);
         generator.setShouldCreateFKConstraints(true);

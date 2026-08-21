@@ -1,3 +1,7 @@
+## 4.0-M6
+
+* #121 Upgrade to Cayenne 5.0-M3
+
 ## 4.0-M4
 
 * #120 Upgrade to Cayenne 5.0-M2, make 5.x the primary Cayenne

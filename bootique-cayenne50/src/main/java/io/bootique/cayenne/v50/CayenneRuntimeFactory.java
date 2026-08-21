@@ -33,11 +33,9 @@ import io.bootique.shutdown.ShutdownManager;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.apache.cayenne.DataChannelQueryFilter;
-import org.apache.cayenne.access.DataDomain;
-import org.apache.cayenne.access.dbsync.CreateIfNoSchemaStrategy;
-import org.apache.cayenne.access.dbsync.SchemaUpdateStrategyFactory;
 import org.apache.cayenne.access.types.ExtendedType;
 import org.apache.cayenne.access.types.ValueObjectType;
+import org.apache.cayenne.configuration.DataNodeDescriptor;
 import org.apache.cayenne.configuration.runtime.CoreModule;
 import org.apache.cayenne.configuration.runtime.CoreModuleExtender;
 import org.apache.cayenne.di.Module;
@@ -47,8 +45,11 @@ import org.apache.cayenne.runtime.CayenneRuntimeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -125,8 +126,8 @@ public class CayenneRuntimeFactory {
      * @since 4.0
      */
     @BQConfigProperty("""
-            A map of Cayenne DataMaps to Bootique DataSource names. It allows to link DataMaps to DataSources as
-            well as override any DataNode mappings in Cayenne project files.""")
+            A map of Cayenne DataMaps to Bootique DataSource names. It allows to link DataMaps to DataSources,
+            creating a Cayenne DataNode per DataSource.""")
     public void setMapDatasources(Map<String, String> mapDatasources) {
         this.mapDatasources = mapDatasources;
     }
@@ -167,9 +168,9 @@ public class CayenneRuntimeFactory {
         this.name = name;
     }
 
-    @BQConfigProperty("An optional name of the DataSource to use in Cayenne. A DataSource with the matching name " +
-            "must be defined in 'bootique-jdbc' configuration. If missing, a DataSource from Cayenne project or a " +
-            "default DataSource from 'bootique-jdbc' is used.")
+    @BQConfigProperty("An optional name of the DataSource to use in Cayenne for all the DataMaps not linked to a " +
+            "DataSource via 'mapDatasources'. A DataSource with the matching name must be defined in 'bootique-jdbc' " +
+            "configuration. If missing, and 'bootique-jdbc' defines exactly one DataSource, that DataSource is used.")
     public void setDatasource(String datasource) {
         this.datasource = datasource;
     }
@@ -189,10 +190,10 @@ public class CayenneRuntimeFactory {
 
     public CayenneRuntime create() {
 
-        CayenneRuntimeBuilder builder = CayenneRuntime.builder(name);
+        CayenneRuntimeBuilder builder = CayenneRuntime.of(name);
 
-        addCreateSchema(builder);
         addBootiqueExtensions(builder);
+        addDataNodes(builder);
         builder.addModules(customModules);
         addExtendedTypes(builder);
         addValueObjectTypes(builder);
@@ -224,22 +225,77 @@ public class CayenneRuntimeFactory {
         return null;
     }
 
-    void addCreateSchema(CayenneRuntimeBuilder builder) {
-        if (createSchema) {
-            builder.addModule(b -> b.bind(SchemaUpdateStrategyFactory.class).toInstance(descriptor -> new CreateIfNoSchemaStrategy()));
+    void addBootiqueExtensions(CayenneRuntimeBuilder builder) {
+        builder.addModule(b -> b.bind(ResourceLocator.class).to(BQResourceLocator.class));
+    }
+
+    void addDataNodes(CayenneRuntimeBuilder builder) {
+
+        String defaultDataSource = defaultDataSourceName();
+
+        // Preserving the insertion order for predictable node creation
+        Map<String, Set<String>> mapsByDataSource = new LinkedHashMap<>();
+        if (mapDatasources != null) {
+            mapDatasources.forEach((map, ds) -> mapsByDataSource
+                    .computeIfAbsent(ds, n -> new LinkedHashSet<>())
+                    .add(map));
+        }
+
+        // Nothing is explicitly mapped, and we can't guess the DataSource to use for the DataMaps. Complain right
+        // away instead of leaving Cayenne without a default DataNode
+        if (defaultDataSource == null && mapsByDataSource.isEmpty()) {
+            throwOnAmbiguousDefaultDataSource();
+        }
+
+        mapsByDataSource.forEach((ds, maps) -> {
+
+            // The default node picks up every DataMap not linked to another node, so DataMaps explicitly mapped to
+            // the default DataSource need no separate node (and creating one would clash with the default node name)
+            if (!ds.equals(defaultDataSource)) {
+                builder.addDataNode(nodeDescriptor(ds), maps.toArray(new String[0]));
+            }
+        });
+
+        if (defaultDataSource != null) {
+            builder.defaultDataNode(nodeDescriptor(defaultDataSource));
         }
     }
 
-    void addBootiqueExtensions(CayenneRuntimeBuilder builder) {
-        String defaultDS = defaultDataSourceName();
-        var ddProvider = new SyntheticNodeDataDomainProvider(defaultDS, mapDatasources != null ? mapDatasources : Map.of());
-        var dsFactory = new BQCayenneDataSourceFactory(dataSourceFactory, datasource);
+    DataNodeDescriptor nodeDescriptor(String dataSourceName) {
 
-        builder.addModule(b -> {
-            b.bind(ResourceLocator.class).to(BQResourceLocator.class);
-            b.bind(DataDomain.class).toProviderInstance(ddProvider);
-            b.bind(org.apache.cayenne.configuration.runtime.DataSourceFactory.class).toInstance(dsFactory);
-        });
+        // Using the Bootique DataSource name for the node name. Distinguishing nodes by name may be useful in case of
+        // multiple stacks used in the same transaction...
+
+        DataNodeDescriptor.Builder builder = DataNodeDescriptor
+                .of(dataSourceName)
+                .dataSource(dataSource(dataSourceName));
+
+        if (createSchema) {
+            builder.createSchemaIfNeeded();
+        }
+
+        return builder.build();
+    }
+
+    void throwOnAmbiguousDefaultDataSource() {
+
+        Collection<String> names = dataSourceFactory.allNames();
+
+        // no DataSources at all is not an error. It is a valid case of a Cayenne stack without a DB connection
+        if (!names.isEmpty()) {
+            throw new IllegalStateException(
+                    String.format("Can't map Cayenne DataSource: 'cayenne.datasource' is missing. " +
+                            "Available DataSources are %s", names));
+        }
+    }
+
+    DataSource dataSource(String dataSourceName) {
+        DataSource ds = dataSourceFactory.forName(dataSourceName);
+        if (ds == null) {
+            throw new IllegalStateException("Unknown Cayenne DataSource: " + dataSourceName);
+        }
+
+        return ds;
     }
 
     void addExtendedTypes(CayenneRuntimeBuilder builder) {

@@ -20,11 +20,12 @@
 package io.bootique.cayenne.v50;
 
 import io.bootique.BQModule;
+import io.bootique.BQRuntime;
+import io.bootique.di.DIRuntimeException;
 import io.bootique.junit.BQTest;
 import io.bootique.junit.BQTestFactory;
 import io.bootique.junit.BQTestTool;
 import org.apache.cayenne.access.DataDomain;
-import org.apache.cayenne.configuration.runtime.DataDomainLoadException;
 import org.apache.cayenne.di.Key;
 import org.apache.cayenne.query.SQLSelect;
 import org.apache.cayenne.runtime.CayenneRuntime;
@@ -174,34 +175,31 @@ public class CayenneModuleIT {
     @Test
     public void undefinedDataSource() {
 
-        CayenneRuntime runtime = testFactory.app("-c", "classpath:noconfig_2ds.yml")
+        // more than one DataSource and no explicit "cayenne.datasource" .. Cayenne DataSource can't be resolved
+        BQRuntime app = testFactory.app("-c", "classpath:noconfig_2ds.yml")
                 .autoLoadModules()
-                .createRuntime()
-                .getInstance(CayenneRuntime.class);
+                .createRuntime();
 
-        try {
-            runtime.getDataDomain();
-        } catch (DataDomainLoadException e) {
-            assertTrue(e.getCause().getMessage()
-                    .startsWith("Can't map Cayenne DataSource: 'cayenne.datasource' is missing."));
-        }
+        DIRuntimeException e = assertThrows(DIRuntimeException.class, () -> app.getInstance(CayenneRuntime.class));
+
+        Throwable cause = e.getCause();
+        assertInstanceOf(IllegalStateException.class, cause);
+        assertTrue(cause.getMessage().startsWith("Can't map Cayenne DataSource: 'cayenne.datasource' is missing."));
     }
 
     @Test
     public void unmatchedDataSource() {
 
-        CayenneRuntime runtime = testFactory.app("-c", "classpath:noconfig_2ds_unmatched.yml")
+        // DataSources are resolved when CayenneRuntime is created, so an unmatched name fails right away
+        BQRuntime app = testFactory.app("-c", "classpath:noconfig_2ds_unmatched.yml")
                 .autoLoadModules()
-                .createRuntime()
-                .getInstance(CayenneRuntime.class);
+                .createRuntime();
 
-        try {
-            runtime.getDataDomain();
-            fail();
-        } catch (DataDomainLoadException e) {
-            String message = e.getCause().getMessage();
-            assertEquals("No configuration present for DataSource named 'ds3'", message);
-        }
+        DIRuntimeException e = assertThrows(DIRuntimeException.class, () -> app.getInstance(CayenneRuntime.class));
+
+        Throwable cause = e.getCause();
+        assertInstanceOf(IllegalStateException.class, cause);
+        assertEquals("No configuration present for DataSource named 'ds3'", cause.getMessage());
     }
 
     @Test
