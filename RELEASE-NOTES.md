@@ -1,5 +1,6 @@
 ## 4.0-M6
 
+* #66 Support DataSource-free Cayenne stack
 * #121 Upgrade to Cayenne 5.0-M3
 
 ## 4.0-M4

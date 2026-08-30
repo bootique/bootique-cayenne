@@ -25,6 +25,7 @@ import io.bootique.di.DIRuntimeException;
 import io.bootique.junit.BQTest;
 import io.bootique.junit.BQTestFactory;
 import io.bootique.junit.BQTestTool;
+import org.apache.cayenne.CayenneRuntimeException;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.di.Key;
 import org.apache.cayenne.query.SQLSelect;
@@ -173,18 +174,37 @@ public class CayenneModuleIT {
     }
 
     @Test
+    public void noDataSources() {
+
+        // no DataSources at all is a valid case of a Cayenne stack without a DB connection. The stack must start,
+        // and only fail if and when it attempts to access a DataSource
+        CayenneRuntime runtime = testFactory.app("-c", "classpath:nodatasource.yml")
+                .autoLoadModules()
+                .createRuntime()
+                .getInstance(CayenneRuntime.class);
+
+        DataDomain domain = runtime.getDataDomain();
+        assertNotNull(domain.getDataMap("datamap2"));
+        assertTrue(domain.getDataNodes().isEmpty());
+        assertNull(domain.getDefaultNode());
+
+        assertThrows(CayenneRuntimeException.class,
+                () -> SQLSelect.dataRowQuery("datamap2", "SELECT * FROM db_entity2").select(runtime.newContext()));
+    }
+
+    @Test
     public void undefinedDataSource() {
 
-        // more than one DataSource and no explicit "cayenne.datasource" .. Cayenne DataSource can't be resolved
-        BQRuntime app = testFactory.app("-c", "classpath:noconfig_2ds.yml")
+        // more than one DataSource and no explicit "cayenne.datasource" .. Cayenne DataSource can't be resolved,
+        // but the stack still starts, failing only when a DataSource is actually needed
+        CayenneRuntime runtime = testFactory.app("-c", "classpath:noconfig_2ds.yml")
                 .autoLoadModules()
-                .createRuntime();
+                .createRuntime()
+                .getInstance(CayenneRuntime.class);
 
-        DIRuntimeException e = assertThrows(DIRuntimeException.class, () -> app.getInstance(CayenneRuntime.class));
-
-        Throwable cause = e.getCause();
-        assertInstanceOf(IllegalStateException.class, cause);
-        assertTrue(cause.getMessage().startsWith("Can't map Cayenne DataSource: 'cayenne.datasource' is missing."));
+        DataDomain domain = runtime.getDataDomain();
+        assertTrue(domain.getDataNodes().isEmpty());
+        assertNull(domain.getDefaultNode());
     }
 
     @Test

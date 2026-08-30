@@ -170,7 +170,9 @@ public class CayenneRuntimeFactory {
 
     @BQConfigProperty("An optional name of the DataSource to use in Cayenne for all the DataMaps not linked to a " +
             "DataSource via 'mapDatasources'. A DataSource with the matching name must be defined in 'bootique-jdbc' " +
-            "configuration. If missing, and 'bootique-jdbc' defines exactly one DataSource, that DataSource is used.")
+            "configuration. If missing, and 'bootique-jdbc' defines exactly one DataSource, that DataSource is used. " +
+            "Otherwise Cayenne is started without a default DataNode, and will only fail if and when it needs to " +
+            "access a DataSource.")
     public void setDatasource(String datasource) {
         this.datasource = datasource;
     }
@@ -241,12 +243,6 @@ public class CayenneRuntimeFactory {
                     .add(map));
         }
 
-        // Nothing is explicitly mapped, and we can't guess the DataSource to use for the DataMaps. Complain right
-        // away instead of leaving Cayenne without a default DataNode
-        if (defaultDataSource == null && mapsByDataSource.isEmpty()) {
-            throwOnAmbiguousDefaultDataSource();
-        }
-
         mapsByDataSource.forEach((ds, maps) -> {
 
             // The default node picks up every DataMap not linked to another node, so DataMaps explicitly mapped to
@@ -275,18 +271,6 @@ public class CayenneRuntimeFactory {
         }
 
         return builder.build();
-    }
-
-    void throwOnAmbiguousDefaultDataSource() {
-
-        Collection<String> names = dataSourceFactory.allNames();
-
-        // no DataSources at all is not an error. It is a valid case of a Cayenne stack without a DB connection
-        if (!names.isEmpty()) {
-            throw new IllegalStateException(
-                    String.format("Can't map Cayenne DataSource: 'cayenne.datasource' is missing. " +
-                            "Available DataSources are %s", names));
-        }
     }
 
     DataSource dataSource(String dataSourceName) {
