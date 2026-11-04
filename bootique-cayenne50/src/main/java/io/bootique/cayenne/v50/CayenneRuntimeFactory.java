@@ -35,13 +35,13 @@ import jakarta.inject.Named;
 import org.apache.cayenne.DataChannelQueryFilter;
 import org.apache.cayenne.access.types.ExtendedType;
 import org.apache.cayenne.access.types.ValueObjectType;
-import org.apache.cayenne.configuration.DataNodeDescriptor;
-import org.apache.cayenne.configuration.runtime.CoreModule;
-import org.apache.cayenne.configuration.runtime.CoreModuleExtender;
+import org.apache.cayenne.project.DataNodeDescriptor;
+import org.apache.cayenne.CoreModule;
+import org.apache.cayenne.CoreModuleExtender;
 import org.apache.cayenne.di.Module;
 import org.apache.cayenne.resource.ResourceLocator;
-import org.apache.cayenne.runtime.CayenneRuntime;
-import org.apache.cayenne.runtime.CayenneRuntimeBuilder;
+import org.apache.cayenne.CayenneRuntime;
+import org.apache.cayenne.CayenneRuntimeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

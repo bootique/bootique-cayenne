@@ -1,9 +1,5 @@
 package io.bootique.cayenne.v50.junit.persistence3.auto;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
 import org.apache.cayenne.PersistentObject;
 import org.apache.cayenne.exp.property.EntityProperty;
 import org.apache.cayenne.exp.property.PropertyFactory;
@@ -19,8 +15,6 @@ import io.bootique.cayenne.v50.junit.persistence3.P3T2;
  * If you need to make any customizations, please use subclass.
  */
 public abstract class _P3T2 extends PersistentObject {
-
-    private static final long serialVersionUID = 1L;
 
     public static final SelfProperty<P3T2> SELF = PropertyFactory.createSelf(P3T2.class);
 
@@ -66,26 +60,6 @@ public abstract class _P3T2 extends PersistentObject {
             default:
                 super.writePropertyDirectly(propName, val);
         }
-    }
-
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        writeSerialized(out);
-    }
-
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        readSerialized(in);
-    }
-
-    @Override
-    protected void writeState(ObjectOutputStream out) throws IOException {
-        super.writeState(out);
-        out.writeObject(this.t1);
-    }
-
-    @Override
-    protected void readState(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        super.readState(in);
-        this.t1 = in.readObject();
     }
 
 }

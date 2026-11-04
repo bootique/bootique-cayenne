@@ -18,7 +18,7 @@
  */
 package io.bootique.cayenne.v50;
 
-import org.apache.cayenne.runtime.CayenneRuntime;
+import org.apache.cayenne.CayenneRuntime;
 
 /**
  * An injectable callback invoked after Cayenne stack is started. Used to run explicit actions, such as creating DB

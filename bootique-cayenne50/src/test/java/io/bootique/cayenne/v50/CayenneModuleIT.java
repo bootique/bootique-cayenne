@@ -29,7 +29,7 @@ import org.apache.cayenne.CayenneRuntimeException;
 import org.apache.cayenne.access.DataDomain;
 import org.apache.cayenne.di.Key;
 import org.apache.cayenne.query.SQLSelect;
-import org.apache.cayenne.runtime.CayenneRuntime;
+import org.apache.cayenne.CayenneRuntime;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;

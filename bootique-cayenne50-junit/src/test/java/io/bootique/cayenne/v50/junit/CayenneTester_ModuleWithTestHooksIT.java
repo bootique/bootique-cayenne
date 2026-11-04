@@ -24,7 +24,7 @@ import io.bootique.di.DIRuntimeException;
 import io.bootique.junit.BQTest;
 import io.bootique.junit.BQTestFactory;
 import io.bootique.junit.BQTestTool;
-import org.apache.cayenne.runtime.CayenneRuntime;
+import org.apache.cayenne.CayenneRuntime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

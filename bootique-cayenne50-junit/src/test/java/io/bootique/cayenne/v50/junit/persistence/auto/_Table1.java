@@ -1,9 +1,5 @@
 package io.bootique.cayenne.v50.junit.persistence.auto;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
 import org.apache.cayenne.PersistentObject;
 import org.apache.cayenne.exp.property.NumericProperty;
 import org.apache.cayenne.exp.property.PropertyFactory;
@@ -18,8 +14,6 @@ import io.bootique.cayenne.v50.junit.persistence.Table1;
  * If you need to make any customizations, please use subclass.
  */
 public abstract class _Table1 extends PersistentObject {
-
-    private static final long serialVersionUID = 1L;
 
     public static final SelfProperty<Table1> SELF = PropertyFactory.createSelf(Table1.class);
 
@@ -84,28 +78,6 @@ public abstract class _Table1 extends PersistentObject {
             default:
                 super.writePropertyDirectly(propName, val);
         }
-    }
-
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        writeSerialized(out);
-    }
-
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        readSerialized(in);
-    }
-
-    @Override
-    protected void writeState(ObjectOutputStream out) throws IOException {
-        super.writeState(out);
-        out.writeObject(this.a);
-        out.writeObject(this.b);
-    }
-
-    @Override
-    protected void readState(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        super.readState(in);
-        this.a = (Long)in.readObject();
-        this.b = (Long)in.readObject();
     }
 
 }

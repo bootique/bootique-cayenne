@@ -1,61 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<data-map xmlns="http://cayenne.apache.org/schema/13/modelMap"
+<dataMap xmlns="http://cayenne.apache.org/schema/14/dataMap"
 	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	 xsi:schemaLocation="http://cayenne.apache.org/schema/13/modelMap https://cayenne.apache.org/schema/13/modelMap.xsd"
-	 project-version="13">
-	<property name="defaultPackage" value="io.bootique.cayenne.v50.junit.persistence3"/>
-	<db-entity name="p3_t1">
-		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
-	</db-entity>
-	<db-entity name="p3_t1_t4">
-		<db-attribute name="t1_id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
-		<db-attribute name="t4_id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
-	</db-entity>
-	<db-entity name="p3_t2">
-		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
-		<db-attribute name="t1_id" type="INTEGER"/>
-	</db-entity>
-	<db-entity name="p3_t3">
-		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
-	</db-entity>
-	<db-entity name="p3_t4">
-		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
-	</db-entity>
-	<obj-entity name="P3T1" className="io.bootique.cayenne.v50.junit.persistence3.P3T1" dbEntityName="p3_t1"/>
-	<obj-entity name="P3T2" className="io.bootique.cayenne.v50.junit.persistence3.P3T2" dbEntityName="p3_t2"/>
-	<obj-entity name="P3T3" className="io.bootique.cayenne.v50.junit.persistence3.P3T3" dbEntityName="p3_t3"/>
-	<obj-entity name="P3T4" className="io.bootique.cayenne.v50.junit.persistence3.P3T4" dbEntityName="p3_t4"/>
-	<db-relationship name="t1t4" source="p3_t1" target="p3_t1_t4" toDependentPK="true" toMany="true">
-		<db-attribute-pair source="id" target="t1_id"/>
-	</db-relationship>
-	<db-relationship name="t2s" source="p3_t1" target="p3_t2" toMany="true">
-		<db-attribute-pair source="id" target="t1_id"/>
-	</db-relationship>
-	<db-relationship name="t3" source="p3_t1" target="p3_t3" toDependentPK="true">
-		<db-attribute-pair source="id" target="id"/>
-	</db-relationship>
-	<db-relationship name="t1" source="p3_t1_t4" target="p3_t1">
-		<db-attribute-pair source="t1_id" target="id"/>
-	</db-relationship>
-	<db-relationship name="t4" source="p3_t1_t4" target="p3_t4">
-		<db-attribute-pair source="t4_id" target="id"/>
-	</db-relationship>
-	<db-relationship name="t1" source="p3_t2" target="p3_t1">
-		<db-attribute-pair source="t1_id" target="id"/>
-	</db-relationship>
-	<db-relationship name="t1" source="p3_t3" target="p3_t1">
-		<db-attribute-pair source="id" target="id"/>
-	</db-relationship>
-	<db-relationship name="t4t1" source="p3_t4" target="p3_t1_t4" toDependentPK="true" toMany="true">
-		<db-attribute-pair source="id" target="t4_id"/>
-	</db-relationship>
-	<obj-relationship name="t2s" source="P3T1" target="P3T2" deleteRule="Deny" db-relationship-path="t2s"/>
-	<obj-relationship name="t3" source="P3T1" target="P3T3" deleteRule="Nullify" db-relationship-path="t3"/>
-	<obj-relationship name="t4s" source="P3T1" target="P3T4" deleteRule="Nullify" db-relationship-path="t1t4.t4"/>
-	<obj-relationship name="t1" source="P3T2" target="P3T1" deleteRule="Nullify" db-relationship-path="t1"/>
-	<obj-relationship name="t1" source="P3T3" target="P3T1" deleteRule="Nullify" db-relationship-path="t1"/>
-	<obj-relationship name="t1s" source="P3T4" target="P3T1" deleteRule="Nullify" db-relationship-path="t4t1.t1"/>
-	<cgen xmlns="http://cayenne.apache.org/schema/13/cgen">
+	 xsi:schemaLocation="http://cayenne.apache.org/schema/14/dataMap https://cayenne.apache.org/schema/14/dataMap.xsd"
+	 defaultPackage="io.bootique.cayenne.v50.junit.persistence3">
+	<dbEntity name="p3_t1">
+		<dbAttribute name="id" type="INTEGER" primaryKey="true" mandatory="true"/>
+	</dbEntity>
+	<dbEntity name="p3_t1_t4">
+		<dbAttribute name="t1_id" type="INTEGER" primaryKey="true" mandatory="true"/>
+		<dbAttribute name="t4_id" type="INTEGER" primaryKey="true" mandatory="true"/>
+	</dbEntity>
+	<dbEntity name="p3_t2">
+		<dbAttribute name="id" type="INTEGER" primaryKey="true" mandatory="true"/>
+		<dbAttribute name="t1_id" type="INTEGER"/>
+	</dbEntity>
+	<dbEntity name="p3_t3">
+		<dbAttribute name="id" type="INTEGER" primaryKey="true" mandatory="true"/>
+	</dbEntity>
+	<dbEntity name="p3_t4">
+		<dbAttribute name="id" type="INTEGER" primaryKey="true" mandatory="true"/>
+	</dbEntity>
+	<objEntity name="P3T1" className="io.bootique.cayenne.v50.junit.persistence3.P3T1" dbEntityName="p3_t1"/>
+	<objEntity name="P3T2" className="io.bootique.cayenne.v50.junit.persistence3.P3T2" dbEntityName="p3_t2"/>
+	<objEntity name="P3T3" className="io.bootique.cayenne.v50.junit.persistence3.P3T3" dbEntityName="p3_t3"/>
+	<objEntity name="P3T4" className="io.bootique.cayenne.v50.junit.persistence3.P3T4" dbEntityName="p3_t4"/>
+	<dbRelationship name="t1t4" source="p3_t1" target="p3_t1_t4" toDependentPK="true" toMany="true">
+		<dbAttributePair source="id" target="t1_id"/>
+	</dbRelationship>
+	<dbRelationship name="t2s" source="p3_t1" target="p3_t2" toMany="true">
+		<dbAttributePair source="id" target="t1_id"/>
+	</dbRelationship>
+	<dbRelationship name="t3" source="p3_t1" target="p3_t3" toDependentPK="true">
+		<dbAttributePair source="id" target="id"/>
+	</dbRelationship>
+	<dbRelationship name="t1" source="p3_t1_t4" target="p3_t1">
+		<dbAttributePair source="t1_id" target="id"/>
+	</dbRelationship>
+	<dbRelationship name="t4" source="p3_t1_t4" target="p3_t4">
+		<dbAttributePair source="t4_id" target="id"/>
+	</dbRelationship>
+	<dbRelationship name="t1" source="p3_t2" target="p3_t1">
+		<dbAttributePair source="t1_id" target="id"/>
+	</dbRelationship>
+	<dbRelationship name="t1" source="p3_t3" target="p3_t1">
+		<dbAttributePair source="id" target="id"/>
+	</dbRelationship>
+	<dbRelationship name="t4t1" source="p3_t4" target="p3_t1_t4" toDependentPK="true" toMany="true">
+		<dbAttributePair source="id" target="t4_id"/>
+	</dbRelationship>
+	<objRelationship name="t2s" source="P3T1" target="P3T2" deleteRule="deny" dbRelationshipPath="t2s"/>
+	<objRelationship name="t3" source="P3T1" target="P3T3" deleteRule="nullify" dbRelationshipPath="t3"/>
+	<objRelationship name="t4s" source="P3T1" target="P3T4" deleteRule="nullify" dbRelationshipPath="t1t4.t4"/>
+	<objRelationship name="t1" source="P3T2" target="P3T1" deleteRule="nullify" dbRelationshipPath="t1"/>
+	<objRelationship name="t1" source="P3T3" target="P3T1" deleteRule="nullify" dbRelationshipPath="t1"/>
+	<objRelationship name="t1s" source="P3T4" target="P3T1" deleteRule="nullify" dbRelationshipPath="t4t1.t1"/>
+	<cgen xmlns="http://cayenne.apache.org/schema/14/cgen">
 		<name>Default</name>
 		<destDir>../java</destDir>
 		<mode>entity</mode>
@@ -72,4 +71,4 @@
 		<createPropertyNames>false</createPropertyNames>
 		<createPKProperties>false</createPKProperties>
 	</cgen>
-</data-map>
+</dataMap>

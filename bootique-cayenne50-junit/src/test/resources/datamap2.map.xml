@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<data-map xmlns="http://cayenne.apache.org/schema/13/modelMap"
+<dataMap xmlns="http://cayenne.apache.org/schema/14/dataMap"
 	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	 xsi:schemaLocation="http://cayenne.apache.org/schema/13/modelMap https://cayenne.apache.org/schema/13/modelMap.xsd"
-	 project-version="13">
-	<property name="defaultPackage" value="io.bootique.cayenne.v50.junit.persistence"/>
-	<property name="quoteSqlIdentifiers" value="true"/>
-	<db-entity name="table1">
-		<db-attribute name="a" type="BIGINT"/>
-		<db-attribute name="b" type="BIGINT"/>
-		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isMandatory="true"/>
-	</db-entity>
-	<db-entity name="table2">
-		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
-		<db-attribute name="name" type="VARCHAR" length="20"/>
-	</db-entity>
-	<obj-entity name="Table1" className="io.bootique.cayenne.v50.junit.persistence.Table1" dbEntityName="table1">
-		<obj-attribute name="a" type="java.lang.Long" db-attribute-path="a"/>
-		<obj-attribute name="b" type="java.lang.Long" db-attribute-path="b"/>
-	</obj-entity>
-	<obj-entity name="Table2" className="io.bootique.cayenne.v50.junit.persistence.Table2" dbEntityName="table2">
-		<obj-attribute name="name" type="java.lang.String" db-attribute-path="name"/>
-	</obj-entity>
-	<cgen xmlns="http://cayenne.apache.org/schema/13/cgen">
+	 xsi:schemaLocation="http://cayenne.apache.org/schema/14/dataMap https://cayenne.apache.org/schema/14/dataMap.xsd"
+	 defaultPackage="io.bootique.cayenne.v50.junit.persistence"
+	 quoteSqlIdentifiers="true">
+	<dbEntity name="table1">
+		<dbAttribute name="a" type="BIGINT"/>
+		<dbAttribute name="b" type="BIGINT"/>
+		<dbAttribute name="id" type="BIGINT" primaryKey="true" mandatory="true"/>
+	</dbEntity>
+	<dbEntity name="table2">
+		<dbAttribute name="id" type="INTEGER" primaryKey="true" mandatory="true"/>
+		<dbAttribute name="name" type="VARCHAR" length="20"/>
+	</dbEntity>
+	<objEntity name="Table1" className="io.bootique.cayenne.v50.junit.persistence.Table1" dbEntityName="table1">
+		<objAttribute name="a" type="java.lang.Long" dbAttributePath="a"/>
+		<objAttribute name="b" type="java.lang.Long" dbAttributePath="b"/>
+	</objEntity>
+	<objEntity name="Table2" className="io.bootique.cayenne.v50.junit.persistence.Table2" dbEntityName="table2">
+		<objAttribute name="name" type="java.lang.String" dbAttributePath="name"/>
+	</objEntity>
+	<cgen xmlns="http://cayenne.apache.org/schema/14/cgen">
 		<name>Default</name>
 		<destDir>../java</destDir>
 		<mode>entity</mode>
@@ -38,4 +37,4 @@
 		<createPropertyNames>false</createPropertyNames>
 		<createPKProperties>false</createPKProperties>
 	</cgen>
-</data-map>
+</dataMap>

@@ -31,7 +31,7 @@ import org.apache.cayenne.commitlog.CommitLogListener;
 import org.apache.cayenne.commitlog.Confidential;
 import org.apache.cayenne.commitlog.model.ChangeMap;
 import org.apache.cayenne.commitlog.model.ObjectChange;
-import org.apache.cayenne.runtime.CayenneRuntime;
+import org.apache.cayenne.CayenneRuntime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

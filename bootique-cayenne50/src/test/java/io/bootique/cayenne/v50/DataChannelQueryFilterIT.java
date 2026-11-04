@@ -25,10 +25,12 @@ import io.bootique.junit.BQTestTool;
 import org.apache.cayenne.DataChannelQueryFilter;
 import org.apache.cayenne.DataChannelQueryFilterChain;
 import org.apache.cayenne.ObjectContext;
-import org.apache.cayenne.QueryResponse;
+import org.apache.cayenne.QueryResult;
 import org.apache.cayenne.query.ObjectSelect;
 import org.apache.cayenne.query.Query;
-import org.apache.cayenne.runtime.CayenneRuntime;
+
+import java.util.List;
+import org.apache.cayenne.CayenneRuntime;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -74,9 +76,9 @@ public class DataChannelQueryFilterIT {
         boolean onQueryCalled;
 
         @Override
-        public QueryResponse onQuery(ObjectContext objectContext, Query query, DataChannelQueryFilterChain dataChannelQueryFilterChain) {
+        public List<QueryResult> onQuery(ObjectContext objectContext, Query query, boolean noObjectConversion, DataChannelQueryFilterChain dataChannelQueryFilterChain) {
             onQueryCalled = true;
-            return dataChannelQueryFilterChain.onQuery(objectContext, query);
+            return dataChannelQueryFilterChain.onQuery(objectContext, query, noObjectConversion);
         }
     }
 }

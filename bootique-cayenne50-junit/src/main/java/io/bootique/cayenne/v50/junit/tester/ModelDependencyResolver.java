@@ -34,8 +34,10 @@ class ModelDependencyResolver {
         }
     }
 
+    // The target depends on the source if the target holds the FK, i.e. the reverse relationship is "from FK"
     static private void resolveDependent(Set<DbEntity> resolved, DbRelationship relationship) {
-        if (relationship.isFromPK() && !relationship.isToMasterPK()) {
+        DbRelationship reverse = relationship.getReverseRelationship();
+        if (reverse != null && reverse.isFromFK()) {
             resolve(resolved, relationship.getTargetEntity());
         }
     }

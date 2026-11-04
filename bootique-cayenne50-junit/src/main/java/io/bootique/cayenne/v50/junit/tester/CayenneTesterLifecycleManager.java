@@ -25,7 +25,7 @@ import io.bootique.di.DIRuntimeException;
 import io.bootique.junit.BQTestScope;
 import io.bootique.junit.scope.BQAfterMethodCallback;
 import io.bootique.junit.scope.BQBeforeMethodCallback;
-import org.apache.cayenne.runtime.CayenneRuntime;
+import org.apache.cayenne.CayenneRuntime;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.util.LinkedHashMap;

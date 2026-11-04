@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<data-map xmlns="http://cayenne.apache.org/schema/13/modelMap"
+<dataMap xmlns="http://cayenne.apache.org/schema/14/dataMap"
 	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	 xsi:schemaLocation="http://cayenne.apache.org/schema/13/modelMap https://cayenne.apache.org/schema/13/modelMap.xsd"
-	 project-version="13">
-	<property name="defaultPackage" value="io.bootique.cayenne.v50.jcache.persistent"/>
-	<property name="quoteSqlIdentifiers" value="true"/>
-	<db-entity name="table1">
-		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isMandatory="true"/>
-	</db-entity>
-	<db-entity name="table2">
-		<db-attribute name="id" type="BIGINT" isPrimaryKey="true" isMandatory="true"/>
-		<db-attribute name="name" type="VARCHAR" length="100"/>
-	</db-entity>
-	<obj-entity name="Table1" className="io.bootique.cayenne.v50.jcache.persistent.Table1" dbEntityName="table1"/>
-	<obj-entity name="Table2" className="io.bootique.cayenne.v50.jcache.persistent.Table2" dbEntityName="table2">
-		<obj-attribute name="name" type="java.lang.String" db-attribute-path="name"/>
-	</obj-entity>
-	<dbImport xmlns="http://cayenne.apache.org/schema/13/dbimport">
+	 xsi:schemaLocation="http://cayenne.apache.org/schema/14/dataMap https://cayenne.apache.org/schema/14/dataMap.xsd"
+	 defaultPackage="io.bootique.cayenne.v50.jcache.persistent"
+	 quoteSqlIdentifiers="true">
+	<dbEntity name="table1">
+		<dbAttribute name="id" type="BIGINT" primaryKey="true" mandatory="true"/>
+	</dbEntity>
+	<dbEntity name="table2">
+		<dbAttribute name="id" type="BIGINT" primaryKey="true" mandatory="true"/>
+		<dbAttribute name="name" type="VARCHAR" length="100"/>
+	</dbEntity>
+	<objEntity name="Table1" className="io.bootique.cayenne.v50.jcache.persistent.Table1" dbEntityName="table1"/>
+	<objEntity name="Table2" className="io.bootique.cayenne.v50.jcache.persistent.Table2" dbEntityName="table2">
+		<objAttribute name="name" type="java.lang.String" dbAttributePath="name"/>
+	</objEntity>
+	<dbImport xmlns="http://cayenne.apache.org/schema/14/dbimport">
 		<tableTypes>
 			<tableType>TABLE</tableType>
 			<tableType>VIEW</tableType>
@@ -28,7 +27,7 @@
 		<skipRelationshipsLoading>false</skipRelationshipsLoading>
 		<useJava7Types>false</useJava7Types>
 	</dbImport>
-	<cgen xmlns="http://cayenne.apache.org/schema/13/cgen">
+	<cgen xmlns="http://cayenne.apache.org/schema/14/cgen">
 		<name>Default</name>
 		<destDir>../java</destDir>
 		<mode>entity</mode>
@@ -45,4 +44,4 @@
 		<createPropertyNames>false</createPropertyNames>
 		<createPKProperties>false</createPKProperties>
 	</cgen>
-</data-map>
+</dataMap>

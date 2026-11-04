@@ -37,7 +37,7 @@ import org.apache.cayenne.exp.property.Property;
 import org.apache.cayenne.exp.property.RelationshipProperty;
 import org.apache.cayenne.map.EntityResolver;
 import org.apache.cayenne.map.ObjEntity;
-import org.apache.cayenne.runtime.CayenneRuntime;
+import org.apache.cayenne.CayenneRuntime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtensionContext;
 

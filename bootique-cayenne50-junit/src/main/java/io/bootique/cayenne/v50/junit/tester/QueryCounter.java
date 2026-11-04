@@ -21,8 +21,10 @@ package io.bootique.cayenne.v50.junit.tester;
 import org.apache.cayenne.DataChannelQueryFilter;
 import org.apache.cayenne.DataChannelQueryFilterChain;
 import org.apache.cayenne.ObjectContext;
-import org.apache.cayenne.QueryResponse;
+import org.apache.cayenne.QueryResult;
 import org.apache.cayenne.query.Query;
+
+import java.util.List;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -40,9 +42,9 @@ public class QueryCounter implements DataChannelQueryFilter {
     }
 
     @Override
-    public QueryResponse onQuery(ObjectContext objectContext, Query query, DataChannelQueryFilterChain dataChannelQueryFilterChain) {
+    public List<QueryResult> onQuery(ObjectContext objectContext, Query query, boolean noObjectConversion, DataChannelQueryFilterChain dataChannelQueryFilterChain) {
         count.incrementAndGet();
-        return dataChannelQueryFilterChain.onQuery(objectContext, query);
+        return dataChannelQueryFilterChain.onQuery(objectContext, query, noObjectConversion);
     }
 
     public void assertCount(int expectedCommits) {

@@ -24,12 +24,12 @@ import org.apache.cayenne.commitlog.CommitLogListener;
 import org.apache.cayenne.commitlog.meta.AnnotationCommitLogEntityFactory;
 import org.apache.cayenne.commitlog.meta.CommitLogEntityFactory;
 import org.apache.cayenne.commitlog.meta.IncludeAllCommitLogEntityFactory;
-import org.apache.cayenne.configuration.runtime.CoreModule;
+import org.apache.cayenne.CoreModule;
 import org.apache.cayenne.di.DIRuntimeException;
 import org.apache.cayenne.di.Inject;
 import org.apache.cayenne.di.Module;
 import org.apache.cayenne.di.Provider;
-import org.apache.cayenne.runtime.CayenneRuntimeBuilder;
+import org.apache.cayenne.CayenneRuntimeBuilder;
 import org.apache.cayenne.tx.TransactionFilter;
 
 import java.util.ArrayList;
